@@ -399,3 +399,4 @@ FodyWeavers.xsd
 
 # Sqlite database
 CinemaApp/DataSources/project.db
+!CinemaApp/DataSources/.gitkeep
