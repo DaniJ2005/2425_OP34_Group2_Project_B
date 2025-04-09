@@ -1,6 +1,6 @@
 static class UserLogin
 {
-    static private AccountsLogic accountsLogic = new AccountsLogic();
+    static private UserLogic userLogic = new UserLogic();
 
 
     public static void Start()
@@ -10,47 +10,47 @@ static class UserLogin
         string email = Console.ReadLine();
         Console.WriteLine("Please enter your password");
         string password = Console.ReadLine();
-        AccountModel acc = accountsLogic.CheckLogin(email, password);
-        if (acc != null)
+        UserModel user = userLogic.CheckLogin(email, password);
+        if (user != null)
         {
-            Console.WriteLine("Welcome back " + acc.FullName);
-            Console.WriteLine("Your email number is " + acc.EmailAddress);
+            Console.WriteLine("Welcome back " + user.UserName);
+            Console.WriteLine("Your email number is " + user.Email);
 
             //if (role == "admin")
             ShowAdminPrompt();
         }
         else
         {
-            Console.WriteLine("No account found with that email and password");
+            Console.WriteLine("No user found with that email and password");
         }
     }
 
     public static void ShowAdminPrompt()
     {
-        Console.WriteLine("\nYou are an admin, would you like to see all accounts? (y/n)");
+        Console.WriteLine("\nYou are an admin, would you like to see all users? (y/n)");
 
         string choice = Console.ReadLine();
         if (choice?.ToLower() == "y")
         {
-            ShowAllAccounts();
+            ShowAllUsers();
         }
         else
         {
-            Console.WriteLine("You chose not to view the accounts.");
+            Console.WriteLine("You chose not to view the users.");
         }
     }
 
-    public static void ShowAllAccounts()
+    public static void ShowAllUsers()
     {
         Console.Clear();
-        Console.WriteLine("\nAll accounts:");
-        List<AccountModel> accounts = AccountsAccess.GetAllAccounts();
+        Console.WriteLine("\nAll users:");
+        List<UserModel> users = UserAccess.GetAllUsers();
 
-        foreach (var account in accounts)
+        foreach (var user in users)
         {
-            Console.WriteLine($"ID: {account.Id}");
-            Console.WriteLine($"Email: {account.EmailAddress}");
-            Console.WriteLine($"Full Name: {account.FullName}");
+            Console.WriteLine($"ID: {user.Id}");
+            Console.WriteLine($"Email: {user.Email}");
+            Console.WriteLine($"Full Name: {user.UserName}");
             Console.WriteLine("------------------------------------");
         }
     }
