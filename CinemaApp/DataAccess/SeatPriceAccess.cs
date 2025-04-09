@@ -1,6 +1,6 @@
 using Dapper;
 
-public static class PromotionAccess
+public static class SeatPriceAccess
 {
 
     public static void InitTable()
@@ -8,11 +8,12 @@ public static class PromotionAccess
         using (var connection = Db.CreateConnection())
         {
             string sql = @"
-                CREATE TABLE promotion (
+                CREATE TABLE seat_price (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    name TEXT NOT NULL,
-                    discount REAL NOT NULL,
-                    discount_percentage REAL NOT NULL
+                    seat_type_id INTEGER,
+                    promo TEXT NOT NULL,
+                    price REAL NOT NULL,
+                    FOREIGN KEY (seat_type_id) REFERENCES seat_type(id)
                 );
             ";
 
@@ -24,7 +25,7 @@ public static class PromotionAccess
     {
         using (var connection = Db.CreateConnection())
         {
-            string sql = @"DROP TABLE IF EXISTS promotion;";
+            string sql = @"DROP TABLE IF EXISTS seat_price;";
             connection.Execute(sql);
         }
     }

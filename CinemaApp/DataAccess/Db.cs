@@ -27,8 +27,9 @@ public static class Db
         MovieAccess.InitTable();
         MovieSessionAccess.InitTable();
         ReservationAccess.InitTable();
+        SeatTypeAccess.InitTable();
         SeatAccess.InitTable();
-        PromotionAccess.InitTable();
+        SeatPriceAccess.InitTable();
         TicketAccess.InitTable();
         FoodAccess.InitTable();
         ReservationFoodAccess.InitTable();
@@ -36,14 +37,15 @@ public static class Db
 
     public static void DeleteTables()
     {
-        UserAccess.DeleteTable();
         RoleAcccess.DeleteTable();
+        UserAccess.DeleteTable();
         MovieHallAccess.DeleteTable();
         MovieAccess.DeleteTable();
         MovieSessionAccess.DeleteTable();
         ReservationAccess.DeleteTable();
+        SeatTypeAccess.DeleteTable();
         SeatAccess.DeleteTable();
-        PromotionAccess.DeleteTable();
+        SeatPriceAccess.DeleteTable();
         TicketAccess.DeleteTable();
         FoodAccess.DeleteTable();
         ReservationFoodAccess.DeleteTable();

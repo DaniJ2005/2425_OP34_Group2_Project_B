@@ -12,11 +12,10 @@ public static class TicketAccess
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     seat_id INTEGER,
                     reservation_id INTEGER,
-                    promotion_id INTEGER,
-                    processed_price REAL NOT NULL,
+                    seat_price_id INTEGER,
                     FOREIGN KEY (seat_id) REFERENCES seat(id),
                     FOREIGN KEY (reservation_id) REFERENCES reservation(id),
-                    FOREIGN KEY (promotion_id) REFERENCES promotion(id)
+                    FOREIGN KEY (seat_price_id) REFERENCES seat_price(id)
                 );
             ";
 

@@ -10,12 +10,12 @@ public static class SeatAccess
             string sql = @"
                 CREATE TABLE seat (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    seat_type_id INTEGER,
                     movie_hall_id INTEGER,
-                    seat_type TEXT NOT NULL,
-                    base_price REAL NOT NULL,
                     row TEXT NOT NULL,
                     number INTEGER NOT NULL,
                     is_under_maintenance BOOLEAN NOT NULL DEFAULT 0,
+                    FOREIGN KEY (seat_type_id) REFERENCES seat_type(id),
                     FOREIGN KEY (movie_hall_id) REFERENCES movie_hall(id)
                 );
             ";

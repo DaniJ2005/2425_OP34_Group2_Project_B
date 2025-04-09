@@ -6,7 +6,7 @@ public static class UserAccess
     {
         using (var connection = Db.CreateConnection())
         {
-            string sql = "INSERT INTO user (email, password, username, role_id) VALUES (@Email, @Password, @UserName, @RoleId)";
+            string sql = "INSERT INTO user (email, password, username) VALUES (@Email, @Password, @UserName)";
             connection.Execute(sql, user);
         }
     }
