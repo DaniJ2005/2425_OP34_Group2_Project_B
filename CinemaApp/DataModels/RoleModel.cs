@@ -1,6 +1,7 @@
 public class RoleModel
 {
     public int Id { get; set; }
+    public string Name { get; set; }
     public bool ManageFoodMenu { get; set; }
     public bool ManageAccounts { get; set; }
     public bool ManageGuestAccounts { get; set; }

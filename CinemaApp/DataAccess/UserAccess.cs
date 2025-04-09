@@ -6,7 +6,7 @@ public static class UserAccess
     {
         using (var connection = Db.CreateConnection())
         {
-            string sql = "INSERT INTO user (email, password, username) VALUES (@Email, @Password, @UserName)";
+            string sql = "INSERT INTO user (email, password, username, role_id) VALUES (@Email, @Password, @UserName, @RoleId)";
             connection.Execute(sql, user);
         }
     }
@@ -44,12 +44,12 @@ public static class UserAccess
         {
             string sql = @"
                 CREATE TABLE IF NOT EXISTS user (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                role_id INTEGER,
-                username TEXT NOT NULL,
-                email TEXT UNIQUE NOT NULL,
-                password TEXT NOT NULL,
-                FOREIGN KEY (role_id) REFERENCES role(id)
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    role_id INTEGER,
+                    username TEXT NOT NULL,
+                    email TEXT UNIQUE NOT NULL,
+                    password TEXT NOT NULL,
+                    FOREIGN KEY (role_id) REFERENCES role(id)
                 );
             ";
 
