@@ -1,6 +1,6 @@
 using Dapper;
 
-public static class RoleAcccess
+public static class FoodAccess
 {
 
     public static void InitTable()
@@ -8,15 +8,11 @@ public static class RoleAcccess
         using (var connection = Db.CreateConnection())
         {
             string sql = @"
-                CREATE TABLE IF NOT EXISTS role (
+                CREATE TABLE food (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     name TEXT NOT NULL,
-                    manage_food_menu BOOLEAN,
-                    manage_accounts BOOLEAN,
-                    manage_guest_accounts BOOLEAN,
-                    manage_movie_sessions BOOLEAN,
-                    manage_movie_hall BOOLEAN,
-                    manage_reservations BOOLEAN
+                    price REAL NOT NULL,
+                    is_available BOOLEAN NOT NULL DEFAULT 1
                 );
             ";
 
@@ -28,7 +24,7 @@ public static class RoleAcccess
     {
         using (var connection = Db.CreateConnection())
         {
-            string sql = @"DROP TABLE IF EXISTS role;";
+            string sql = @"DROP TABLE IF EXISTS food;";
             connection.Execute(sql);
         }
     }

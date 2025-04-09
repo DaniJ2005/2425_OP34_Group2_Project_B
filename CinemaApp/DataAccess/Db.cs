@@ -23,11 +23,31 @@ public static class Db
     {
         RoleAcccess.InitTable();
         UserAccess.InitTable();
+        MovieHallAccess.InitTable();
+        MovieAccess.InitTable();
+        MovieSessionAccess.InitTable();
+        ReservationAccess.InitTable();
+        SeatTypeAccess.InitTable();
+        SeatAccess.InitTable();
+        SeatPriceAccess.InitTable();
+        TicketAccess.InitTable();
+        FoodAccess.InitTable();
+        ReservationFoodAccess.InitTable();
     }
 
     public static void DeleteTables()
     {
         RoleAcccess.DeleteTable();
         UserAccess.DeleteTable();
+        MovieHallAccess.DeleteTable();
+        MovieAccess.DeleteTable();
+        MovieSessionAccess.DeleteTable();
+        ReservationAccess.DeleteTable();
+        SeatTypeAccess.DeleteTable();
+        SeatAccess.DeleteTable();
+        SeatPriceAccess.DeleteTable();
+        TicketAccess.DeleteTable();
+        FoodAccess.DeleteTable();
+        ReservationFoodAccess.DeleteTable();
     }
 }
