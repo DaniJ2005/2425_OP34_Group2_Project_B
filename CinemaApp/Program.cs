@@ -1,3 +1,3 @@
-﻿// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Welcome to this amazing program");
+﻿Db.DeleteTables(); //Dev only
+Db.InitTables();
 Menu.Start();

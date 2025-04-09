@@ -5,43 +5,48 @@ using System.Text.Json;
 
 
 //This class is not static so later on we can use inheritance and interfaces
-public class AccountsLogic
+public class UserLogic
 {
 
     //Static properties are shared across all instances of the class
-    //This can be used to get the current logged in account from anywhere in the program
+    //This can be used to get the current logged in user from anywhere in the program
     //private set, so this can only be set by the class itself
-    public static AccountModel? CurrentAccount { get; private set; }
+    public static UserModel? CurrentUser { get; private set; }
 
-    public AccountsLogic()
+    public UserLogic()
     {
         // Could do something here
 
     }
 
-    public AccountModel CheckLogin(string email, string password)
+    public UserModel CheckLogin(string email, string password)
     {
 
-        AccountModel acc = AccountsAccess.GetByEmail(email);
-        if (acc != null && acc.Password == password)
+        UserModel user = UserAccess.GetByEmail(email);
+        if (user != null && user.Password == password)
         {
-            CurrentAccount = acc;
-            return acc;
+            CurrentUser = user;
+            return user;
         }
         return null;
     }
     
-    public AccountModel RegisterAccount(string email, string password, string fullName)
+    public UserModel RegisterUser(string email, string password, string userName)
     {
-        if (IsValidEmail(email) && IsValidPassword(password) && !string.IsNullOrWhiteSpace(fullName))
+        if (IsValidEmail(email) && IsValidPassword(password) && !string.IsNullOrWhiteSpace(userName))
         {
-            AccountModel account = new AccountModel(email, password, fullName);
-            AccountsAccess.Write(account);
+            UserModel user = new UserModel
+            {
+                Email = email,
+                Password = password,
+                UserName = userName,
+            };
+            UserAccess.Write(user);
 
-            return account;
+            return user;
         }
 
-        Console.WriteLine("Could not register account because:");
+        Console.WriteLine("Could not register user because:");
 
         if (!IsValidEmail(email))
             Console.WriteLine("- The email address is invalid.");
@@ -49,7 +54,7 @@ public class AccountsLogic
         if (!IsValidPassword(password))
             Console.WriteLine("- The password must be at least 8 characters long.");
 
-        if (string.IsNullOrWhiteSpace(fullName))
+        if (string.IsNullOrWhiteSpace(userName))
             Console.WriteLine("- The full name cannot be empty.");
 
         return null;

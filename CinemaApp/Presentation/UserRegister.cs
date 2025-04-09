@@ -1,6 +1,6 @@
 static class UserRegister
 {
-    static private AccountsLogic accountsLogic = new AccountsLogic();
+    static private UserLogic accountsLogic = new UserLogic();
 
     public static void Start()
     {
@@ -10,11 +10,11 @@ static class UserRegister
         Console.WriteLine("Please enter a password");
         string password = Console.ReadLine();
         Console.WriteLine("Please enter your full name");
-        string fullName = Console.ReadLine();
-        AccountModel acc = accountsLogic.RegisterAccount(email, password, fullName);
-        if (acc != null)
+        string userName = Console.ReadLine();
+        UserModel user = accountsLogic.RegisterUser(email, password, userName);
+        if (user != null)
         {
-            Console.WriteLine($"Welcome {acc.FullName}, go ahead and login!");
+            Console.WriteLine($"Welcome {user.UserName}, go ahead and login!");
         }
     }
 }
