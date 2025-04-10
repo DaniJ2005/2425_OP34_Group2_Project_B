@@ -18,6 +18,9 @@ static class UserLogin
 
             //if (role == "admin")
             ShowAdminPrompt();
+
+            // start resereverings proces
+            //MovieSessionSelection.Start();
         }
         else
         {
