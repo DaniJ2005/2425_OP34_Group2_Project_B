@@ -42,6 +42,5 @@ static class SeatSelection
         } while (key != ConsoleKey.Enter);
 
         ReservationLogic.SelectedSeat = seats[selectedIndex];
-        ConfirmSelection.Start();
     }
 }

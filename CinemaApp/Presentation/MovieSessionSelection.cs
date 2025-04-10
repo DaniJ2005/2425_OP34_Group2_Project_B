@@ -41,6 +41,5 @@ static class MovieSessionSelection
         } while (key != ConsoleKey.Enter);
 
         ReservationLogic.SelectedSession = sessions[selectedIndex];
-        SeatSelection.Start();
     }
 }
