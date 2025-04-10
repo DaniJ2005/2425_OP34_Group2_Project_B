@@ -21,33 +21,44 @@ public static class Db
 
     public static void InitTables()
     {
-        RoleAcccess.InitTable();
-        UserAccess.InitTable();
-        MovieHallAccess.InitTable();
-        MovieAccess.InitTable();
-        MovieSessionAccess.InitTable();
-        ReservationAccess.InitTable();
-        SeatTypeAccess.InitTable();
-        SeatAccess.InitTable();
-        SeatPriceAccess.InitTable();
-        TicketAccess.InitTable();
-        FoodAccess.InitTable();
-        ReservationFoodAccess.InitTable();
+        RoleTable.InitTable();
+        UserTable.InitTable();
+        MovieHallTable.InitTable();
+        MovieTable.InitTable();
+        MovieSessionTable.InitTable();
+        ReservationTable.InitTable();
+        SeatTypeTable.InitTable();
+        SeatTable.InitTable();
+        SeatPriceTable.InitTable();
+        TicketTable.InitTable();
+        FoodTable.InitTable();
+        ReservationFoodTable.InitTable();
+    }
+
+    public static void PopulateTables()
+    {
+        RoleTable.PopulateTable();
+        SeatTypeTable.PopulateTable();
+        SeatPriceTable.PopulateTable();
+        MovieHallTable.PopulateTable();
+        SeatTable.PopulateTable();
+        MovieTable.PopulateTable();
+        MovieSessionTable.PopulateTable();
     }
 
     public static void DeleteTables()
     {
-        RoleAcccess.DeleteTable();
-        UserAccess.DeleteTable();
-        MovieHallAccess.DeleteTable();
-        MovieAccess.DeleteTable();
-        MovieSessionAccess.DeleteTable();
-        ReservationAccess.DeleteTable();
-        SeatTypeAccess.DeleteTable();
-        SeatAccess.DeleteTable();
-        SeatPriceAccess.DeleteTable();
-        TicketAccess.DeleteTable();
-        FoodAccess.DeleteTable();
-        ReservationFoodAccess.DeleteTable();
+        RoleTable.DeleteTable();
+        UserTable.DeleteTable();
+        SeatPriceTable.DeleteTable();
+        SeatTable.DeleteTable();
+        SeatTypeTable.DeleteTable();
+        MovieSessionTable.DeleteTable();
+        MovieHallTable.DeleteTable();
+        MovieTable.DeleteTable();
+        ReservationTable.DeleteTable();
+        TicketTable.DeleteTable();
+        FoodTable.DeleteTable();
+        ReservationFoodTable.DeleteTable();
     }
 }
