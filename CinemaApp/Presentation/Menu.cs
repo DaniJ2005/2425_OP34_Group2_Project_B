@@ -60,7 +60,7 @@ static class Menu
                 UserRegister.Start();
                 break;
             case 2: //Continue without account
-                Console.WriteLine("Making a reservation...");
+                MovieSessionSelection.Start();
                 break;
             case 3:
                 Console.WriteLine("Exiting...");
