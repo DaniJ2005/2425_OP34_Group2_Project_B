@@ -65,7 +65,7 @@ public class MovieSelection
 
         } while (key != ConsoleKey.Enter);
 
-        ReservationLogic.SetSelectedMovie(movies[selectedIndex].Id);
+        ReservationLogic.SetSelectedMovie(movies[selectedIndex]);
     }
 
     private static string Trim(string input, int maxLength)
