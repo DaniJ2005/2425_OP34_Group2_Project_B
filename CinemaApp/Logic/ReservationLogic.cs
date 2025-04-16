@@ -12,16 +12,26 @@ static class ReservationLogic
     public static MovieSessionModel GetSelectedSession() => _selectedSession;
     public static SeatModel GetSelectedSeat() => _selectedSeat;
 
-    public static string GetConfirmationSummary(long userId)
-        {
-            if (_selectedSession == null || _selectedSeat == null)
-                return "No reservation selected.";
+    public static string GetConfirmationSummary()
+    {
+        if (_selectedSession == null || _selectedSeat == null)
+            return "No reservation selected.";
 
-            return
-                $"User ID: {userId}\n" +
-                $"  - Movie: {_selectedMovie.Title}\n" +
-                $"  - Time: {_selectedSession.StartTime}\n" +
-                $"  - Hall: {_selectedSession.MovieHallId}\n" +
-                $"  - Seat: Row {_selectedSeat.Row}, Seat {_selectedSeat.Number} ({_selectedSeat.SeatTypeId})\n";
+        string summary = "";
+
+        if (UserLogic.CurrentUser != null && !string.IsNullOrEmpty(UserLogic.CurrentUser.UserName))
+        {
+            summary += $"User: {UserLogic.CurrentUser.UserName}\n";
         }
+
+        summary +=
+            $"  - Movie: {_selectedMovie.Title}\n" +
+            $"  - Date: {_selectedSession.Date}\n" +
+            $"  - Time: {_selectedSession.StartTime}\n" +
+            $"  - Hall: {_selectedSession.MovieHallId}\n" +
+            $"  - Seat: Row {_selectedSeat.Row}, Seat {_selectedSeat.Number} ({_selectedSeat.SeatTypeId})\n";
+
+        return summary;
+    }
+
 }

@@ -4,8 +4,7 @@ static class ConfirmSelection
     {
         Console.Clear();
         Console.WriteLine("Please confirm your reservation:\n");
-        Console.WriteLine($"Movie Session: {ReservationLogic.SelectedSessionId}");
-        Console.WriteLine($"Seat: {ReservationLogic.SelectedSeatId}");
+        Console.WriteLine($"Movie Session: {ReservationLogic.GetConfirmationSummary()}");
 
         Console.WriteLine("\nConfirm reservation? (y/n)");
         string input = Console.ReadLine()?.ToLower();
