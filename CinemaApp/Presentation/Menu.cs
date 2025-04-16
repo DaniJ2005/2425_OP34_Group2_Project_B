@@ -60,9 +60,7 @@ static class Menu
                 UserRegister.Start();
                 break;
             case 2: //Continue without account
-                MovieSessionSelection.Start();
-                SeatSelection.Start();
-                ConfirmSelection.Start();
+                MovieSelection.Start();
                 break;
             case 3:
                 Console.WriteLine("Exiting...");

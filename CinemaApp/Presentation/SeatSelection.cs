@@ -40,7 +40,5 @@ static class SeatSelection
             else if (key == ConsoleKey.DownArrow && selectedIndex < seats.Length - 1) selectedIndex++;
 
         } while (key != ConsoleKey.Enter);
-
-        ReservationLogic.SelectedSeat = seats[selectedIndex];
     }
 }
