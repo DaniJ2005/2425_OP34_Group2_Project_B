@@ -19,7 +19,7 @@ public class MovieSelection
         {
             Console.Clear();
             Console.WriteLine("Select a Movie");
-            Console.WriteLine("Use ^ v to navigate, <- -> to change page, [Enter] to select:\n");
+            Console.WriteLine("Use ^ v to navigate, <- -> to change page, [Enter] to select and [Escape] to cancel:\n");
 
             Console.WriteLine("+----+------------------------------+-----------------+--------+----------+");
             Console.WriteLine("| No | Title                        | Genre           | MinAge | Duration |");
@@ -48,7 +48,12 @@ public class MovieSelection
 
             key = Console.ReadKey(true).Key;
 
-            if (key == ConsoleKey.UpArrow && selectedIndex > start)
+            if (key == ConsoleKey.Escape)
+            {
+                ReservationLogic.ClearSelection();
+                Menu.Start();
+            }
+            else if (key == ConsoleKey.UpArrow && selectedIndex > start)
                 selectedIndex--;
             else if (key == ConsoleKey.DownArrow && selectedIndex < end - 1)
                 selectedIndex++;

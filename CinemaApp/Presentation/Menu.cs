@@ -20,6 +20,10 @@ static class Menu
         do
         {
             Console.Clear();
+            if (UserLogic.CurrentUser?.Id != null)
+                Console.WriteLine($"Welcome back, {UserLogic.CurrentUser.UserName}. Thank you for choosing our service.");
+
+
             Console.WriteLine("Use ^ V to navigate, Enter to select:\n");
             for (int i = 0; i < options.Length; i++)
             {
@@ -61,6 +65,7 @@ static class Menu
                 break;
             case 2: //Continue without account
                 MovieSelection.Start();
+                ConfirmSelection.Start();
                 break;
             case 3:
                 Console.WriteLine("Exiting...");

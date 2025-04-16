@@ -2,7 +2,6 @@ using System.Threading.Tasks.Dataflow;
 
 static class ConfirmSelection
 {
-    //commented is waiting for logic of diffrent git-branch
     private static readonly string[] menuItems = {
         "Add food",
         "Return to previous page",
@@ -18,7 +17,7 @@ static class ConfirmSelection
         {
             Console.Clear();
             Console.WriteLine("Please confirm your reservation:\n");
-            // Console.WriteLine($"Movie Session: {ReservationLogic.GetConfirmationSummary()}");
+            Console.WriteLine(ReservationLogic.GetConfirmationSummary());
 
             for (int i = 0; i < menuItems.Length; i++)
             {
@@ -34,11 +33,16 @@ static class ConfirmSelection
                 }
             }
 
-            Console.WriteLine("\nUse ^ v to navigate, [Enter] to select.");
+            Console.WriteLine("\n\nUse ^ v to navigate, [Enter] to select and [Escape] to cancel.");
 
             key = Console.ReadKey(true).Key;
 
-            if (key == ConsoleKey.UpArrow && selectedIndex > 0)
+            if (key == ConsoleKey.Escape)
+            {
+                ReservationLogic.ClearSelection();
+                Menu.Start();
+            }
+            else if (key == ConsoleKey.UpArrow && selectedIndex > 0)
                 selectedIndex--;
             else if (key == ConsoleKey.DownArrow && selectedIndex < menuItems.Length - 1)
                 selectedIndex++;

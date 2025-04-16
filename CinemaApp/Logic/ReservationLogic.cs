@@ -4,9 +4,9 @@ static class ReservationLogic
     private static MovieSessionModel _selectedSession;
     private static SeatModel _selectedSeat;
 
-    public static void SetSelectedMovie(MovieModel movieId) => _selectedMovie = movieId;
-    public static void SetSelectedSession(MovieSessionModel sessionId) => _selectedSession = sessionId;
-    public static void SetSelectedSeat(SeatModel seatId) => _selectedSeat = seatId;
+    public static void SetSelectedMovie(MovieModel movie) => _selectedMovie = movie;
+    public static void SetSelectedSession(MovieSessionModel session) => _selectedSession = session;
+    public static void SetSelectedSeat(SeatModel seat) => _selectedSeat = seat;
 
     public static MovieModel GetSelectedMovie() => _selectedMovie;
     public static MovieSessionModel GetSelectedSession() => _selectedSession;
@@ -14,7 +14,7 @@ static class ReservationLogic
 
     public static string GetConfirmationSummary()
     {
-        if (_selectedSession == null || _selectedSeat == null)
+        if (_selectedMovie == null) //When session en seat are implemented add null check for 
             return "No reservation selected.";
 
         string summary = "";
@@ -25,13 +25,19 @@ static class ReservationLogic
         }
 
         summary +=
-            $"  - Movie: {_selectedMovie.Title}\n" +
-            $"  - Date: {_selectedSession.Date}\n" +
-            $"  - Time: {_selectedSession.StartTime}\n" +
-            $"  - Hall: {_selectedSession.MovieHallId}\n" +
-            $"  - Seat: Row {_selectedSeat.Row}, Seat {_selectedSeat.Number} ({_selectedSeat.SeatTypeId})\n";
+            $"  - Movie: {GetSelectedMovie().Title}   ({GetSelectedMovie().Duration})\n" ;//+
+            // $"  - Date: {GetSelectedSession().Date}\n" +
+            // $"  - Time: {GetSelectedSession().StartTime}\n" +
+            // $"  - Hall: {GetSelectedSession().MovieHallId}\n" +
+            // $"  - Seat: Row {GetSelectedSeat().Row}, Seat {GetSelectedSeat().Number} ({GetSelectedSeat().SeatTypeId})\n";
 
         return summary;
     }
 
+    public static void ClearSelection()
+    {
+        SetSelectedMovie(null);
+        SetSelectedSession(null);
+        SetSelectedSeat(null);
+    }
 }
