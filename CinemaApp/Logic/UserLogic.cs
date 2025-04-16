@@ -60,7 +60,7 @@ public class UserLogic
         return null;
     }
 
-    private bool IsValidEmail(string email)
+    public static bool IsValidEmail(string email)
     {
         return email.Contains("@") && email.Contains(".");
     }
