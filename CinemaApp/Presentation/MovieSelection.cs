@@ -1,4 +1,4 @@
-public class MovieSelection
+public static class MovieSelection
 {
     public static void Start()
     {

@@ -65,7 +65,15 @@ static class Menu
                 break;
             case 2: //Continue without account
                 MovieSelection.Start();
-                ConfirmSelection.Start();
+                MovieSession.Start();
+                // ConfirmSelection.Start();
+
+                // Temporary code for testing movie session result
+                MovieModel movie = ReservationLogic.GetSelectedMovie();
+                MovieSessionModel movieSession = ReservationLogic.GetSelectedSession();
+                Console.Clear();
+                Console.WriteLine($"Movie: {movie.Title}, Date: {movieSession.Date}, Time: {movieSession.StartTime}");
+
                 break;
             case 3:
                 Console.WriteLine("Exiting...");
