@@ -4,9 +4,21 @@ static class ReservationLogic
     private static MovieSessionModel _selectedSession;
     private static SeatModel _selectedSeat;
 
-    public static void SetSelectedMovie(MovieModel movie) => _selectedMovie = movie;
-    public static void SetSelectedSession(MovieSessionModel session) => _selectedSession = session;
-    public static void SetSelectedSeat(SeatModel seat) => _selectedSeat = seat;
+    public static void SetSelectedMovie(MovieModel movie)
+    {
+        LoggerLogic.Instance.Log($"Movie selected | ID: {movie.Id} | Title: {movie.Title}");
+        _selectedMovie = movie;
+    }
+    public static void SetSelectedSession(MovieSessionModel session)
+    {
+        LoggerLogic.Instance.Log($"Session selected | ID: {session.Id} | MovieHallID: {session.MovieHallId} | Date: {session.Date}");
+         _selectedSession = session;
+    }
+    public static void SetSelectedSeat(SeatModel seat)
+    {
+        LoggerLogic.Instance.Log($"Movie Seat | ID: {seat.Id} | Type: {seat.SeatTypeId}");
+         _selectedSeat = seat;
+    }
 
     public static MovieModel GetSelectedMovie() => _selectedMovie;
     public static MovieSessionModel GetSelectedSession() => _selectedSession;
@@ -36,8 +48,9 @@ static class ReservationLogic
 
     public static void ClearSelection()
     {
-        SetSelectedMovie(null);
-        SetSelectedSession(null);
-        SetSelectedSeat(null);
+        _selectedMovie = null;
+        _selectedSession = null;
+        _selectedSeat = null;
+        LoggerLogic.Instance.Log($"Reservation canceld | Summery:\n{GetConfirmationSummary()}");
     }
 }
