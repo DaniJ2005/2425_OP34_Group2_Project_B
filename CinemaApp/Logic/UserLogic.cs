@@ -26,8 +26,11 @@ public class UserLogic
         if (user != null && user.Password == password)
         {
             CurrentUser = user;
+            LoggerLogic.Instance.Log($"User logged in | ID: {CurrentUser.Id} | Email: {CurrentUser.Email} | Role: {CurrentUser.RoleId}");
+
             return user;
         }
+        LoggerLogic.Instance.Log($"User login failed | Email: {email}");
         return null;
     }
     
@@ -42,20 +45,30 @@ public class UserLogic
                 UserName = userName,
             };
             UserAccess.Write(user);
+            LoggerLogic.Instance.Log($"User registerd | ID: {email} | UserName: {userName}");
 
             return user;
         }
 
         Console.WriteLine("Could not register user because:");
 
+        string message = "";
+
         if (!IsValidEmail(email))
-            Console.WriteLine("- The email address is invalid.");
+            message += "- The email address is invalid.\n";
 
         if (!IsValidPassword(password))
-            Console.WriteLine("- The password must be at least 8 characters long.");
+            message += "- The password must be at least 8 characters long.\n";
 
         if (string.IsNullOrWhiteSpace(userName))
-            Console.WriteLine("- The full name cannot be empty.");
+            message += "- The full name cannot be empty.\n";
+
+        if (string.IsNullOrWhiteSpace(message))
+            message = "- Unknown error.";
+
+        LoggerLogic.Instance.Log("Registration failure | reasons:\n" + message.TrimEnd());
+        Console.WriteLine(message);
+
 
         return null;
     }

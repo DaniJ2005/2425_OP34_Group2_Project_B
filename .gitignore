@@ -398,5 +398,9 @@ FodyWeavers.xsd
 *.sln.iml
 
 # Sqlite database
-CinemaApp/DataSources/project.db
-!CinemaApp/DataSources/.gitkeep
+CinemaApp/DataSources/DB/project.db
+!CinemaApp/DataSources/DB.gitkeep
+
+# Log files
+CinemaApp/DataSources/Logs/*.txt
+!CinemaApp/DataSources/Logs.gitkeep

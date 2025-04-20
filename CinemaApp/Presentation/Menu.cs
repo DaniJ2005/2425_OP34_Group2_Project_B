@@ -54,6 +54,12 @@ static class Menu
 
         } while (key != ConsoleKey.Enter);
 
+        string[] menuOptions = { "login", "register", "continue without account", "exit" };
+        string selectedLabel = (selectedIndex >= 0 && selectedIndex < menuOptions.Length) 
+            ? menuOptions[selectedIndex] 
+            : "unknown option";
+        LoggerLogic.Instance.Log($"User selected | Action: {selectedLabel}");
+
         Console.Clear();
         switch (selectedIndex)
         {

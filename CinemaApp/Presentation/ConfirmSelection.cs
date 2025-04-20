@@ -1,5 +1,3 @@
-using System.Threading.Tasks.Dataflow;
-
 static class ConfirmSelection
 {
     private static readonly string[] menuItems = {
@@ -12,6 +10,7 @@ static class ConfirmSelection
     {
         int selectedIndex = 0;
         ConsoleKey key;
+        LoggerLogic.Instance.Log($"Confirm reservation | Summery:\n{ReservationLogic.GetConfirmationSummary()}");
 
         do
         {
@@ -40,7 +39,7 @@ static class ConfirmSelection
             if (key == ConsoleKey.Escape)
             {
                 ReservationLogic.ClearSelection();
-                Menu.Start();
+                return;
             }
             else if (key == ConsoleKey.UpArrow && selectedIndex > 0)
                 selectedIndex--;
@@ -48,6 +47,12 @@ static class ConfirmSelection
                 selectedIndex++;
         }
         while (key != ConsoleKey.Enter);
+
+        string[] menuOptions = { "Add food", "Return to previous page", "Confirm reservation", "cancel" };
+        string selectedLabel = (selectedIndex >= 0 && selectedIndex < menuOptions.Length) 
+            ? menuOptions[selectedIndex] 
+            : "unknown option";
+        LoggerLogic.Instance.Log($"User selected | Action: {selectedLabel}");
 
         Console.Clear();
 
@@ -83,6 +88,8 @@ static class ConfirmSelection
 
                 Console.WriteLine($"\nReservation confirmed! Confirmation sent to {email}.");
                 // ReservationLogic.Confirm(email);
+
+                LoggerLogic.Instance.Log($"User confirmed email | Address: {email}");
                 break;
         }
 

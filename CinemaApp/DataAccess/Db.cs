@@ -9,7 +9,7 @@ public static class Db
     private static string GetDatabasePath()
     {
         string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
-        string dbPath = Path.Combine(baseDirectory, @"..\..\..\DataSources\project.db");
+        string dbPath = Path.Combine(baseDirectory, @"..\..\..\DataSources\DB\project.db");
 
         return Path.GetFullPath(dbPath);
     }

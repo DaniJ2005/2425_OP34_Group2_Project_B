@@ -11,16 +11,14 @@ static class UserLogin
         Console.WriteLine("Please enter your password");
         string password = Console.ReadLine();
         UserModel user = userLogic.CheckLogin(email, password);
-        if (user != null)
+
+        if (UserLogic.CurrentUser != null)
         {
             Console.WriteLine("Welcome back " + user.UserName);
             Console.WriteLine("Your email number is " + user.Email);
 
             //if (role == "admin")
             ShowAdminPrompt();
-
-            // start resereverings proces
-            //MovieSessionSelection.Start();
         }
         else
         {
