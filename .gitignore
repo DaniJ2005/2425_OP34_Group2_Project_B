@@ -399,7 +399,8 @@ FodyWeavers.xsd
 
 # Sqlite database
 CinemaApp/DataSources/DB/project.db
-!CinemaApp/DataSources/.gitkeep
+!CinemaApp/DataSources/DB.gitkeep
 
 # Log files
 CinemaApp/DataSources/Logs/*.txt
+!CinemaApp/DataSources/Logs.gitkeep
