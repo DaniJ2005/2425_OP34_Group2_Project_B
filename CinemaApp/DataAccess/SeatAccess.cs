@@ -2,48 +2,21 @@ using Dapper;
 
 public static class SeatAccess
 {
-    public static List<SeatModel> GetSeatsByHallId(int hallId)
+    public static List<SeatModel> SeatsForMovie(MovieModel selectedMovie)
     {
-        using (var connection = Db.CreateConnection())
+        using (var conn = Db.CreateConnection())
         {
             string sql = @"
-                SELECT * FROM Seat 
-                WHERE MovieHallId = @HallId
-                ORDER BY Row, Number";
-            
-            return connection.Query<SeatModel>(sql, new { HallId = hallId }).ToList();
+               SELECT s.*                            -- Get all columns from seat table
+                FROM seat s
+               INNER JOIN movie_hall mh ON s.movie_hall_id = mh.id      -- Join seat to movie hall
+               INNER JOIN movie_session ms ON ms.movie_hall_id = mh.id  -- Join movie hall to movie session
+               WHERE ms.movie_id = @MovieId;         -- Only include rows where the movie is the selected one";
+
+           return conn.Query<SeatModel>(sql, new { MovieId = selectedMovie.Id }).ToList();
         }
     }
 
-    public static List<SeatModel> GetReservedSeatsBySessionId(int sessionId)
-    {
-        using (var connection = Db.CreateConnection())
-        {
-            string sql = @"
-                SELECT s.* FROM Seat s
-                JOIN Reservation r ON s.Id = r.SeatId
-                WHERE r.SessionId = @SessionId";
-                
-            return connection.Query<SeatModel>(sql, new { SessionId = sessionId }).ToList();
-        }
-    }
-    
-    public static SeatModel GetSeatById(int id)
-    {
-        using (var connection = Db.CreateConnection())
-        {
-            string sql = "SELECT * FROM Seat WHERE Id = @Id";
-            return connection.QueryFirstOrDefault<SeatModel>(sql, new { Id = id });
-        }
-    }
-    
-    public static SeatModel GetSeatByPosition(int hallId, char row, int number)
-    {
-        using (var connection = Db.CreateConnection())
-        {
-            string sql = "SELECT * FROM Seat WHERE MovieHallId = @HallId AND Row = @Row AND Number = @Number";
-            return connection.QueryFirstOrDefault<SeatModel>(sql, 
-                new { HallId = hallId, Row = row, Number = number });
-        }
-    }
+    //query schrijven die juiste data ophaalt   method GetSeatsByMovieHallID
+    // reservationlogic.getselectedmovie
 }

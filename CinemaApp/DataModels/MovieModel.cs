@@ -7,4 +7,5 @@ public class MovieModel
     public string Duration { get; set; }
     public string Language { get; set; }
     public int MinAge { get; set; }
+    public int MovieHallId { get; internal set; }
 }

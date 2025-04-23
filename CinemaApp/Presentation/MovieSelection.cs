@@ -52,6 +52,7 @@ public class MovieSelection
             {
                 ReservationLogic.ClearSelection();
                 Menu.Start();
+                return;  // Added return to exit immediately
             }
             else if (key == ConsoleKey.UpArrow && selectedIndex > start)
                 selectedIndex--;
@@ -71,6 +72,7 @@ public class MovieSelection
         } while (key != ConsoleKey.Enter);
 
         ReservationLogic.SetSelectedMovie(movies[selectedIndex]);
+        SeatSelection.Start();  // Directly go to seat selection after movie selection
     }
 
     private static string Trim(string input, int maxLength)
