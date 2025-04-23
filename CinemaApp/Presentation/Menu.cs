@@ -70,6 +70,7 @@ static class Menu
                 UserRegister.Start();
                 break;
             case 2: //Continue without account
+                ReservationLogic.ClearSelection();
                 MovieSelection.Start();
                 MovieSession.Start();
                 // ConfirmSelection.Start();
@@ -78,7 +79,12 @@ static class Menu
                 MovieModel movie = ReservationLogic.GetSelectedMovie();
                 MovieSessionModel movieSession = ReservationLogic.GetSelectedSession();
                 Console.Clear();
+                if (movieSession == null)
+                {
+                    break;
+                }
                 Console.WriteLine($"Movie: {movie.Title}, Date: {movieSession.Date}, Time: {movieSession.StartTime}");
+                Console.ReadLine();  
 
                 break;
             case 3:
@@ -89,8 +95,6 @@ static class Menu
         // If not exiting, return to menu
         if (selectedIndex != 3)
         {
-            Console.WriteLine("\nPress any key to return to menu...");
-            Console.ReadKey(true);
             Start();
         }
     }

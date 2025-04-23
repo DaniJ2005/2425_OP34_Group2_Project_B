@@ -1,8 +1,8 @@
 public static class MovieSession
 {
     private static MovieModel movie = ReservationLogic.GetSelectedMovie();
-    private static List<MovieSessionModel> movieSessions = MovieSessionAccess.GetAllByMovieId(movie.Id);
-    private static List<string> uniqueDates = movieSessions.Select(p => p.Date).Distinct().ToList();
+    private static List<MovieSessionModel> movieSessions = MovieSessionLogic.GetSessionsForSelectedMovie();
+    private static List<string> uniqueDates = MovieSessionLogic.GetUniqueDatesForSelectedMovie();
 
 
     public static void Start()
@@ -12,6 +12,17 @@ public static class MovieSession
 
     private static void MovieSessionScreen()
     {
+
+        if (movieSessions.Count == 0)
+        {
+            Console.Clear();
+            DisplayMovieInfo();
+            Console.WriteLine("No movie sessions available.");
+            Console.WriteLine("Press any key to return...");
+            Console.ReadKey();
+            return;
+        }
+        
         ConsoleKey key;
         int selectedDateIndex = 0;
         int selectedTimeIndex = 0;
