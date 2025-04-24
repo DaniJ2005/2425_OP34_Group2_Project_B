@@ -1,18 +1,21 @@
-static class Menu
+class Home : IScreen
 {
 
     //This shows the menu. You can call back to this method to show the menu again
     //after another presentation method is completed.
     //You could edit this to show different menus depending on the user's role
+    public string ScreenName { get; set; }
 
-    static string[] options = {
+    public Home() => ScreenName = "Home";
+
+    private string[] options = {
         "Login",
         "Register",
         "Continue without account",
         "Exit"
     };
 
-    static public void Start()
+    public void Start()
     {
         int selectedIndex = 0;
         ConsoleKey key;
@@ -43,6 +46,12 @@ static class Menu
             ConsoleKeyInfo keyInfo = Console.ReadKey(true);
             key = keyInfo.Key;
 
+            if (key == ConsoleKey.Escape)
+            {
+                ReservationLogic.ClearSelection();
+                MenuLogic.NavigateToPrevious();
+            }
+
             if (key == ConsoleKey.UpArrow && selectedIndex > 0)
             {
                 selectedIndex--;
@@ -64,18 +73,17 @@ static class Menu
         switch (selectedIndex)
         {
             case 0: //Login
-                UserLogin.Start();
+                // UserLogin.Start();
                 break;
             case 1: //Register
-                UserRegister.Start();
+                // UserRegister.Start();
                 break;
             case 2: //Continue without account
-                MovieSelection.Start();
-                ConfirmSelection.Start();
+                MenuLogic.NavigateTo(new MovieSelection());
                 break;
             case 3:
-                Console.WriteLine("Exiting...");
-                break; //Exit
+                MenuLogic.ShowExitConfirmation();
+                break; 
         }
 
         // If not exiting, return to menu

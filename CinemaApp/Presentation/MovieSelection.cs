@@ -1,12 +1,15 @@
-public class MovieSelection
+public class MovieSelection : IScreen
 {
-    public static void Start()
+    public string ScreenName { get; set; }
+
+    public MovieSelection() => ScreenName = "Movies";
+    public void Start()
     {
         List<MovieModel> movies = MovieAccess.GetAllMovies();
         SelectMovie(movies);
     }
 
-    public static void SelectMovie(List<MovieModel> movies)
+    public void SelectMovie(List<MovieModel> movies)
     {
         int selectedIndex = 0;
         int currentPage = 0;
@@ -51,7 +54,7 @@ public class MovieSelection
             if (key == ConsoleKey.Escape)
             {
                 ReservationLogic.ClearSelection();
-                Menu.Start();
+                MenuLogic.NavigateToPrevious();
             }
             else if (key == ConsoleKey.UpArrow && selectedIndex > start)
                 selectedIndex--;
@@ -73,7 +76,7 @@ public class MovieSelection
         ReservationLogic.SetSelectedMovie(movies[selectedIndex]);
     }
 
-    private static string Trim(string input, int maxLength)
+    private string Trim(string input, int maxLength)
     {
         if (input.Length <= maxLength)
             return input;
