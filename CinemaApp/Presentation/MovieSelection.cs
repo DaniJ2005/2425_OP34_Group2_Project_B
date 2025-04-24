@@ -5,6 +5,8 @@ public class MovieSelection : IScreen
     public MovieSelection() => ScreenName = "Movies";
     public void Start()
     {
+        ReservationLogic.ClearMovie();
+
         List<MovieModel> movies = MovieAccess.GetAllMovies();
         SelectMovie(movies);
     }
@@ -53,7 +55,6 @@ public class MovieSelection : IScreen
 
             if (key == ConsoleKey.Escape)
             {
-                ReservationLogic.ClearSelection();
                 MenuLogic.NavigateToPrevious();
             }
             else if (key == ConsoleKey.UpArrow && selectedIndex > start)
@@ -74,6 +75,7 @@ public class MovieSelection : IScreen
         } while (key != ConsoleKey.Enter);
 
         ReservationLogic.SetSelectedMovie(movies[selectedIndex]);
+        MenuLogic.NavigateTo(new MovieSession());
     }
 
     private string Trim(string input, int maxLength)
