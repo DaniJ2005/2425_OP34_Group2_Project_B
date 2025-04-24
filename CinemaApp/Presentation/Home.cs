@@ -89,8 +89,6 @@ class Home : IScreen
         // If not exiting, return to menu
         if (selectedIndex != 3)
         {
-            Console.WriteLine("\nPress any key to return to menu...");
-            Console.ReadKey(true);
             Start();
         }
     }
