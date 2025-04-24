@@ -1,12 +1,13 @@
-static class ConfirmSelection
+class ConfirmSelection : IScreen
 {
-    private static readonly string[] menuItems = {
+    private readonly string[] menuItems = {
         "Add food",
-        "Return to previous page",
         "Confirm reservation"
     };
+    public string ScreenName { get; set; }
+    public ConfirmSelection() => ScreenName = "Confirmation";
 
-    public static void Start()
+    public void Start()
     {
         int selectedIndex = 0;
         ConsoleKey key;
@@ -38,8 +39,7 @@ static class ConfirmSelection
 
             if (key == ConsoleKey.Escape)
             {
-                ReservationLogic.ClearSelection();
-                return;
+                MenuLogic.NavigateToPrevious();
             }
             else if (key == ConsoleKey.UpArrow && selectedIndex > 0)
                 selectedIndex--;
@@ -48,7 +48,7 @@ static class ConfirmSelection
         }
         while (key != ConsoleKey.Enter);
 
-        string[] menuOptions = { "Add food", "Return to previous page", "Confirm reservation", "cancel" };
+        string[] menuOptions = { "Add food", "Confirm reservation" };
         string selectedLabel = (selectedIndex >= 0 && selectedIndex < menuOptions.Length) 
             ? menuOptions[selectedIndex] 
             : "unknown option";
@@ -66,12 +66,7 @@ static class ConfirmSelection
                 Start();
                 return;
 
-            case 1: // Return
-                SeatSelection.Start();
-                Start();
-                break;
-
-            case 2: // Confirm reservation
+            case 1: // Confirm reservation
                 string email;
 
                 do
@@ -86,8 +81,11 @@ static class ConfirmSelection
 
                 } while (!UserLogic.IsValidEmail(email));
 
-                Console.WriteLine($"\nReservation confirmed! Confirmation sent to {email}.");
+                Console.WriteLine($"\nReservation confirmed! Confirmation sent to {email}.\n");
+                Console.WriteLine("Press any key to continue...");
+                Console.ReadKey();
                 // ReservationLogic.Confirm(email);
+                MenuLogic.NavigateTo(new Home(), true);
 
                 LoggerLogic.Instance.Log($"User confirmed email | Address: {email}");
                 break;

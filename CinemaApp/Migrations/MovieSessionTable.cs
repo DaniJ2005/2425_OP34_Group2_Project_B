@@ -38,12 +38,22 @@ public static class MovieSessionTable
 
                 var MovieSessions = new[]
                 {
+                    // Movie 1
                     new { MovieHallId = 1, MovieId = 1, StartTime = "16:20", Date = "14/04/25" },
                     new { MovieHallId = 1, MovieId = 1, StartTime = "19:40", Date = "14/04/25" },
                     new { MovieHallId = 1, MovieId = 1, StartTime = "22:40", Date = "14/04/25" },
                     new { MovieHallId = 1, MovieId = 1, StartTime = "22:30", Date = "16/04/25" },
                     new { MovieHallId = 1, MovieId = 1, StartTime = "22:30", Date = "17/04/25" },
                     new { MovieHallId = 1, MovieId = 1, StartTime = "22:30", Date = "19/04/25" },
+
+                    // Movie 2
+                    new { MovieHallId = 1, MovieId = 2, StartTime = "14:30", Date = "13/04/25" },
+                    new { MovieHallId = 1, MovieId = 2, StartTime = "17:30", Date = "13/04/25" },
+                    new { MovieHallId = 1, MovieId = 2, StartTime = "21:30", Date = "13/04/25" },
+                    new { MovieHallId = 1, MovieId = 2, StartTime = "14:30", Date = "14/04/25" },
+                    new { MovieHallId = 1, MovieId = 2, StartTime = "17:30", Date = "14/04/25" },
+                    new { MovieHallId = 1, MovieId = 2, StartTime = "21:30", Date = "14/04/25" },
+
                 };
 
                 connection.Execute(sql, MovieSessions);

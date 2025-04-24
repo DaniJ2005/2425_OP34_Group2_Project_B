@@ -12,12 +12,12 @@ static class ReservationLogic
     public static void SetSelectedSession(MovieSessionModel session)
     {
         LoggerLogic.Instance.Log($"Session selected | ID: {session.Id} | MovieHallID: {session.MovieHallId} | Date: {session.Date}");
-         _selectedSession = session;
+        _selectedSession = session;
     }
     public static void SetSelectedSeat(SeatModel seat)
     {
         LoggerLogic.Instance.Log($"Movie Seat | ID: {seat.Id} | Type: {seat.SeatTypeId}");
-         _selectedSeat = seat;
+        _selectedSeat = seat;
     }
 
     public static MovieModel GetSelectedMovie() => _selectedMovie;
@@ -37,10 +37,10 @@ static class ReservationLogic
         }
 
         summary +=
-            $"  - Movie: {GetSelectedMovie().Title}   ({GetSelectedMovie().Duration})\n" ;//+
-            // $"  - Date: {GetSelectedSession().Date}\n" +
-            // $"  - Time: {GetSelectedSession().StartTime}\n" +
-            // $"  - Hall: {GetSelectedSession().MovieHallId}\n" +
+            $"  - Movie: {GetSelectedMovie().Title}   ({GetSelectedMovie().Duration})\n" +
+            $"  - Date: {GetSelectedSession().Date}\n" +
+            $"  - Time: {GetSelectedSession().StartTime}\n" +
+            $"  - Hall: {GetSelectedSession().MovieHallId}\n"; //+
             // $"  - Seat: Row {GetSelectedSeat().Row}, Seat {GetSelectedSeat().Number} ({GetSelectedSeat().SeatTypeId})\n";
 
         return summary;
@@ -52,5 +52,23 @@ static class ReservationLogic
         _selectedSession = null;
         _selectedSeat = null;
         LoggerLogic.Instance.Log($"Reservation canceld | Summery:\n{GetConfirmationSummary()}");
+    }
+
+    public static void ClearMovie()
+    {
+        _selectedMovie = null;
+        LoggerLogic.Instance.Log($"Cleared Movie");
+    }
+
+    public static void ClearSession()
+    {
+        _selectedSession = null;
+        LoggerLogic.Instance.Log($"Cleared Session");
+    }
+
+    public static void ClearSeat()
+    {
+        _selectedSeat = null;
+        LoggerLogic.Instance.Log($"Cleared Seat");
     }
 }

@@ -1,26 +1,33 @@
-public static class MovieSession
+public class MovieSession : IScreen
 {
-    private static MovieModel movie = ReservationLogic.GetSelectedMovie();
-    private static List<MovieSessionModel> movieSessions = MovieSessionLogic.GetSessionsForSelectedMovie();
-    private static List<string> uniqueDates = MovieSessionLogic.GetUniqueDatesForSelectedMovie();
+    public MovieModel _movie { get; private set; }
+    public List<MovieSessionModel> _movieSessions  { get; private set; }
+    public List<string> _uniqueDates  { get; private set; }
 
+    public string ScreenName { get; set; }
+    public MovieSession() => ScreenName = "MovieSession";
 
-    public static void Start()
+    public void Start()
     {
+        ReservationLogic.ClearSession();
+
+        _movie = ReservationLogic.GetSelectedMovie();
+        _movieSessions = MovieSessionLogic.GetSessionsForSelectedMovie();
+        _uniqueDates = MovieSessionLogic.GetUniqueDatesForSelectedMovie();
+
         MovieSessionScreen();
     }
 
-    private static void MovieSessionScreen()
+    private void MovieSessionScreen()
     {
 
-        if (movieSessions.Count == 0)
+        if (_movieSessions.Count == 0)
         {
-            Console.Clear();
             DisplayMovieInfo();
-            Console.WriteLine("No movie sessions available.");
+            Console.WriteLine("No movie sessions available.\n");
             Console.WriteLine("Press any key to return...");
             Console.ReadKey();
-            return;
+            MenuLogic.NavigateToPrevious();
         }
         
         ConsoleKey key;
@@ -33,18 +40,24 @@ public static class MovieSession
             Console.Clear();
 
             DisplayMovieInfo();
-            DisplayDateOptions(uniqueDates, selectedDateIndex, isSelectingDate);
+            DisplayDateOptions(_uniqueDates, selectedDateIndex, isSelectingDate);
 
-            var selectedDate = uniqueDates[selectedDateIndex];
+            var selectedDate = _uniqueDates[selectedDateIndex];
             var availableTimes = GetSessionsByDate(selectedDate);
 
             DisplayAvailableTimes(availableTimes, isSelectingDate ? -1 : selectedTimeIndex);
 
             key = Console.ReadKey(true).Key;
 
+            if (key == ConsoleKey.Escape)
+            {
+                ReservationLogic.ClearSelection();
+                MenuLogic.NavigateToPrevious();
+            }
+
             if (isSelectingDate)
             {
-                if (key == ConsoleKey.RightArrow && selectedDateIndex < uniqueDates.Count - 1)
+                if (key == ConsoleKey.RightArrow && selectedDateIndex < _uniqueDates.Count - 1)
                     selectedDateIndex++;
                 else if (key == ConsoleKey.LeftArrow && selectedDateIndex > 0)
                     selectedDateIndex--;
@@ -66,21 +79,24 @@ public static class MovieSession
 
         } while (key != ConsoleKey.Enter);
 
+
         // Store movie session
-        MovieSessionModel SelectedSession = GetSessionsByDate(uniqueDates[selectedDateIndex])[selectedTimeIndex];
+        MovieSessionModel SelectedSession = GetSessionsByDate(_uniqueDates[selectedDateIndex])[selectedTimeIndex];
         ReservationLogic.SetSelectedSession(SelectedSession);
+        // Navigate to confirm screen
+        MenuLogic.NavigateTo(new ConfirmSelection());
     }
 
-    private static void DisplayMovieInfo()
+    private void DisplayMovieInfo()
     {
-        Console.WriteLine(movie.Title);
-        Console.WriteLine(movie.Description);
+        Console.WriteLine(_movie.Title);
+        Console.WriteLine(_movie.Description);
         Console.WriteLine("");
         Console.WriteLine("---------------------------------------------------------------");
         Console.WriteLine("");
     }
 
-    private static void DisplayDateOptions(List<string> dates, int selectedIndex, bool isSelectingDate)
+    private void DisplayDateOptions(List<string> dates, int selectedIndex, bool isSelectingDate)
     {
         for (int i = 0; i < dates.Count; i++)
         {
@@ -100,7 +116,7 @@ public static class MovieSession
     }
 
 
-    public static void DisplayAvailableTimes(List<MovieSessionModel> sessions, int highlightedIndex)
+    public void DisplayAvailableTimes(List<MovieSessionModel> sessions, int highlightedIndex)
     {
         Console.WriteLine();
 
@@ -119,9 +135,9 @@ public static class MovieSession
         }
     }
 
-    private static List<MovieSessionModel> GetSessionsByDate(string date)
+    private List<MovieSessionModel> GetSessionsByDate(string date)
     {
-        return movieSessions
+        return _movieSessions
             .Where(session => session.Date == date)
             .ToList();
     }
