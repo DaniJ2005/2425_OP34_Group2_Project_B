@@ -1,8 +1,8 @@
 public class MovieSession : IScreen
 {
     public MovieModel _movie { get; private set; }
-    public List<MovieSessionModel> _movieSessions  { get; private set; }
-    public List<string> _uniqueDates  { get; private set; }
+    public List<MovieSessionModel> _movieSessions { get; private set; }
+    public List<string> _uniqueDates { get; private set; }
 
     public string ScreenName { get; set; }
     public MovieSession() => ScreenName = "MovieSession";
@@ -90,10 +90,14 @@ public class MovieSession : IScreen
     private void DisplayMovieInfo()
     {
         Console.WriteLine(_movie.Title);
+        Console.WriteLine("");
+        Console.WriteLine("Description:");
         Console.WriteLine(_movie.Description);
         Console.WriteLine("");
-        Console.WriteLine("---------------------------------------------------------------");
+        Console.WriteLine($"Genre: {_movie.Genre} | Language: {_movie.Language}");
+        Console.WriteLine($"Duration: {_movie.Duration} | Minimum age: {_movie.MinAge}");
         Console.WriteLine("");
+        Console.WriteLine("---------------------------------------------------------------\n");
     }
 
     private void DisplayDateOptions(List<string> dates, int selectedIndex, bool isSelectingDate)

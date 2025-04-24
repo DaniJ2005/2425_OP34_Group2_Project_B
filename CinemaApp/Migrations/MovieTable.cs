@@ -36,9 +36,11 @@ public static class MovieTable
                     VALUES (@Title, @Description, @Genre, @Duration, @Language, @MinAge)
                 ";
 
+                string minecraftMovieDesc = @"Welkom in de wereld van Minecraft, waar creativiteit niet alleen van pas komt, maar van essentieel belang is om te overleven. Vier buitenbeentjes met ieder hun eigen problemen - Garrett “de Vuilnisman” Garrison (Momoa), Henry (Hansen), Natalie (Myers) en Dawn (Brooks) - belanden plotseling via een mysterieus portaal in de Overworld: een bizar kubistisch wonderland...";
+
                 var Movies = new[]
                 {
-                    new { Title = "A Minecraft Movie", Description = "Desc", Genre = "Actie/Avontuur/Familiefilm", Duration = "1h 41m", Language = "EN", MinAge = 9},
+                    new { Title = "A Minecraft Movie", Description = minecraftMovieDesc, Genre = "Actie/Avontuur/Familiefilm", Duration = "1h 41m", Language = "EN", MinAge = 9},
                     new { Title = "Dune: Part Two", Description = "Paul Atreides unites with the Fremen.", Genre = "Sci-Fi/Actie", Duration = "2h 46m", Language = "EN", MinAge = 12},
                     new { Title = "Wonka", Description = "Origin story of Willy Wonka.", Genre = "Familie/Fantasie", Duration = "1h 57m", Language = "EN", MinAge = 6},
                     new { Title = "The Marvels", Description = "Marvel superheroes team up.", Genre = "Actie/Fantasie", Duration = "1h 45m", Language = "EN", MinAge = 12},
