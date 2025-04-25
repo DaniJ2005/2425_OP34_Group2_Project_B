@@ -7,11 +7,11 @@ public class MovieSelection : IScreen
     {
         ReservationLogic.ClearMovie();
 
-        List<MovieModel> movies = MovieAccess.GetAllMovies();
+        List<Movie> movies = MovieAccess.GetAllMovies();
         SelectMovie(movies);
     }
 
-    public void SelectMovie(List<MovieModel> movies)
+    public void SelectMovie(List<Movie> movies)
     {
         int selectedIndex = 0;
         int currentPage = 0;
@@ -75,7 +75,7 @@ public class MovieSelection : IScreen
         } while (key != ConsoleKey.Enter);
 
         ReservationLogic.SetSelectedMovie(movies[selectedIndex]);
-        MenuLogic.NavigateTo(new MovieSession());
+        MenuLogic.NavigateTo(new MovieSessionScreen());
     }
 
     private string Trim(string input, int maxLength)

@@ -2,7 +2,7 @@ using Dapper;
 
 public static class MovieSessionAccess
 {
-    public static List<MovieSessionModel> GetAllByMovieId(int movieId)
+    public static List<MovieSession> GetAllByMovieId(int movieId)
     {
         using (var connection = Db.CreateConnection())
         {
@@ -13,11 +13,11 @@ public static class MovieSessionAccess
                             start_time AS StartTime,
                             date AS Date
                         FROM movie_session WHERE movie_id = @MovieId";
-            return connection.Query<MovieSessionModel>(sql, new { MovieId = movieId }).ToList();
+            return connection.Query<MovieSession>(sql, new { MovieId = movieId }).ToList();
         }
     }
 
-    public static List<MovieSessionModel> GetAll()
+    public static List<MovieSession> GetAll()
     {
         using (var connection = Db.CreateConnection())
         {
@@ -30,7 +30,7 @@ public static class MovieSessionAccess
                     date AS Date
                 FROM movie_session";
 
-            return connection.Query<MovieSessionModel>(sql).ToList();
+            return connection.Query<MovieSession>(sql).ToList();
         }
     }
 }

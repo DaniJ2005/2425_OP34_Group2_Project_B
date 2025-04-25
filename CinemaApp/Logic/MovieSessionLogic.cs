@@ -1,6 +1,6 @@
 static class MovieSessionLogic
 {
-    public static List<MovieSessionModel> GetSessionsForSelectedMovie()
+    public static List<MovieSession> GetSessionsForSelectedMovie()
     {
         var movie = ReservationLogic.GetSelectedMovie();
         return MovieSessionAccess.GetAllByMovieId(movie.Id);
@@ -14,7 +14,7 @@ static class MovieSessionLogic
             .ToList();
     }
 
-    public static List<MovieSessionModel> GetSessionsByDate(string date)
+    public static List<MovieSession> GetSessionsByDate(string date)
     {
         return GetSessionsForSelectedMovie()
             .Where(s => s.Date == date)
