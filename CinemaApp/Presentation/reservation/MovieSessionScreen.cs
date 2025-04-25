@@ -84,7 +84,7 @@ public class MovieSessionScreen : IScreen
         MovieSession SelectedSession = GetSessionsByDate(_uniqueDates[selectedDateIndex])[selectedTimeIndex];
         ReservationLogic.SetSelectedSession(SelectedSession);
         // Navigate to confirm screen
-        MenuLogic.NavigateTo(new ConfirmSelection());
+        MenuLogic.NavigateTo(new ConfirmSelectionScreen());
     }
 
     private void DisplayMovieInfo()

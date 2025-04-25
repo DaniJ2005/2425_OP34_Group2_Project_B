@@ -1,8 +1,8 @@
-public class MovieSelection : IScreen
+public class MovieScreen : IScreen
 {
     public string ScreenName { get; set; }
 
-    public MovieSelection() => ScreenName = "Movies";
+    public MovieScreen() => ScreenName = "Movies";
     public void Start()
     {
         ReservationLogic.ClearMovie();

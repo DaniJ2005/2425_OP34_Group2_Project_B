@@ -1,11 +1,11 @@
-class ConfirmSelection : IScreen
+class ConfirmSelectionScreen : IScreen
 {
     private readonly string[] menuItems = {
         "Add food",
         "Confirm reservation"
     };
     public string ScreenName { get; set; }
-    public ConfirmSelection() => ScreenName = "Confirmation";
+    public ConfirmSelectionScreen() => ScreenName = "Confirmation";
 
     public void Start()
     {
@@ -85,7 +85,7 @@ class ConfirmSelection : IScreen
                 Console.WriteLine("Press any key to continue...");
                 Console.ReadKey();
                 // ReservationLogic.Confirm(email);
-                MenuLogic.NavigateTo(new Home(), true);
+                MenuLogic.NavigateTo(new HomeScreen(), true);
 
                 LoggerLogic.Instance.Log($"User confirmed email | Address: {email}");
                 break;

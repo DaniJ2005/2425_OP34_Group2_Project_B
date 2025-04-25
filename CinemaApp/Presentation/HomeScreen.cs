@@ -1,4 +1,4 @@
-class Home : IScreen
+class HomeScreen : IScreen
 {
 
     //This shows the menu. You can call back to this method to show the menu again
@@ -6,7 +6,7 @@ class Home : IScreen
     //You could edit this to show different menus depending on the user's role
     public string ScreenName { get; set; }
 
-    public Home() => ScreenName = "Home";
+    public HomeScreen() => ScreenName = "Home";
 
     private string[] options = {
         "Login",
@@ -79,7 +79,7 @@ class Home : IScreen
                 // UserRegister.Start();
                 break;
             case 2: //Continue without account
-                MenuLogic.NavigateTo(new MovieSelection());
+                MenuLogic.NavigateTo(new MovieScreen());
                 break;
             case 3:
                 MenuLogic.ShowExitConfirmation();

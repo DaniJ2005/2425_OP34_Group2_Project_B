@@ -1,4 +1,4 @@
-static class UserRegister
+static class RegisterScreen
 {
     static private UserLogic accountsLogic = new UserLogic();
 

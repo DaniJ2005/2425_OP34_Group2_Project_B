@@ -1,4 +1,4 @@
-static class UserLogin
+static class LoginScreen
 {
     static private UserLogic userLogic = new UserLogic();
 
