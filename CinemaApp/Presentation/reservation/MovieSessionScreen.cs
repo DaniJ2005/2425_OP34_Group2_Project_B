@@ -1,11 +1,11 @@
-public class MovieSession : IScreen
+public class MovieSessionScreen : IScreen
 {
-    public MovieModel _movie { get; private set; }
-    public List<MovieSessionModel> _movieSessions { get; private set; }
+    public Movie _movie { get; private set; }
+    public List<MovieSession> _movieSessions { get; private set; }
     public List<string> _uniqueDates { get; private set; }
 
     public string ScreenName { get; set; }
-    public MovieSession() => ScreenName = "MovieSession";
+    public MovieSessionScreen() => ScreenName = "MovieSession";
 
     public void Start()
     {
@@ -15,10 +15,10 @@ public class MovieSession : IScreen
         _movieSessions = MovieSessionLogic.GetSessionsForSelectedMovie();
         _uniqueDates = MovieSessionLogic.GetUniqueDatesForSelectedMovie();
 
-        MovieSessionScreen();
+        Screen();
     }
 
-    private void MovieSessionScreen()
+    private void Screen()
     {
 
         if (_movieSessions.Count == 0)
@@ -81,10 +81,10 @@ public class MovieSession : IScreen
 
 
         // Store movie session
-        MovieSessionModel SelectedSession = GetSessionsByDate(_uniqueDates[selectedDateIndex])[selectedTimeIndex];
+        MovieSession SelectedSession = GetSessionsByDate(_uniqueDates[selectedDateIndex])[selectedTimeIndex];
         ReservationLogic.SetSelectedSession(SelectedSession);
         // Navigate to confirm screen
-        MenuLogic.NavigateTo(new ConfirmSelection());
+        MenuLogic.NavigateTo(new ConfirmSelectionScreen());
     }
 
     private void DisplayMovieInfo()
@@ -120,7 +120,7 @@ public class MovieSession : IScreen
     }
 
 
-    public void DisplayAvailableTimes(List<MovieSessionModel> sessions, int highlightedIndex)
+    public void DisplayAvailableTimes(List<MovieSession> sessions, int highlightedIndex)
     {
         Console.WriteLine();
 
@@ -139,7 +139,7 @@ public class MovieSession : IScreen
         }
     }
 
-    private List<MovieSessionModel> GetSessionsByDate(string date)
+    private List<MovieSession> GetSessionsByDate(string date)
     {
         return _movieSessions
             .Where(session => session.Date == date)

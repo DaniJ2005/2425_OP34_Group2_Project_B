@@ -1,28 +1,28 @@
 static class ReservationLogic
 {
-    private static MovieModel _selectedMovie;
-    private static MovieSessionModel _selectedSession;
-    private static SeatModel _selectedSeat;
+    private static Movie _selectedMovie;
+    private static MovieSession _selectedSession;
+    private static Seat _selectedSeat;
 
-    public static void SetSelectedMovie(MovieModel movie)
+    public static void SetSelectedMovie(Movie movie)
     {
         LoggerLogic.Instance.Log($"Movie selected | ID: {movie.Id} | Title: {movie.Title}");
         _selectedMovie = movie;
     }
-    public static void SetSelectedSession(MovieSessionModel session)
+    public static void SetSelectedSession(MovieSession session)
     {
         LoggerLogic.Instance.Log($"Session selected | ID: {session.Id} | MovieHallID: {session.MovieHallId} | Date: {session.Date}");
         _selectedSession = session;
     }
-    public static void SetSelectedSeat(SeatModel seat)
+    public static void SetSelectedSeat(Seat seat)
     {
         LoggerLogic.Instance.Log($"Movie Seat | ID: {seat.Id} | Type: {seat.SeatTypeId}");
         _selectedSeat = seat;
     }
 
-    public static MovieModel GetSelectedMovie() => _selectedMovie;
-    public static MovieSessionModel GetSelectedSession() => _selectedSession;
-    public static SeatModel GetSelectedSeat() => _selectedSeat;
+    public static Movie GetSelectedMovie() => _selectedMovie;
+    public static MovieSession GetSelectedSession() => _selectedSession;
+    public static Seat GetSelectedSeat() => _selectedSeat;
 
     public static string GetConfirmationSummary()
     {

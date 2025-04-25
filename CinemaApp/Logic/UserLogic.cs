@@ -11,18 +11,17 @@ public class UserLogic
     //Static properties are shared across all instances of the class
     //This can be used to get the current logged in user from anywhere in the program
     //private set, so this can only be set by the class itself
-    public static UserModel? CurrentUser { get; private set; }
+    public static User? CurrentUser { get; private set; }
 
     public UserLogic()
     {
         // Could do something here
-
     }
 
-    public UserModel CheckLogin(string email, string password)
+    public User CheckLogin(string email, string password)
     {
 
-        UserModel user = UserAccess.GetByEmail(email);
+        User user = UserAccess.GetByEmail(email);
         if (user != null && user.Password == password)
         {
             CurrentUser = user;
@@ -34,11 +33,11 @@ public class UserLogic
         return null;
     }
     
-    public UserModel RegisterUser(string email, string password, string userName)
+    public User RegisterUser(string email, string password, string userName)
     {
         if (IsValidEmail(email) && IsValidPassword(password) && !string.IsNullOrWhiteSpace(userName))
         {
-            UserModel user = new UserModel
+            User user = new User
             {
                 Email = email,
                 Password = password,
@@ -83,7 +82,3 @@ public class UserLogic
         return password.Length >= 8;
     }
 }
-
-
-
-

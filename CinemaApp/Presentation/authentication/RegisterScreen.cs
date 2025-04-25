@@ -1,4 +1,4 @@
-static class UserRegister
+static class RegisterScreen
 {
     static private UserLogic accountsLogic = new UserLogic();
 
@@ -11,7 +11,7 @@ static class UserRegister
         string password = Console.ReadLine();
         Console.WriteLine("Please enter your full name");
         string userName = Console.ReadLine();
-        UserModel user = accountsLogic.RegisterUser(email, password, userName);
+        User user = accountsLogic.RegisterUser(email, password, userName);
         if (UserLogic.CurrentUser != null)
         {
             Console.WriteLine($"Welcome {user.UserName}, go ahead and login!");

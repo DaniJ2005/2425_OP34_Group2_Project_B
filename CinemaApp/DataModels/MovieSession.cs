@@ -1,4 +1,4 @@
-public class MovieSessionModel
+public class MovieSession
 {
     public int Id { get; set; }
     public int MovieHallId { get; set; }

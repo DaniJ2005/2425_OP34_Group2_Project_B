@@ -8,4 +8,4 @@ Db.InitTables();
 Db.PopulateTables();
 
 // Start application
-MenuLogic.NavigateTo(new Home());
+MenuLogic.NavigateTo(new HomeScreen());

@@ -1,4 +1,4 @@
-public class TicketModel
+public class Ticket
 {
     public int Id { get; set; }
     public int SeatId { get; set; }

@@ -1,4 +1,4 @@
-static class UserLogin
+static class LoginScreen
 {
     static private UserLogic userLogic = new UserLogic();
 
@@ -10,7 +10,7 @@ static class UserLogin
         string email = Console.ReadLine();
         Console.WriteLine("Please enter your password");
         string password = Console.ReadLine();
-        UserModel user = userLogic.CheckLogin(email, password);
+        User user = userLogic.CheckLogin(email, password);
 
         if (UserLogic.CurrentUser != null)
         {
@@ -45,7 +45,7 @@ static class UserLogin
     {
         Console.Clear();
         Console.WriteLine("\nAll users:");
-        List<UserModel> users = UserAccess.GetAllUsers();
+        List<User> users = UserAccess.GetAllUsers();
 
         foreach (var user in users)
         {

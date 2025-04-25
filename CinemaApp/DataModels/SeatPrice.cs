@@ -1,4 +1,4 @@
-public class SeatPriceModel
+public class SeatPrice
 {
     public int Id { get; set; }
     public int SeatTypeId { get; set; }

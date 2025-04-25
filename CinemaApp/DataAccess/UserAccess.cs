@@ -2,7 +2,7 @@ using Dapper;
 
 public static class UserAccess
 {
-    public static void Write(UserModel user)
+    public static void Write(User user)
     {
         using (var connection = Db.CreateConnection())
         {
@@ -11,25 +11,25 @@ public static class UserAccess
         }
     }
 
-    public static UserModel GetByEmail(string email)
+    public static User GetByEmail(string email)
     {
         using (var connection = Db.CreateConnection())
         {
             string sql = "SELECT * FROM user WHERE email = @Email";
-            return connection.QueryFirstOrDefault<UserModel>(sql, new { Email = email });
+            return connection.QueryFirstOrDefault<User>(sql, new { Email = email });
         }
     }
 
-    public static List<UserModel> GetAllUsers()
+    public static List<User> GetAllUsers()
     {
         using (var connection = Db.CreateConnection())
         {
             string sql = "SELECT * FROM User;";
-            return connection.Query<UserModel>(sql).ToList();
+            return connection.Query<User>(sql).ToList();
         }
     }
 
-    public static void Delete(UserModel account)
+    public static void Delete(User account)
     {
         using (var connection = Db.CreateConnection())
         {

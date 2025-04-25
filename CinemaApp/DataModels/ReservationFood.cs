@@ -1,4 +1,4 @@
-public class ReservationFoodModel
+public class ReservationFood
 {
     public int Id { get; set; }
     public int Reservationid { get; set; }
