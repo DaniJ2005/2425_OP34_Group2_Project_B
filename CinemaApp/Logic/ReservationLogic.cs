@@ -32,9 +32,7 @@ static class ReservationLogic
         string summary = "";
 
         if (UserLogic.CurrentUser != null && !string.IsNullOrEmpty(UserLogic.CurrentUser.UserName))
-        {
             summary += $"User: {UserLogic.CurrentUser.UserName}\n";
-        }
 
         summary +=
             $"  - Movie: {GetSelectedMovie().Title}   ({GetSelectedMovie().Duration})\n" ;//+
