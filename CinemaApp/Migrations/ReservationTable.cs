@@ -21,6 +21,31 @@ public static class ReservationTable
         }
     }
 
+    public static void PopulateTable()
+    {
+        using (var connection = Db.CreateConnection())
+        {
+            // Check if the table is empty
+            string checkSql = "SELECT COUNT(*) FROM reservation;";
+            int count = connection.ExecuteScalar<int>(checkSql);
+
+            if (count == 0) // Only insert if no records exist
+            {
+                string sql = @"
+                    INSERT INTO reservation (movie_session_id, status) 
+                    VALUES (@MovieSessionId, @Status)
+                ";
+
+                var SeatPrices = new[]
+                {
+                    new {MovieSessionId = 1, Status = "placeholder" },
+                };
+
+                connection.Execute(sql, SeatPrices);
+            }
+        }
+    }
+
     public static void DeleteTable()
     {
         using (var connection = Db.CreateConnection())

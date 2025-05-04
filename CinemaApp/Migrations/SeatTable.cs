@@ -10,8 +10,8 @@ public static class SeatTable
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     seat_type_id INTEGER,
                     movie_hall_id INTEGER,
-                    row TEXT NOT NULL,
-                    number INTEGER NOT NULL,
+                    row INTEGER NOT NULL,
+                    col INTEGER NOT NULL,
                     is_under_maintenance BOOLEAN NOT NULL DEFAULT 0,
                     FOREIGN KEY (seat_type_id) REFERENCES seat_type(id),
                     FOREIGN KEY (movie_hall_id) REFERENCES movie_hall(id)
@@ -33,20 +33,171 @@ public static class SeatTable
             if (count == 0) // Only insert if no records exist
             {
                 string sql = @"
-                    INSERT INTO seat (seat_type_id, movie_hall_id, row, number, is_under_maintenance) 
-                    VALUES (@SeatTypeId, @MovieHallId, @Row, @Number, @IsUnderMaintenance);
+                    INSERT INTO seat (seat_type_id, movie_hall_id, row, col, is_under_maintenance) 
+                    VALUES (@SeatTypeId, @MovieHallId, @Row, @Col, @IsUnderMaintenance);
                 ";
 
                 var Seats = new[]
                 {
-                    new { SeatTypeId = 1, MovieHallId = 1, Row = "A", Number = 1, IsUnderMaintenance = false },
-                    new { SeatTypeId = 1, MovieHallId = 1, Row = "A", Number = 2, IsUnderMaintenance = false },
-                    new { SeatTypeId = 1, MovieHallId = 1, Row = "A", Number = 3, IsUnderMaintenance = false },
-                    new { SeatTypeId = 1, MovieHallId = 1, Row = "A", Number = 4, IsUnderMaintenance = false },
-                    new { SeatTypeId = 1, MovieHallId = 1, Row = "B", Number = 1, IsUnderMaintenance = false },
-                    new { SeatTypeId = 1, MovieHallId = 1, Row = "B", Number = 2, IsUnderMaintenance = false },
-                    new { SeatTypeId = 1, MovieHallId = 1, Row = "B", Number = 3, IsUnderMaintenance = false },
-                    new { SeatTypeId = 1, MovieHallId = 1, Row = "B", Number = 4, IsUnderMaintenance = false },
+                    // Hall 1
+                    new { SeatTypeId = 1, MovieHallId = 1, Row = 1, Col = 2, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 1, Row = 1, Col = 3, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 1, Row = 1, Col = 4, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 1, Row = 1, Col = 5, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 1, Row = 1, Col = 6, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 1, Row = 1, Col = 7, IsUnderMaintenance = false },
+
+                    new { SeatTypeId = 1, MovieHallId = 1, Row = 2, Col = 1, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 1, Row = 2, Col = 2, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 1, Row = 2, Col = 3, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 1, Row = 2, Col = 4, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 1, Row = 2, Col = 5, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 1, Row = 2, Col = 6, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 1, Row = 2, Col = 7, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 1, Row = 2, Col = 8, IsUnderMaintenance = false },
+
+                    new { SeatTypeId = 1, MovieHallId = 1, Row = 3, Col = 1, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 1, Row = 3, Col = 2, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 1, Row = 3, Col = 3, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 1, Row = 3, Col = 4, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 1, Row = 3, Col = 5, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 1, Row = 3, Col = 6, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 1, Row = 3, Col = 7, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 1, Row = 3, Col = 8, IsUnderMaintenance = false },
+
+                    new { SeatTypeId = 1, MovieHallId = 1, Row = 4, Col = 1, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 1, Row = 4, Col = 2, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 1, Row = 4, Col = 3, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 1, Row = 4, Col = 4, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 1, Row = 4, Col = 5, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 1, Row = 4, Col = 6, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 1, Row = 4, Col = 7, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 1, Row = 4, Col = 8, IsUnderMaintenance = false },
+
+                    new { SeatTypeId = 1, MovieHallId = 1, Row = 5, Col = 1, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 1, Row = 5, Col = 2, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 1, Row = 5, Col = 3, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 1, Row = 5, Col = 4, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 1, Row = 5, Col = 5, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 1, Row = 5, Col = 6, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 1, Row = 5, Col = 7, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 1, Row = 5, Col = 8, IsUnderMaintenance = false },
+
+                    new { SeatTypeId = 1, MovieHallId = 1, Row = 6, Col = 2, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 1, Row = 6, Col = 3, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 1, Row = 6, Col = 4, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 1, Row = 6, Col = 5, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 1, Row = 6, Col = 6, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 1, Row = 6, Col = 7, IsUnderMaintenance = false },
+
+                    // Hall 2
+                    // Row 1
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 1, Col = 2, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 1, Col = 3, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 1, Col = 4, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 1, Col = 5, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 1, Col = 6, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 1, Col = 7, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 1, Col = 8, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 1, Col = 9, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 1, Col = 10, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 1, Col = 11, IsUnderMaintenance = false },
+
+                    // Row 2
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 2, Col = 1, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 2, Col = 2, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 2, Col = 3, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 2, Col = 4, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 2, Col = 5, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 2, Col = 6, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 2, Col = 7, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 2, Col = 8, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 2, Col = 9, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 2, Col = 10, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 2, Col = 11, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 2, Col = 12, IsUnderMaintenance = false },
+
+                    // Row 3
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 3, Col = 1, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 3, Col = 2, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 3, Col = 3, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 3, Col = 4, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 3, Col = 5, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 3, Col = 6, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 3, Col = 7, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 3, Col = 8, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 3, Col = 9, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 3, Col = 10, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 3, Col = 11, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 3, Col = 12, IsUnderMaintenance = false },
+
+                    // Row 4
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 4, Col = 1, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 4, Col = 2, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 4, Col = 3, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 4, Col = 4, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 4, Col = 5, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 4, Col = 6, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 4, Col = 7, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 4, Col = 8, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 4, Col = 9, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 4, Col = 10, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 4, Col = 11, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 4, Col = 12, IsUnderMaintenance = false },
+
+                    // Row 5
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 5, Col = 1, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 5, Col = 2, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 5, Col = 3, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 5, Col = 4, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 5, Col = 5, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 5, Col = 6, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 5, Col = 7, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 5, Col = 8, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 5, Col = 9, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 5, Col = 10, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 5, Col = 11, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 5, Col = 12, IsUnderMaintenance = false },
+
+                    // Row 6
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 6, Col = 1, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 6, Col = 2, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 6, Col = 3, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 6, Col = 4, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 6, Col = 5, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 6, Col = 6, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 6, Col = 7, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 6, Col = 8, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 6, Col = 9, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 6, Col = 10, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 6, Col = 11, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 6, Col = 12, IsUnderMaintenance = false },
+
+                    // Row 7
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 7, Col = 1, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 7, Col = 2, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 7, Col = 3, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 7, Col = 4, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 7, Col = 5, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 7, Col = 6, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 7, Col = 7, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 7, Col = 8, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 7, Col = 9, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 7, Col = 10, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 7, Col = 11, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 7, Col = 12, IsUnderMaintenance = false },
+
+                    // Row 8
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 8, Col = 2, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 8, Col = 3, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 8, Col = 4, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 8, Col = 5, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 8, Col = 6, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 8, Col = 7, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 8, Col = 8, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 8, Col = 9, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 8, Col = 10, IsUnderMaintenance = false },
+                    new { SeatTypeId = 1, MovieHallId = 2, Row = 8, Col = 11, IsUnderMaintenance = false },
                 };
 
                 connection.Execute(sql, Seats);
