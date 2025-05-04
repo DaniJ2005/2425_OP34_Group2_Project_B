@@ -2,7 +2,7 @@ static class ReservationLogic
 {
     private static Movie _selectedMovie;
     private static MovieSession _selectedSession;
-    private static Seat _selectedSeat;
+    private static List<Seat> _selectedSeats = [];
 
     public static void SetSelectedMovie(Movie movie)
     {
@@ -14,15 +14,18 @@ static class ReservationLogic
         LoggerLogic.Instance.Log($"Session selected | ID: {session.Id} | MovieHallID: {session.MovieHallId} | Date: {session.Date}");
         _selectedSession = session;
     }
-    public static void SetSelectedSeat(Seat seat)
+    public static void SetSelectedSeats(List<Seat> seats)
     {
-        LoggerLogic.Instance.Log($"Movie Seat | ID: {seat.Id} | Type: {seat.SeatTypeId}");
-        _selectedSeat = seat;
+        foreach (var seat in seats)
+        {
+            LoggerLogic.Instance.Log($"Movie Seat | ID: {seat.Id} | Type: {seat.SeatTypeId}");
+        }
+        _selectedSeats = new List<Seat>(seats);
     }
 
     public static Movie GetSelectedMovie() => _selectedMovie;
     public static MovieSession GetSelectedSession() => _selectedSession;
-    public static Seat GetSelectedSeat() => _selectedSeat;
+    public static List<Seat> GetSelectedSeats() => _selectedSeats;
 
     public static string GetConfirmationSummary()
     {
@@ -50,7 +53,7 @@ static class ReservationLogic
     {
         _selectedMovie = null;
         _selectedSession = null;
-        _selectedSeat = null;
+        _selectedSeats.Clear();
         LoggerLogic.Instance.Log($"Reservation canceld | Summery:\n{GetConfirmationSummary()}");
     }
 
@@ -66,9 +69,9 @@ static class ReservationLogic
         LoggerLogic.Instance.Log($"Cleared Session");
     }
 
-    public static void ClearSeat()
+    public static void ClearSeats()
     {
-        _selectedSeat = null;
+        _selectedSeats.Clear();
         LoggerLogic.Instance.Log($"Cleared Seat");
     }
 }

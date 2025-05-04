@@ -61,6 +61,22 @@ static class SeatLogic
         }
     }
 
+    public static void StoreSelection(MovieSession movieSession)
+    {
+        List<Seat> seatList = SeatAccess.GetAllByMovieHallId(movieSession.MovieHallId);
+        List<Seat> SelectedSeatList = [];
+
+        foreach (Seat seat in seatList)
+        {
+            if (SelectedSeatIds.Contains(seat.Id))
+            {
+                SelectedSeatList.Add(seat);
+            }
+        }
+
+        ReservationLogic.SetSelectedSeats(SelectedSeatList);
+    }
+
     public static void MoveUp()
     {
         for (int newY = Y - 1; newY >= 0; newY--)

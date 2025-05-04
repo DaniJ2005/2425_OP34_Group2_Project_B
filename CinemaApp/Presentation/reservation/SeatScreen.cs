@@ -5,15 +5,15 @@ public class SeatScreen : IScreen
 
     public void Start()
     {
-        ReservationLogic.ClearSeat();
+        ReservationLogic.ClearSeats();
         MovieSession moviesession = ReservationLogic.GetSelectedSession();
 
         SeatLogic.LoadSeats(moviesession);
 
-        Screen();
+        Screen(moviesession);
     }
 
-    public void Screen()
+    public void Screen(MovieSession moviesession)
     {
         ConsoleKey key;
         do
@@ -29,6 +29,17 @@ public class SeatScreen : IScreen
             // Confirm Selection
             if (key == ConsoleKey.Enter)
             {
+                SeatLogic.StoreSelection(moviesession);
+
+                Console.Clear();
+                Console.WriteLine("Selected Seats:");
+                List<Seat> seats = ReservationLogic.GetSelectedSeats();
+                foreach (var seat in seats)
+                {
+                    Console.WriteLine($"Row {seat.Row}, Col {seat.Col}");
+                }
+                Console.ReadKey();
+
                 MenuLogic.NavigateTo(new ConfirmSelectionScreen());
             }
 
@@ -56,7 +67,7 @@ public class SeatScreen : IScreen
     {
         for (int row = 0; row < SeatLogic.SeatGrid.GetLength(0); row++)
         {
-            Console.Write($"Row {row + 1}  ");
+            Console.Write($"Row {row + 1,2}  ");
             for (int col = 0; col < SeatLogic.SeatGrid.GetLength(1); col++)
             {
                 var seat = SeatLogic.SeatGrid[row, col];
