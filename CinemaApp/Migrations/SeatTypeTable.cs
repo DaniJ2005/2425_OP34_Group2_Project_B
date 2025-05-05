@@ -8,7 +8,8 @@ public static class SeatTypeTable
             string sql = @"
                 CREATE TABLE seat_type (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    type TEXT
+                    type TEXT,
+                    color TEXT
                 );
             ";
 
@@ -26,14 +27,15 @@ public static class SeatTypeTable
             if (count == 0) // Only insert if no records exist
             {
                 string sql = @"
-                    INSERT INTO seat_type (type)
-                    VALUES (@Type)
+                    INSERT INTO seat_type (type, color)
+                    VALUES (@Type, @Color)
                 ";
 
                 var seatTypes = new[]
                 {
-                    new { Type = "Regular" },
-                    new { Type = "VIP" }
+                    new { Type = "Regular", Color = "Gray"},
+                    new { Type = "Extra legroom", Color = "DarkCyan" },
+                    new { Type = "VIP", Color = "DarkMagenta" }
                 };
 
                 connection.Execute(sql, seatTypes);

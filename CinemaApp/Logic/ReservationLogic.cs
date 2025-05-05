@@ -43,8 +43,14 @@ static class ReservationLogic
             $"  - Movie: {GetSelectedMovie().Title}   ({GetSelectedMovie().Duration})\n" +
             $"  - Date: {GetSelectedSession().Date}\n" +
             $"  - Time: {GetSelectedSession().StartTime}\n" +
-            $"  - Hall: {GetSelectedSession().MovieHallId}\n"; //+
-            // $"  - Seat: Row {GetSelectedSeat().Row}, Seat {GetSelectedSeat().Number} ({GetSelectedSeat().SeatTypeId})\n";
+            $"  - Hall: {GetSelectedSession().MovieHallId}\n\n";
+
+        List<Seat> sortedSeats = _selectedSeats.OrderBy(s => s.Type).ToList();
+
+        foreach (Seat seat in sortedSeats)
+        {
+            summary += $"  - {seat.Type} - [Row {seat.Row}] [Seat {seat.Col}]\n";
+        }
 
         return summary;
     }

@@ -83,7 +83,9 @@ public class MovieSessionScreen : IScreen
         // Store movie session
         MovieSession SelectedSession = GetSessionsByDate(_uniqueDates[selectedDateIndex])[selectedTimeIndex];
         ReservationLogic.SetSelectedSession(SelectedSession);
-        // Navigate to confirm screen
+        // Clear seat selection
+        SeatLogic.SelectedSeatIds.Clear();
+        // Navigate to seat screen
         MenuLogic.NavigateTo(new SeatScreen());
     }
 

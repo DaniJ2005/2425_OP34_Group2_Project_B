@@ -6,4 +6,8 @@ public class Seat
     public int Row { get; set; }
     public int Col { get; set; }
     public bool IsUnderMaintenance { get; set; }
+
+    // Seat type (JOIN)
+    public string Type { get; set; }
+    public string Color { get; set; }
 }

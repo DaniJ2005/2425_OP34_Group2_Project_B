@@ -1,10 +1,12 @@
 public class SeatScreen : IScreen
 {
     public string ScreenName { get; set; }
+    private string error = "";
     public SeatScreen() => ScreenName = "Seat Selection";
 
     public void Start()
     {
+        error = "";
         ReservationLogic.ClearSeats();
         MovieSession moviesession = ReservationLogic.GetSelectedSession();
 
@@ -19,9 +21,17 @@ public class SeatScreen : IScreen
         do
         {
             Console.Clear();
+            Console.WriteLine("Please Select your seats.\n");
+            Console.WriteLine("[←][↑][→][↓] to navigate\n[SPACE] to select a seat,\n[ENTER] to confirm your selection.");            Console.WriteLine($"\n");
+
+            if(error != "")
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine($"Error! {error}\n");
+                Console.ResetColor();
+            }
 
             // Display movie hall
-            Console.WriteLine($"X: {SeatLogic.X}, Y: {SeatLogic.Y}\n");
             DisplaySeats();
 
             key = Console.ReadKey(true).Key;
@@ -29,17 +39,13 @@ public class SeatScreen : IScreen
             // Confirm Selection
             if (key == ConsoleKey.Enter)
             {
-                SeatLogic.StoreSelection(moviesession);
-
-                Console.Clear();
-                Console.WriteLine("Selected Seats:");
-                List<Seat> seats = ReservationLogic.GetSelectedSeats();
-                foreach (var seat in seats)
+                if (SeatLogic.SelectedSeatIds.Count == 0)
                 {
-                    Console.WriteLine($"Row {seat.Row}, Col {seat.Col}");
+                    error = "You must select one or more seats.";
+                    continue;
                 }
-                Console.ReadKey();
-
+                
+                SeatLogic.StoreSelection(moviesession);
                 MenuLogic.NavigateTo(new ConfirmSelectionScreen());
             }
 
@@ -82,34 +88,32 @@ public class SeatScreen : IScreen
                 bool isSelected = SeatLogic.SelectedSeatIds.Contains(seat.Id);
                 bool isBooked = SeatLogic.BookedSeatIds.Contains(seat.Id);
 
-                if (isCursor)
+                if (isBooked)
                 {
-                    Console.ForegroundColor = isSelected ? ConsoleColor.Green : ConsoleColor.White;
-                    Console.Write("▣");
-                    Console.ResetColor();
-                }
-                else if (isSelected)
+                    GeneralLogic.PrintColoredString("▧", "Red");
+                } else if (isCursor)
                 {
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.Write("■");
-                    Console.ResetColor();
-                }
-                else if (isBooked)
+                    GeneralLogic.PrintColoredString("▣", seat.Color);
+                } else if (isSelected)
                 {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.Write("▧");
-                    Console.ResetColor();
-                }
-                else
+                    GeneralLogic.PrintColoredString("■", seat.Color);
+                } else
                 {
-                    Console.Write("□");
+                    GeneralLogic.PrintColoredString("□", seat.Color);
                 }
-
                 
                 Console.Write(" ");
             }
             Console.WriteLine();
         }
+    }
+
+    public void icons()
+    {
+        Console.Write("▣");
+        Console.Write("■");
+        Console.Write("▧");
+        Console.Write("□");
     }
 
 }

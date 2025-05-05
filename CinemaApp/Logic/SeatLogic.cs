@@ -11,7 +11,6 @@ static class SeatLogic
     {
         // Reset HashSet's
         BookedSeatIds.Clear();
-        SelectedSeatIds.Clear();
 
         List<Seat> seatList = SeatAccess.GetAllByMovieHallId(movieSession.MovieHallId);
         List<Ticket> existingTickets = TicketAccess.GetTicketsByMovieSessionId(movieSession.Id);
