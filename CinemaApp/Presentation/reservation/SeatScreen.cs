@@ -22,7 +22,7 @@ public class SeatScreen : IScreen
         {
             Console.Clear();
             Console.WriteLine("Please Select your seats.\n");
-            Console.WriteLine("[←][↑][→][↓] to navigate\n[SPACE] to select a seat,\n[ENTER] to confirm your selection.");            Console.WriteLine($"\n");
+            Console.WriteLine("[←][↑][→][↓] to navigate\n[SPACE] to select a seat,\n[ENTER] to confirm your selection.\n");
 
             if(error != "")
             {
