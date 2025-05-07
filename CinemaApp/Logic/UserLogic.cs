@@ -1,16 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text.Json;
+﻿using System.Security.Cryptography;
 
-
-//This class is not static so later on we can use inheritance and interfaces
 public class UserLogic
 {
-
-    //Static properties are shared across all instances of the class
-    //This can be used to get the current logged in user from anywhere in the program
-    //private set, so this can only be set by the class itself
     public static User? CurrentUser { get; private set; }
 
     public UserLogic()
@@ -18,9 +9,21 @@ public class UserLogic
         // Could do something here
     }
 
+    public User CheckEmail(string email)
+    {
+        User user = UserAccess.GetByEmail(email);
+        if (user != null)
+        {
+            LoggerLogic.Instance.Log($"Login form | Correct email is enterd | {email}");
+
+            return user;
+        }
+        LoggerLogic.Instance.Log($"Login form | Incorrect email is enterd |  {email}");
+
+        return null;
+    }
     public User CheckLogin(string email, string password)
     {
-
         User user = UserAccess.GetByEmail(email);
         if (user != null && user.Password == password)
         {
@@ -30,55 +33,95 @@ public class UserLogic
             return user;
         }
         LoggerLogic.Instance.Log($"User login failed | Email: {email}");
+
         return null;
     }
-    
+
+    public static void Logout()
+    {
+        if (CurrentUser != null)
+        {
+            LoggerLogic.Instance.Log($"User logged out | ID: {CurrentUser.Id} | Email: {CurrentUser.Email}");
+            CurrentUser = null;
+        }
+    }
+
     public User RegisterUser(string email, string password, string userName)
     {
-        if (IsValidEmail(email) && IsValidPassword(password) && !string.IsNullOrWhiteSpace(userName))
+        if (!ValidateEmail(email))
         {
-            User user = new User
-            {
-                Email = email,
-                Password = password,
-                UserName = userName,
-            };
-            UserAccess.Write(user);
-            LoggerLogic.Instance.Log($"User registerd | ID: {email} | UserName: {userName}");
-
-            return user;
+            LoggerLogic.Instance.Log($"Registration failed | Invalid email: {email}");
+            return null;
         }
 
-        Console.WriteLine("Could not register user because:");
+        if (!ValidatePassword(password))
+        {
+            LoggerLogic.Instance.Log($"Registration failed | Password too short");
+            return null;
+        }
 
-        string message = "";
+        if (!ValidateUserName(userName))
+        {
+            LoggerLogic.Instance.Log($"Registration failed | Invalid user name: {userName}");
+            return null;
+        }
 
-        if (!IsValidEmail(email))
-            message += "- The email address is invalid.\n";
+        // Check if email already exists
+        var existingUser = UserAccess.GetByEmail(email);
+        if (existingUser != null)
+        {
+            LoggerLogic.Instance.Log($"Registration failed | Email already in use: {email}");
+            return null;
+        }
 
-        if (!IsValidPassword(password))
-            message += "- The password must be at least 8 characters long.\n";
+        var newUser = new User
+        {
+            Email = email,
+            Password = password,
+            UserName = userName
+        };
 
-        if (string.IsNullOrWhiteSpace(userName))
-            message += "- The full name cannot be empty.\n";
+        UserAccess.Write(newUser);
+        LoggerLogic.Instance.Log($"User registered | Email: {email} | UserName: {userName}");
 
-        if (string.IsNullOrWhiteSpace(message))
-            message = "- Unknown error.";
-
-        LoggerLogic.Instance.Log("Registration failure | reasons:\n" + message.TrimEnd());
-        Console.WriteLine(message);
-
-
-        return null;
+        return newUser;
     }
 
-    public static bool IsValidEmail(string email)
+    public static bool ValidateEmail(string email)
     {
         return email.Contains("@") && email.Contains(".");
     }
 
-    private bool IsValidPassword(string password)
+    public static bool ValidatePassword(string password)
     {
         return password.Length >= 8;
+    }
+
+    public static bool ValidateUserName(string userName)
+    {
+        return userName.Length >= 3;
+    }
+
+    // Move the Mask method here
+    public static string Mask(string input) => new string('*', input.Length);
+
+    public static bool VerifyPassword(string inputPassword, string storedHash)
+    {
+        byte[] hashBytes = Convert.FromBase64String(storedHash);
+
+        // Extract salt (first 16 bytes)
+        byte[] salt = new byte[16];
+        Array.Copy(hashBytes, 0, salt, 0, 16);
+
+        // Extract stored hash (next 32 bytes)
+        byte[] storedPasswordHash = new byte[32];
+        Array.Copy(hashBytes, 16, storedPasswordHash, 0, 32);
+
+        // Hash the input password with the same salt
+        var pbkdf2 = new Rfc2898DeriveBytes(inputPassword, salt, 100_000, HashAlgorithmName.SHA256);
+        byte[] inputPasswordHash = pbkdf2.GetBytes(32);
+
+        // Compare both hashes byte by byte
+        return storedPasswordHash.SequenceEqual(inputPasswordHash);
     }
 }
