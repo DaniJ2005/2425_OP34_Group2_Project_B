@@ -21,16 +21,22 @@ class HomeScreen : IScreen
     {
         int selectedIndex = 0;
         ConsoleKey key;
-        bool isLoggedIn = UserLogic.CurrentUser?.Id != null;
+        bool isLoggedIn = UserLogic.CurrentUser != null;
         string[] options = isLoggedIn ? loggedInOptions : guestOptions;
 
         do
         {
             Console.Clear();
+
+            Console.WriteLine("╔══════════════════════════════╗");
+            Console.WriteLine("║           CINEMA APP         ║");
+            Console.WriteLine("╚══════════════════════════════╝");
+
+
             if (isLoggedIn)
                 Console.WriteLine($"Welcome back, {UserLogic.CurrentUser?.UserName}!\n");
 
-            Console.WriteLine("[←][↑] to navigate\n[ENTER] to confirm your selection.\n");
+            Console.WriteLine("[↓][↑] to navigate\n[ENTER] to confirm your selection.\n");
 
             for (int i = 0; i < options.Length; i++)
             {

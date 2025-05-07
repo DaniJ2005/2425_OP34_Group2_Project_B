@@ -13,8 +13,6 @@ public class LoginScreen : IScreen
         Console.Clear();
         Console.CursorVisible = true;
 
-        var userLogic = new UserLogic();
-
         string errorEmail = "";
         string errorPassword = "";
 
@@ -36,7 +34,7 @@ public class LoginScreen : IScreen
             email = ReadInput(false, ref errorEmail);
             if (email == null) return; // user cancelled
 
-            foundUser = userLogic.CheckEmail(email);
+            foundUser = UserLogic.CheckEmail(email);
             if (foundUser == null)
             {
                 errorEmail = "Email not found.";
@@ -49,10 +47,10 @@ public class LoginScreen : IScreen
                 Console.Clear();
                 Console.WriteLine("==== Login Form ====\n");
 
-                ShowField("Email", email, true, true);
+                ShowField("Email", email, false, true);
 
                 bool? passwordValid = !string.IsNullOrEmpty(password) ? errorPassword == "" : null;
-                ShowField("Password", UserLogic.Mask(password), false, passwordValid);
+                ShowField("Password", UserLogic.Mask(password), true, passwordValid);
 
                 Console.Write($"\n> Password: ");
                 password = ReadInput(true, ref errorPassword);

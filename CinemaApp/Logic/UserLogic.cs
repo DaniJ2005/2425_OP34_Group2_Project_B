@@ -1,15 +1,10 @@
 ﻿using System.Security.Cryptography;
 
-public class UserLogic
+public static class UserLogic
 {
     public static User? CurrentUser { get; private set; }
 
-    public UserLogic()
-    {
-        // Could do something here
-    }
-
-    public User CheckEmail(string email)
+    public static User CheckEmail(string email)
     {
         User user = UserAccess.GetByEmail(email);
         if (user != null)
@@ -22,7 +17,7 @@ public class UserLogic
 
         return null;
     }
-    public User CheckLogin(string email, string password)
+    public static User CheckLogin(string email, string password)
     {
         User user = UserAccess.GetByEmail(email);
         if (user != null && user.Password == password)
@@ -46,7 +41,7 @@ public class UserLogic
         }
     }
 
-    public User RegisterUser(string email, string password, string userName)
+    public static User RegisterUser(string email, string password, string userName)
     {
         if (!ValidateEmail(email))
         {
@@ -83,6 +78,8 @@ public class UserLogic
 
         UserAccess.Write(newUser);
         LoggerLogic.Instance.Log($"User registered | Email: {email} | UserName: {userName}");
+
+        CurrentUser = newUser;
 
         return newUser;
     }

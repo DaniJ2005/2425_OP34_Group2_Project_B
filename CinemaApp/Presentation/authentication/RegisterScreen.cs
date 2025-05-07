@@ -11,27 +11,31 @@ public class RegisterScreen : IScreen
     string passwordRepeat = "";
     string fullName = "";
 
-    public void Start()
+    public void Start() => Start(false);
+    public void Start(bool repeatError)
     {
         Console.Clear();
         Console.CursorVisible = true;
 
-        email = ReadField("Email", UserLogic.ValidateEmail, "Invalid email format.", false);
-        if (email == null) return;
+        if (repeatError == false)
+            email = ReadField("Email", UserLogic.ValidateEmail, "Invalid email format.", false);
+        if (email == null) 
+            return;
 
         password = ReadField("Password", UserLogic.ValidatePassword, "Password must be at least 8 characters.", true);
-        if (password == null) return;
+        if (password == null) 
+            return;
 
         passwordRepeat = ReadField("Repeat Password", (input) => input == password, "Passwords do not match.", true);
-        if (passwordRepeat == null) return;
+        if (passwordRepeat == null) 
+            return;
 
         fullName = ReadField("Full Name", UserLogic.ValidateUserName, "Full name must be at least 3 characters.", false);
-        if (fullName == null) return;
+        if (fullName == null) 
+            return;
 
         string hashedPassword = HashPassword(password);
-
-        var userLogic = new UserLogic();
-        var newUser = userLogic.RegisterUser(email, hashedPassword, fullName);
+        var newUser = UserLogic.RegisterUser(email, hashedPassword, fullName);
 
         Console.Clear();
         if (newUser != null)
@@ -98,6 +102,11 @@ public class RegisterScreen : IScreen
                 {
                     if (validate(input))
                         return input;
+                    else if (label == "Repeat Password")
+                    {
+                        password = "";
+                        Start(true);
+                    }
                     else
                         error = errorMessage;
                 }
