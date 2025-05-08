@@ -26,6 +26,12 @@ public static class MenuLogic
         ShowExitConfirmation();
     }
 
+    public static void RestartScreen()
+    {
+        IScreen current = screenStack.Peek();
+        current.Start();
+    }
+
     public static void ClearStack() => screenStack.Clear();
 
     public static void ShowExitConfirmation()

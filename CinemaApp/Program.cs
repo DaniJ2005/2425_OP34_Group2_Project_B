@@ -1,4 +1,4 @@
-﻿ //Dev only
+﻿//Dev only
 Db.DeleteTables();
 
 // Initialize db tables
