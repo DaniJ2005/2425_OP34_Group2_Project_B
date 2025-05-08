@@ -60,7 +60,7 @@ class ConfirmSelectionScreen : IScreen
         {
             case 0: // Add food
                 Console.WriteLine("You chose to add food. (Redirecting...)");
-
+                MenuLogic.NavigateTo(new FoodScreen());
                 Console.WriteLine("Press any key to return...");
                 Console.ReadKey(true);
                 Start();
