@@ -12,6 +12,7 @@ class HomeScreen : IScreen
         "Login",
         "Register",
         "Continue without account",
+        "admin",
         "Exit"
     };
 
@@ -81,7 +82,10 @@ class HomeScreen : IScreen
             case 2: //Continue without account
                 MenuLogic.NavigateTo(new MovieScreen());
                 break;
-            case 3:
+            case 3: //Admin
+                MenuLogic.NavigateTo(new AdminScreen());
+                break;
+            case 4:
                 MenuLogic.ShowExitConfirmation();
                 break; 
         }
