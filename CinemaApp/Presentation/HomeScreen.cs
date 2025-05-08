@@ -1,37 +1,53 @@
 class HomeScreen : IScreen
 {
-
-    //This shows the menu. You can call back to this method to show the menu again
-    //after another presentation method is completed.
-    //You could edit this to show different menus depending on the user's role
     public string ScreenName { get; set; }
 
     public HomeScreen() => ScreenName = "Home";
 
-    private string[] options = {
-        "Login",
-        "Register",
-        "Continue without account",
-        "admin",
-        "Exit"
+    private string[] guestOptions = {
+        "Book Tickets",
+        "Login to Account",
+        "Create an Account",
+        "Exit Application"
+    };
+
+    private string[] loggedInOptions = {
+        "Book Tickets",
+        "Logout",
+        "Exit Application"
     };
 
     public void Start()
     {
         int selectedIndex = 0;
         ConsoleKey key;
+        bool isLoggedIn = UserLogic.CurrentUser != null;
+        string[] options = isLoggedIn ? loggedInOptions : guestOptions;
 
         do
         {
             Console.Clear();
-            if (UserLogic.CurrentUser?.Id != null)
-                Console.WriteLine($"Welcome back, {UserLogic.CurrentUser.UserName}. Thank you for choosing our service.");
+
+            Console.WriteLine("╔══════════════════════════════╗");
+            Console.WriteLine("║           CINEMA APP         ║");
+            Console.WriteLine("╚══════════════════════════════╝");
 
 
-            Console.WriteLine("Use ^ V to navigate, Enter to select:\n");
+            if (isLoggedIn)
+                Console.WriteLine($"Welcome back, {UserLogic.CurrentUser?.UserName}!\n");
+
+            Console.WriteLine("[↓][↑] to navigate\n[ENTER] to confirm your selection.\n");
+
             for (int i = 0; i < options.Length; i++)
             {
-                if (i == selectedIndex)
+                bool isSelected = i == selectedIndex;
+
+                // Add space above the last item (Exit)
+                if (i == options.Length - 1)
+                    Console.WriteLine();
+
+                // Highlight selection
+                if (isSelected)
                 {
                     Console.ForegroundColor = ConsoleColor.Black;
                     Console.BackgroundColor = ConsoleColor.White;
@@ -42,7 +58,13 @@ class HomeScreen : IScreen
                 {
                     Console.WriteLine($"  {options[i]}");
                 }
+
+                if (options[i] == "Book Tickets")
+                {
+                    Console.WriteLine("  -------------");
+                }
             }
+
 
             ConsoleKeyInfo keyInfo = Console.ReadKey(true);
             key = keyInfo.Key;
@@ -51,6 +73,8 @@ class HomeScreen : IScreen
             {
                 ReservationLogic.ClearSelection();
                 MenuLogic.NavigateToPrevious();
+                LoggerLogic.Instance.Log("User pressed Escape - returning to previous menu.");
+                return;
             }
 
             if (key == ConsoleKey.UpArrow && selectedIndex > 0)
@@ -64,36 +88,34 @@ class HomeScreen : IScreen
 
         } while (key != ConsoleKey.Enter);
 
-        string[] menuOptions = { "login", "register", "continue without account", "exit" };
-        string selectedLabel = (selectedIndex >= 0 && selectedIndex < menuOptions.Length) 
-            ? menuOptions[selectedIndex] 
-            : "unknown option";
-        LoggerLogic.Instance.Log($"User selected | Action: {selectedLabel}");
+        string selectedOption = options[selectedIndex];
+        LoggerLogic.Instance.Log($"User selected menu option: {selectedOption}");
 
         Console.Clear();
-        switch (selectedIndex)
+        switch (selectedOption)
         {
-            case 0: //Login
-                // UserLogin.Start();
-                break;
-            case 1: //Register
-                // UserRegister.Start();
-                break;
-            case 2: //Continue without account
+            case "Book Tickets":
                 MenuLogic.NavigateTo(new MovieScreen());
                 break;
-            case 3: //Admin
-                MenuLogic.NavigateTo(new AdminScreen());
+
+            case "Login to Account":
+                MenuLogic.NavigateTo(new LoginScreen());
                 break;
-            case 4:
+
+            case "Create an Account":
+                MenuLogic.NavigateTo(new RegisterScreen());
+                break;
+
+            case "Logout":
+                LoggerLogic.Instance.Log($"User {UserLogic.CurrentUser?.UserName} logged out.");
+                UserLogic.Logout();
+                break;
+
+            case "Exit Application":
                 MenuLogic.ShowExitConfirmation();
-                break; 
+                return;
         }
 
-        // If not exiting, return to menu
-        if (selectedIndex != 3)
-        {
-            Start();
-        }
+        Start(); //recursion
     }
 }
