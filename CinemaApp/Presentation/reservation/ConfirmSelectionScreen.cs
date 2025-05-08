@@ -74,12 +74,12 @@ class ConfirmSelectionScreen : IScreen
                     Console.WriteLine("Please enter an email address, so we can send you the ticket!");
                     email = Console.ReadLine();
 
-                    if (!UserLogic.IsValidEmail(email))
+                    if (!UserLogic.ValidateEmail(email))
                     {
                         Console.WriteLine("- The email address is invalid.\n");
                     }
 
-                } while (!UserLogic.IsValidEmail(email));
+                } while (!UserLogic.ValidateEmail(email));
 
                 Console.WriteLine($"\nReservation confirmed! Confirmation sent to {email}.\n");
                 Console.WriteLine("Press any key to continue...");
