@@ -6,5 +6,11 @@ public class Movie
     public string Genre { get; set; }
     public string Duration { get; set; }
     public string Language { get; set; }
-    public int MinAge { get; set; }
+
+    private int _minAge;
+    public string MinAge
+    {
+        get => _minAge + "+";
+        set => _minAge = int.Parse(value);
+    }
 }
