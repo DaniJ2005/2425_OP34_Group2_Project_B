@@ -18,11 +18,4 @@ static class GeneralLogic
         }
     }
 
-    public static void TextColor(string color)
-    {
-        if (Enum.TryParse<ConsoleColor>(color, true, out var consoleColor))
-        {
-            Console.ForegroundColor = consoleColor;
-        }
-    }
 }
