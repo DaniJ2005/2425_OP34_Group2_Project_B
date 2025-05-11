@@ -40,13 +40,13 @@ public class FoodScreen : IScreen
                 if (isSelected)
                     Console.ForegroundColor = ConsoleColor.Yellow;
 
-                Console.WriteLine($"| {(i + 1),-2} | {Trim(food.Name, 28),-28} | {food.Price} | {food.Is_Available}+ |");
+                Console.WriteLine($"| {(i + 1),-2} | {Trim(food.Name, 27),-27} | {food.Price} | {food.Is_Available}+ |");
 
                 if (isSelected)
                     Console.ResetColor();
             }
 
-            Console.WriteLine("+----+------------------------------+-----------------+--------+----------+");
+            Console.WriteLine("+----+-----------------------------+-----------------+-----------+");
             Console.WriteLine($"Page {currentPage + 1}/{totalPages}");
 
             key = Console.ReadKey(true).Key;
