@@ -38,6 +38,12 @@ static class ReservationLogic
     public static List<Seat> GetSelectedSeats() => _selectedSeats;
     public static List<Food> GetSelectedFoodItems() => _selectedFoodItems;
 
+    public static void CreateReservation(string email)
+    {
+        ReservationAccess.CreateReservation(_selectedSession, _selectedSeats, _selectedFoodItems, email);
+    }
+        
+
     public static string GetConfirmationSummary()
     {
         if (_selectedMovie == null) //When session en seat are implemented add null check for 

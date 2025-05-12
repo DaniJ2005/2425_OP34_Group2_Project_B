@@ -42,7 +42,6 @@ public static class Db
     public static void PopulateTables()
     {
         RoleTable.PopulateTable();         // needed for User
-       // needed for Reservation
 
         SeatTypeTable.PopulateTable();     // needed for Seat & SeatPrice
         MovieHallTable.PopulateTable();    // needed for Seat & MovieSession

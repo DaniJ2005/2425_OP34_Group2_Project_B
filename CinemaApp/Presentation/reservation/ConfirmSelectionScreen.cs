@@ -68,7 +68,6 @@ class ConfirmSelectionScreen : IScreen
 
             case 1: // Confirm reservation
                 string email;
-
                 do
                 {
                     Console.WriteLine("Please enter an email address, so we can send you the ticket!");
@@ -80,6 +79,8 @@ class ConfirmSelectionScreen : IScreen
                     }
 
                 } while (!UserLogic.ValidateEmail(email));
+
+                ReservationLogic.CreateReservation(email);
 
                 Console.WriteLine($"\nReservation confirmed! Confirmation sent to {email}.\n");
                 Console.WriteLine("Press any key to continue...");
