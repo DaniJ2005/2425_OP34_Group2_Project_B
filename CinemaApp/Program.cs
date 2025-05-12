@@ -21,7 +21,6 @@ if (key != ConsoleKey.Y)
     Console.ReadKey(true);
 }
 
-
 //Dev only
 Db.DeleteTables();
 

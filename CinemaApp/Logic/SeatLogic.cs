@@ -35,19 +35,6 @@ static class SeatLogic
 
     }
 
-    public static void TestPrintSeats()
-    {
-        for (int row = 0; row < SeatGrid.GetLength(0); row++)
-        {
-            Console.Write($"Row {SeatGrid[row, 0].Row}  ");
-            for (int col = 0; col < SeatGrid.GetLength(1); col++)
-            {
-                Console.Write($"[ID: {SeatGrid[row, col].Id} N: {SeatGrid[row, col].Col}]  ");
-            }
-            Console.WriteLine();
-        }
-    }
-
     public static void ToggleSeatSelection()
     {
         Seat currentSeat = SeatGrid[Y, X];
