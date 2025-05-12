@@ -408,3 +408,7 @@ CinemaApp/DataSources/Logs/*.txt
 # Flag files (used for auth, symbols, etc.)
 CinemaApp/DataSources/SessionData/*
 !CinemaApp/DataSources/SessionData/.gitkeep
+
+# Ignore encryption keys file
+Cinemapp/encryption_keys.txt
+

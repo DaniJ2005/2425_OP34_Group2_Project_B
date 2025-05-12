@@ -1,16 +1,48 @@
-using System;
-using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 
 public static class CryptoHelper
 {
-    private static readonly string key = "your-encryption-key-here"; // 16-byte key for AES-128
-    private static readonly string iv = "your-encryption-iv-here";   // 16-byte IV (Initialization Vector) for AES
+    // Default path to the encryption keys file
+    private static readonly string keysFilePath = "Cinemapp/encryption_keys.txt";
+    
+    // Method to retrieve keys and IV from the encryption_keys.txt file
+    private static (string key, string iv) GetKeysFromFile()
+    {
+        string key = "";
+        string iv = "";
+
+        try
+        {
+            // Read the encryption keys file line by line
+            string[] lines = File.ReadAllLines(keysFilePath);
+
+            foreach (var line in lines)
+            {
+                if (line.StartsWith("key="))
+                {
+                    key = line.Substring(4); // Extract the key from the line
+                }
+                else if (line.StartsWith("iv="))
+                {
+                    iv = line.Substring(3); // Extract the IV from the line
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            // Log the error or handle it according to your application's needs
+            throw new InvalidOperationException($"Error reading encryption keys from file: {ex.Message}");
+        }
+
+        return (key, iv);
+    }
 
     // Encrypts the input string using AES encryption
     public static string Encrypt(string input)
     {
+        var (key, iv) = GetKeysFromFile(); // Retrieve keys from the file
+
         using (Aes aesAlg = Aes.Create())
         {
             aesAlg.Key = Encoding.UTF8.GetBytes(key); // Convert the key to byte array
@@ -36,6 +68,8 @@ public static class CryptoHelper
     // Decrypts an encrypted string back to its original form
     public static string Decrypt(string encryptedInput)
     {
+        var (key, iv) = GetKeysFromFile(); // Retrieve keys from the file
+
         byte[] cipherText = Convert.FromBase64String(encryptedInput);
 
         using (Aes aesAlg = Aes.Create())
@@ -65,7 +99,7 @@ public static class CryptoHelper
         string encryptedPassword = Encrypt(password);
 
         // Compare the encrypted password with the stored encrypted password
-        return encryptedPassword == storedEncryptedPassword; 
+        return encryptedPassword == storedEncryptedPassword;
     }
 
     // Compares an encrypted password to a stored encrypted password directly
