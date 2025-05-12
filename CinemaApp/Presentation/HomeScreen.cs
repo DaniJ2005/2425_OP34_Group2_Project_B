@@ -29,7 +29,7 @@ class HomeScreen : IScreen
             Console.Clear();
 
             Console.WriteLine("╔══════════════════════════════╗");
-            Console.WriteLine("║           CINEMA APP         ║");
+            Console.WriteLine("║          CINEMA APP          ║");
             Console.WriteLine("╚══════════════════════════════╝");
 
 
@@ -112,7 +112,7 @@ class HomeScreen : IScreen
                 break;
 
             case "Exit Application":
-                MenuLogic.ShowExitConfirmation();
+                MenuLogic.NavigateTo(new ExitScreen());
                 return;
         }
 
