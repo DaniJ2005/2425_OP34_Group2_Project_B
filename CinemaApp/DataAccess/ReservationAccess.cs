@@ -48,13 +48,12 @@ public static class ReservationAccess
 
                     // Commit transaction
                     transaction.Commit();
-                    Console.WriteLine("Reservation and tickets inserted successfully!");
 
                 }
                 catch (Exception ex)
                 {
                     transaction.Rollback();
-                    Console.WriteLine($"Transaction failed: {ex.Message}");
+                    throw new Exception($"Transaction failed: {ex.Message}");
                 }
             }
         }

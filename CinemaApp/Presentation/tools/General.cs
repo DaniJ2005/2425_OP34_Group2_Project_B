@@ -1,4 +1,4 @@
-static class GeneralLogic
+static class General
 {
     public static void PrintColoredString(string str, string color)
     {

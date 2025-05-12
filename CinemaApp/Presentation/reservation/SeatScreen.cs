@@ -90,16 +90,16 @@ public class SeatScreen : IScreen
 
                 if (isBooked)
                 {
-                    GeneralLogic.PrintColoredString("▧", "Red");
+                    General.PrintColoredString("▧", "Red");
                 } else if (isCursor)
                 {
-                    GeneralLogic.PrintColoredString("▣", seat.Color);
+                    General.PrintColoredString("▣", seat.Color);
                 } else if (isSelected)
                 {
-                    GeneralLogic.PrintColoredString("■", seat.Color);
+                    General.PrintColoredString("■", seat.Color);
                 } else
                 {
-                    GeneralLogic.PrintColoredString("□", seat.Color);
+                    General.PrintColoredString("□", seat.Color);
                 }
                 
                 Console.Write(" ");
