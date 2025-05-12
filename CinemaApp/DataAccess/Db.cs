@@ -56,6 +56,7 @@ public static class Db
         ReservationTable.PopulateTable();  // needs User and MovieSession
 
         TicketTable.PopulateTable();       // needs Reservation, Seat, SeatPrice
+        FoodTable.PopulateTable();
     }
 
     public static void DeleteTables()
