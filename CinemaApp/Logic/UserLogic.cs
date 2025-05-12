@@ -1,35 +1,57 @@
-﻿using System.Security.Cryptography;
-
-public static class UserLogic
+﻿public static class UserLogic
 {
     public static User? CurrentUser { get; set; }
 
+    public static bool CanManageFoodMenu { get; private set; }
+    public static bool CanManageAccounts { get; private set; }
+    public static bool CanManageGuestAccounts { get; private set; }
+    public static bool CanManageMovieSessions { get; private set; }
+    public static bool CanManageMovieHall { get; private set; }
+    public static bool CanManageReservations { get; private set; }
+
+    public static bool IsAuthenticated()
+    {
+        return SessionDataLogic.IsAuthenticated();
+    }
+
     public static User CheckEmail(string email)
     {
-        User user = UserAccess.GetByEmail(email);
+        var user = UserAccess.GetByEmail(email);
+        LoggerLogic.Instance.Log(user != null
+            ? $"Login form | Correct email entered | {email}"
+            : $"Login form | Incorrect email entered | {email}");
+        return user!;
+    }
+
+    public static User Login(string email, string password, bool passwordIsEncrypted = false)
+    {
+        var user = UserAccess.GetByEmail(email);
+        
         if (user != null)
         {
-            LoggerLogic.Instance.Log($"Login form | Correct email is enterd | {email}");
-
-            return user;
+            if (passwordIsEncrypted)
+            {
+                if (CryptoHelper.VerifyEncryptedPassword(password, user.Password))
+                    return LoginUser(user);
+            }
+            else
+            {
+                if (CryptoHelper.Verify(password, user.Password))
+                    return LoginUser(user);
+            }
         }
-        LoggerLogic.Instance.Log($"Login form | Incorrect email is enterd |  {email}");
 
-        return null;
-    }
-    public static User CheckLogin(string email, string password)
-    {
-        User user = UserAccess.GetByEmail(email);
-        if (user != null && user.Password == password)
-        {
-            CurrentUser = user;
-            LoggerLogic.Instance.Log($"User logged in | ID: {CurrentUser.Id} | Email: {CurrentUser.Email} | Role: {CurrentUser.RoleId}");
-
-            return user;
-        }
         LoggerLogic.Instance.Log($"User login failed | Email: {email}");
+        return null!;
+    }
 
-        return null;
+    private static User LoginUser(User user)
+    {
+        CurrentUser = user;
+        LoggerLogic.Instance.Log($"User logged in | ID: {user.Id} | Email: {user.Email} | Role: {user.RoleId}");
+        SetPermissions();
+        SessionDataLogic.MarkAuthenticated(CurrentUser);
+        return user;
     }
 
     public static void Logout()
@@ -46,33 +68,34 @@ public static class UserLogic
         if (!ValidateEmail(email))
         {
             LoggerLogic.Instance.Log($"Registration failed | Invalid email: {email}");
-            return null;
+            return null!;
         }
 
         if (!ValidatePassword(password))
         {
             LoggerLogic.Instance.Log($"Registration failed | Password too short");
-            return null;
+            return null!;
         }
 
         if (!ValidateUserName(userName))
         {
             LoggerLogic.Instance.Log($"Registration failed | Invalid user name: {userName}");
-            return null;
+            return null!;
         }
 
-        // Check if email already exists
         var existingUser = UserAccess.GetByEmail(email);
         if (existingUser != null)
         {
             LoggerLogic.Instance.Log($"Registration failed | Email already in use: {email}");
-            return null;
+            return null!;
         }
+
+        var hashedPassword = CryptoHelper.Encrypt(password);
 
         var newUser = new User
         {
             Email = email,
-            Password = password,
+            Password = hashedPassword,
             UserName = userName
         };
 
@@ -80,45 +103,34 @@ public static class UserLogic
         LoggerLogic.Instance.Log($"User registered | Email: {email} | UserName: {userName}");
 
         CurrentUser = newUser;
+        SessionDataLogic.MarkAuthenticated(newUser);
 
         return newUser;
     }
 
-    public static bool ValidateEmail(string email)
-    {
-        return email.Contains("@") && email.Contains(".");
-    }
+    public static bool ValidateEmail(string email) => email.Contains("@") && email.Contains(".");
 
-    public static bool ValidatePassword(string password)
-    {
-        return password.Length >= 8;
-    }
+    public static bool ValidatePassword(string password) => password.Length >= 8;
 
-    public static bool ValidateUserName(string userName)
-    {
-        return userName.Length >= 3;
-    }
+    public static bool ValidateUserName(string userName) => userName.Length >= 3;
 
-    // Move the Mask method here
     public static string Mask(string input) => new string('*', input.Length);
 
-    public static bool VerifyPassword(string inputPassword, string storedHash)
+    private static void SetPermissions()
     {
-        byte[] hashBytes = Convert.FromBase64String(storedHash);
+        if (CurrentUser?.RoleId != null)
+        {
+            var role = RoleAccess.GetRoleById(CurrentUser.RoleId);
 
-        // Extract salt (first 16 bytes)
-        byte[] salt = new byte[16];
-        Array.Copy(hashBytes, 0, salt, 0, 16);
-
-        // Extract stored hash (next 32 bytes)
-        byte[] storedPasswordHash = new byte[32];
-        Array.Copy(hashBytes, 16, storedPasswordHash, 0, 32);
-
-        // Hash the input password with the same salt
-        var pbkdf2 = new Rfc2898DeriveBytes(inputPassword, salt, 100_000, HashAlgorithmName.SHA256);
-        byte[] inputPasswordHash = pbkdf2.GetBytes(32);
-
-        // Compare both hashes byte by byte
-        return storedPasswordHash.SequenceEqual(inputPasswordHash);
+            if (role != null) //not a normal user
+            {
+                CanManageFoodMenu = role.ManageFoodMenu;
+                CanManageAccounts = role.ManageAccounts;
+                CanManageGuestAccounts = role.ManageGuestAccounts;
+                CanManageMovieSessions = role.ManageMovieSessions;
+                CanManageMovieHall = role.ManageMovieHall;
+                CanManageReservations = role.ManageReservations;
+            }
+        }
     }
 }
