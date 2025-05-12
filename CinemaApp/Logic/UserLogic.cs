@@ -2,7 +2,7 @@
 
 public static class UserLogic
 {
-    public static User? CurrentUser { get; private set; }
+    public static User? CurrentUser { get; set; }
 
     public static User CheckEmail(string email)
     {

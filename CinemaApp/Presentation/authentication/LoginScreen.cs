@@ -10,11 +10,25 @@ public class LoginScreen : IScreen
 
     public void Start()
     {
+        var user = Screen();
+
+        if (user != null)
+        {
+            UserLogic.CurrentUser = user;
+        }
+    }
+
+
+    public User Screen()
+    {
         Console.Clear();
         Console.CursorVisible = true;
 
         string errorEmail = "";
         string errorPassword = "";
+        email = "";
+        password = "";
+        foundUser = null;
 
         while (true)
         {
@@ -32,7 +46,7 @@ public class LoginScreen : IScreen
 
             Console.Write($"\n> Email: ");
             email = ReadInput(false, ref errorEmail);
-            if (email == null) return; // user cancelled
+            if (email == null) return null; // user cancelled
 
             foundUser = UserLogic.CheckEmail(email);
             if (foundUser == null)
@@ -54,7 +68,7 @@ public class LoginScreen : IScreen
 
                 Console.Write($"\n> Password: ");
                 password = ReadInput(true, ref errorPassword);
-                if (password == null) return;
+                if (password == null) return null;
 
                 if (UserLogic.VerifyPassword(password, foundUser.Password))
                     break;
@@ -69,9 +83,12 @@ public class LoginScreen : IScreen
         Console.WriteLine("==== Login Successful ====\n");
         Console.WriteLine($"Welcome back, {foundUser.UserName}!");
 
-        Console.WriteLine("\nPress any key to exit...");
+        Console.WriteLine("\nPress any key to continue...");
         Console.ReadKey();
+
+        return foundUser;
     }
+
 
     string ReadInput(bool maskInput, ref string error)
     {

@@ -116,6 +116,6 @@ class HomeScreen : IScreen
                 return;
         }
 
-        Start(); //recursion
+        MenuLogic.NavigateTo(new HomeScreen());
     }
 }
