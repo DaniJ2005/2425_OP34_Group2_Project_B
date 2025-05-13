@@ -34,10 +34,11 @@ public class MovieSessionScreen : IScreen
         int selectedDateIndex = 0;
         int selectedTimeIndex = 0;
         bool isSelectingDate = true;
+        int topPosition = Console.CursorTop;
 
         do
         {
-            Console.Clear();
+            General.ClearConsole(topPosition);  
 
             DisplayMovieInfo();
             DisplayDateOptions(_uniqueDates, selectedDateIndex, isSelectingDate);

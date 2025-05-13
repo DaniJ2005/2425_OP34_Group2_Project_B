@@ -6,6 +6,7 @@ class HomeScreen : IScreen
 
     private string[] guestOptions = {
         "Book Tickets",
+        "admin screen",
         "Login to Account",
         "Create an Account",
         "Exit Application"
@@ -23,10 +24,11 @@ class HomeScreen : IScreen
         ConsoleKey key;
         bool isLoggedIn = UserLogic.CurrentUser != null;
         string[] options = isLoggedIn ? loggedInOptions : guestOptions;
+        int topPosition = Console.CursorTop;
 
         do
         {
-            Console.Clear();
+            General.ClearConsole(topPosition);  
 
             Console.WriteLine("╔══════════════════════════════╗");
             Console.WriteLine("║          CINEMA APP          ║");
@@ -98,6 +100,10 @@ class HomeScreen : IScreen
                 MenuLogic.NavigateTo(new MovieScreen());
                 break;
 
+            case "admin screen":
+                MenuLogic.NavigateTo(new AdminScreen());
+                break;
+                
             case "Login to Account":
                 MenuLogic.NavigateTo(new LoginScreen());
                 break;
@@ -116,6 +122,6 @@ class HomeScreen : IScreen
                 return;
         }
 
-        Start(); //recursion
+        MenuLogic.NavigateTo(new HomeScreen(), true);
     }
 }

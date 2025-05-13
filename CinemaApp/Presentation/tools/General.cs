@@ -18,4 +18,17 @@ static class General
         }
     }
 
+    public static void ClearConsole(int topPosition)
+    {
+        // Instead of clearing the whole console, just reset to the starting position
+        Console.SetCursorPosition(0, topPosition);      
+
+        // Clear the screen area by writing 20 empty lines 
+        for (int i = 0; i < 20; i++)
+        {
+        Console.WriteLine(new string(' ', Console.WindowWidth));
+        }
+
+        Console.SetCursorPosition(0, topPosition);   
+    }
 }
