@@ -76,7 +76,8 @@ public static class MovieAdminLogic
         try
         {
             MovieSessionAccess.AddMovieSession(session);
-            LoggerLogic.Instance.Log($"Movie session added: Movie ID {session.MovieId} at {session.Date.ToShortDateString()} {session.StartTime}");
+            var sessionDate = DateTime.Parse(session.Date);
+            LoggerLogic.Instance.Log($"Movie session added: Movie ID {session.MovieId} at {sessionDate.ToShortDateString()} {session.StartTime}");
             return true;
         }
         catch (Exception ex)

@@ -1,5 +1,3 @@
-using System;
-
 public class SeatManagementScreen : IScreen
 {
     public string ScreenName { get; set; } = "Seat Management";
@@ -8,8 +6,8 @@ public class SeatManagementScreen : IScreen
     {
         int selectedIndex = 0;
         ConsoleKey key;
-        string[] options = {  "Add Seat", "Update Seat", "Delete Seat", "View Seats", "Back" };
-        
+        string[] options = { "Add Seat", "Update Seat", "Delete Seat", "View Seats", "Back" };
+
         do
         {
             Console.Clear();
@@ -17,7 +15,7 @@ public class SeatManagementScreen : IScreen
             Console.WriteLine("║       SEAT MANAGEMENT        ║");
             Console.WriteLine("╚══════════════════════════════╝");
             Console.WriteLine("[↑][↓] to navigate, [ENTER] to select, [ESC] to go back\n");
-            
+
             for (int i = 0; i < options.Length; i++)
             {
                 if (i == selectedIndex)
@@ -46,27 +44,30 @@ public class SeatManagementScreen : IScreen
                 switch (selectedIndex)
                 {
                     case 0:
-                        //SeatAdminLogic.AddSeat();
+                        SeatConsoleUI.AddSeatUI();
                         break;
                     case 1:
-                        //SeatAdminLogic.UpdateSeat();
+                        SeatConsoleUI.UpdateSeatUI();
                         break;
                     case 2:
-                        //SeatAdminLogic.ViewMovies();
+                        SeatConsoleUI.DeleteSeatUI();
                         break;
                     case 3:
+                        SeatConsoleUI.ViewSeatsUI();
+                        break;
+                    case 4:
                         MenuLogic.NavigateToPrevious();
-                        LoggerLogic.Instance.Log("User returned to admin menu from movie management");
+                        LoggerLogic.Instance.Log("Returned to previous screen from Seat Management");
                         return;
-                }
-                
+                } 
+
                 Console.WriteLine("\nPress any key to continue...");
                 Console.ReadKey();
             }
             else if (key == ConsoleKey.Escape)
             {
                 MenuLogic.NavigateToPrevious();
-                LoggerLogic.Instance.Log("User pressed Escape - returning to admin menu");
+                LoggerLogic.Instance.Log("User pressed Escape - returning to previous screen");
                 return;
             }
         } while (true);
