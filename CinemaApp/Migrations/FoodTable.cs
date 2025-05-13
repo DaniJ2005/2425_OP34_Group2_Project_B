@@ -53,7 +53,9 @@ public static class FoodTable
 
                     new { Id = 12, Name = "Nasischotel", Price = 7.00, Is_Available = true },
 
-                    new { Id = 13, Name = "Nachos", Price = 4.00, Is_Available = true },
+                    new { Id = 13, Name = "Bamischijf", Price = 2.50, Is_Available = false },
+
+                    new { Id = 14, Name = "Kipsate", Price = 5.00, Is_Available = false },
                 };
 
                 connection.Execute(sql, Foods);
