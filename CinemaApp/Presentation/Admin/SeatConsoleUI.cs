@@ -5,11 +5,18 @@ public static class SeatConsoleUI
         Console.WriteLine("Enter Movie Hall ID:");
         int hallId = int.Parse(Console.ReadLine());
 
-        Console.WriteLine("Enter Row:");
-        int row = int.Parse(Console.ReadLine());
+        Console.WriteLine("Enter total rows in this hall:");
+        int rows = int.Parse(Console.ReadLine());
 
-        Console.WriteLine("Enter Column:");
-        int col = int.Parse(Console.ReadLine());
+        Console.WriteLine("Enter total columns in this hall:");
+        int cols = int.Parse(Console.ReadLine());
+
+        var pos = NavigateSeatPosition(hallId, rows, cols);
+        if (pos == null)
+        {
+            Console.WriteLine("Seat addition cancelled.");
+            return;
+        }
 
         Console.WriteLine("Enter Seat Type ID:");
         int seatTypeId = int.Parse(Console.ReadLine());
@@ -20,8 +27,8 @@ public static class SeatConsoleUI
         Seat seat = new Seat
         {
             MovieHallId = hallId,
-            Row = row,
-            Col = col,
+            Row = pos.Value.Row,
+            Col = pos.Value.Col,
             SeatTypeId = seatTypeId,
             IsUnderMaintenance = maintenance
         };
@@ -31,7 +38,7 @@ public static class SeatConsoleUI
         else
             Console.WriteLine("Failed to add seat.");
     }
- 
+
     public static void UpdateSeatUI()
     {
         Console.WriteLine("Enter Seat ID to update:");
@@ -44,11 +51,28 @@ public static class SeatConsoleUI
             return;
         }
 
-        Console.WriteLine($"Current Row: {seat.Row}, New Row:");
-        seat.Row = int.Parse(Console.ReadLine());
+        Console.WriteLine($"Current Row: {seat.Row}, Current Col: {seat.Col}");
+        Console.WriteLine("Do you want to change the seat position? (y/n):");
+        string changePosition = Console.ReadLine().ToLower();
 
-        Console.WriteLine($"Current Col: {seat.Col}, New Col:");
-        seat.Col = int.Parse(Console.ReadLine());
+        if (changePosition == "y")
+        {
+            Console.WriteLine("Enter total rows in this hall:");
+            int rows = int.Parse(Console.ReadLine());
+
+            Console.WriteLine("Enter total columns in this hall:");
+            int cols = int.Parse(Console.ReadLine());
+
+            var newPos = NavigateSeatPosition(seat.MovieHallId, rows, cols);
+            if (newPos == null)
+            {
+                Console.WriteLine("Seat position update cancelled.");
+                return;
+            }
+
+            seat.Row = newPos.Value.Row;
+            seat.Col = newPos.Value.Col;
+        }
 
         Console.WriteLine($"Current MovieHallId: {seat.MovieHallId}, New MovieHallId:");
         seat.MovieHallId = int.Parse(Console.ReadLine());
@@ -85,9 +109,56 @@ public static class SeatConsoleUI
             return;
         }
 
-        foreach (var seat in seats)
+        var table = new Table<Seat>(maxColWidth: 20, pageSize: 10);
+        table.SetColumns("Id", "MovieHallId", "Row", "Col", "SeatTypeId", "IsUnderMaintenance");
+        table.AddRows(seats);
+        table.Print("ID", "Hall", "Row", "Col", "Type", "Maintenance");
+        Console.WriteLine("Press any key to return...");
+        Console.ReadKey(true);
+    }
+
+    private static (int Row, int Col)? NavigateSeatPosition(int movieHallId, int rows, int cols)
+    {
+        int cursorRow = 0;
+        int cursorCol = 0;
+
+        ConsoleKey key;
+        do
         {
-            Console.WriteLine($"ID: {seat.Id}, Hall: {seat.MovieHallId}, Row: {seat.Row}, Col: {seat.Col}, Type: {seat.Type}, Maintenance: {seat.IsUnderMaintenance}");
-        }
+            Console.Clear();
+            Console.WriteLine($"Movie Hall ID: {movieHallId}");
+            Console.WriteLine("Use arrow keys to choose seat position. [Enter] to confirm, [Esc] to cancel.\n");
+
+            for (int r = 0; r < rows; r++)
+            {
+                for (int c = 0; c < cols; c++)
+                {
+                    if (r == cursorRow && c == cursorCol)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Black;
+                        Console.BackgroundColor = ConsoleColor.Yellow;
+                        Console.Write("[X]");
+                        Console.ResetColor();
+                    }
+                    else
+                    {
+                        Console.Write("[ ]");
+                    }
+                }
+                Console.WriteLine();
+            }
+
+            key = Console.ReadKey(true).Key;
+
+            if (key == ConsoleKey.UpArrow && cursorRow > 0) cursorRow--;
+            else if (key == ConsoleKey.DownArrow && cursorRow < rows - 1) cursorRow++;
+            else if (key == ConsoleKey.LeftArrow && cursorCol > 0) cursorCol--;
+            else if (key == ConsoleKey.RightArrow && cursorCol < cols - 1) cursorCol++;
+            else if (key == ConsoleKey.Escape) return null;
+            else if (key == ConsoleKey.Enter) break;
+
+        } while (true);
+
+        return (cursorRow, cursorCol);
     }
 }

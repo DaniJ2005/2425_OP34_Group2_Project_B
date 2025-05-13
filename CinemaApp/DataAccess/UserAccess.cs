@@ -11,12 +11,21 @@ public static class UserAccess
         }
     }
 
-    public static User GetByEmail(string email)
+    public static void Update(User user)
     {
         using (var connection = Db.CreateConnection())
         {
-            string sql = "SELECT * FROM user WHERE email = @Email";
-            return connection.QueryFirstOrDefault<User>(sql, new { Email = email });
+            string sql = "UPDATE user SET email = @Email, password = @Password, username = @UserName WHERE id = @Id";
+            connection.Execute(sql, user);
+        }
+    }
+
+    public static void Delete(User user)
+    {
+        using (var connection = Db.CreateConnection())
+        {
+            string sql = "DELETE FROM user WHERE id = @Id";
+            connection.Execute(sql, new { user.Id });
         }
     }
 
@@ -24,17 +33,17 @@ public static class UserAccess
     {
         using (var connection = Db.CreateConnection())
         {
-            string sql = "SELECT * FROM User;";
+            string sql = "SELECT * FROM user";
             return connection.Query<User>(sql).ToList();
         }
     }
 
-    public static void Delete(User account)
+    public static User GetByEmail(string email)
     {
         using (var connection = Db.CreateConnection())
         {
-            string sql = "DELETE FROM user WHERE id = @Id";
-            connection.Execute(sql, new { Id = account.Id });
+            string sql = "SELECT * FROM user WHERE email = @Email";
+            return connection.QueryFirstOrDefault<User>(sql, new { Email = email });
         }
     }
 }

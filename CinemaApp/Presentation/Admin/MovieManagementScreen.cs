@@ -111,7 +111,7 @@ public class MovieManagementScreen : IScreen
         }
 
         bool success = MovieAdminLogic.AddMovie(movie);
-        Console.WriteLine(success ? "\nMovie added successfully!" : "\nFailed to add movie!");
+        Console.WriteLine(success ? "\nFailed to add movie!" : "\nMovie added successfully!");
     }
 
     private void UpdateMovieUI()
