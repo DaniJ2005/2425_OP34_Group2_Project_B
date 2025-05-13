@@ -21,10 +21,11 @@ public class MovieScreen : IScreen
         movieTable.AddRows(_movies);
 
         ConsoleKey key;
+        int topPosition = Console.CursorTop;
 
         do
         {
-            Console.Clear();
+            General.ClearConsole(topPosition);  
             Console.WriteLine("Select a Movie");
             Console.WriteLine("Use ^ v to navigate, <- -> to change page, [Enter] to select and [Escape] to cancel:\n");
 

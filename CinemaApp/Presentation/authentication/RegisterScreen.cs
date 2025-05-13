@@ -34,7 +34,7 @@ public class RegisterScreen : IScreen
         if (fullName == null) 
             return;
 
-        string hashedPassword = HashPassword(password);
+        string hashedPassword = CryptoHelper.Encrypt(password);
         var newUser = UserLogic.RegisterUser(email, hashedPassword, fullName);
 
         Console.Clear();
@@ -140,31 +140,6 @@ public class RegisterScreen : IScreen
             }
         }
     }
-
-    private string HashPassword(string password)
-    {
-        // Make a random salt (like a secret ingredient)
-        using var rng = RandomNumberGenerator.Create();
-        byte[] salt = new byte[16]; // 16 bytes = enough salt
-        rng.GetBytes(salt); // Fill it with random values
-
-        // Mix the password and salt using PBKDF2 to make it safe
-        var pbkdf2 = new Rfc2898DeriveBytes(password, salt, 100_000, HashAlgorithmName.SHA256);
-        byte[] hash = pbkdf2.GetBytes(32); // Get 32 bytes of strong, scrambled password
-
-        // Create space to hold both salt and password hash
-        byte[] hashBytes = new byte[48];
-
-        // Copy the salt into the first part
-        Array.Copy(salt, 0, hashBytes, 0, 16);
-
-        // Copy the hashed password into the second part
-        Array.Copy(hash, 0, hashBytes, 16, 32);
-
-        // Turn the full result into a single string to store safely
-        return Convert.ToBase64String(hashBytes);
-    }
-
 
     void ShowField(string label, string value, bool isValid, bool isActive)
     {

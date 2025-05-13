@@ -18,10 +18,11 @@ public class FoodScreen : IScreen
         foodTable.AddRows(_foods);
 
         ConsoleKey key;
+        int topPosition = Console.CursorTop;
 
         do
         {
-            Console.Clear();
+            General.ClearConsole(topPosition);  
             Console.WriteLine("Select food and drinks");
             Console.WriteLine("Use ^ v to navigate, <- -> to change page, [Enter] to select and [Escape] to cancel:\n");
 

@@ -6,42 +6,52 @@ public class LoginScreen : IScreen
 
     string email = "";
     string password = "";
-    User foundUser = null;
+    string errorEmail = "";
+    string errorPassword = "";
+
+    User foundUser;
 
     public void Start()
+    {
+        User user = Screen();
+        if (user == null)
+            return;
+        
+        UserLogic.CurrentUser = user;   
+    }
+
+    public User Screen()
     {
         Console.Clear();
         Console.CursorVisible = true;
 
-        string errorEmail = "";
-        string errorPassword = "";
+        email = "";
+        password = "";
+        errorEmail = "";
+        errorPassword = "";
+        int topPosition = Console.CursorTop;
 
         while (true)
         {
+            General.ClearConsole(topPosition);
             Console.Clear();
-            Console.WriteLine("==== Login Form ==== (Press Esc to cancel)\n");
+            Console.WriteLine("==== Login Form ====\n");
 
-            bool? emailValid = null;
-            if (!string.IsNullOrWhiteSpace(email))
-            {
-                emailValid = foundUser != null ? true : errorEmail != "" ? false : null;
-            }
-
-            ShowField("Email", email, string.IsNullOrEmpty(email), emailValid);
+            ShowField("Email", email, true, string.IsNullOrEmpty(errorEmail) ? null : false);
             ShowField("Password", UserLogic.Mask(password), false, null);
 
-            Console.Write($"\n> Email: ");
-            email = ReadInput(false, ref errorEmail);
-            if (email == null) return; // user cancelled
 
-            foundUser = UserLogic.CheckEmail(email);
-            if (foundUser == null)
+            Console.Write("\n> Email: ");
+            email = ReadInput(false, ref errorEmail, (inputEmail) =>
             {
-                errorEmail = "Email not found.";
-                continue;
-            }
+                var user = UserLogic.CheckEmail(inputEmail);
+                if (user == null)
+                    return "Email not found.";
+                foundUser = user;
+                return null;
+            });
+            if (email == null) return null; // user stopped trying
 
-            // Ask for Password
             while (true)
             {
                 Console.Clear();
@@ -54,32 +64,25 @@ public class LoginScreen : IScreen
 
                 Console.Write($"\n> Password: ");
                 password = ReadInput(true, ref errorPassword);
-                if (password == null) return;
+                if (password == null) return null;
 
-                if (UserLogic.VerifyPassword(password, foundUser.Password))
-                    break;
+                if (CryptoHelper.Verify(password, foundUser.Password))
+                    break; 
 
                 errorPassword = "Incorrect password.";
             }
 
-            break;
+            return UserLogic.Login(email, password);
         }
-
-        Console.Clear();
-        Console.WriteLine("==== Login Successful ====\n");
-        Console.WriteLine($"Welcome back, {foundUser.UserName}!");
-
-        Console.WriteLine("\nPress any key to exit...");
-        Console.ReadKey();
     }
 
-    string ReadInput(bool maskInput, ref string error)
+    string ReadInput(bool maskInput, ref string error, Func<string, string?> validateCallback = null)
     {
         string input = "";
         ConsoleKeyInfo key;
-
         int cursorLeft = Console.CursorLeft;
         int cursorTop = Console.CursorTop;
+
         Console.WriteLine(); // Reserve space for error
 
         while (true)
@@ -102,6 +105,17 @@ public class LoginScreen : IScreen
             }
             else if (key.Key == ConsoleKey.Enter)
             {
+                if (validateCallback != null)
+                {
+                    string validationError = validateCallback(input);
+                    if (validationError != null)
+                    {
+                        error = validationError;
+                        ShowErrorBox(error, cursorTop + 1);
+                        continue;
+                    }
+                }
+
                 return input;
             }
             else if (!char.IsControl(key.KeyChar))
@@ -109,29 +123,33 @@ public class LoginScreen : IScreen
                 input += key.KeyChar;
             }
 
-            // Show error box if needed
-            Console.SetCursorPosition(0, cursorTop + 1);
-            Console.Write(new string(' ', Console.WindowWidth));
-            Console.SetCursorPosition(0, cursorTop + 1);
-
             if (!string.IsNullOrEmpty(error))
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-
-                int width = error.Length + 4;
-                string topBorder = "  ╭" + new string('─', width) + "╮";
-                string middle = $"  │  {error}  │";
-                string bottomBorder = "  ╰" + new string('─', width) + "╯";
-
-                Console.WriteLine();
-                Console.WriteLine(topBorder);
-                Console.WriteLine(middle);
-                Console.WriteLine(bottomBorder);
-
-                Console.ResetColor();
+                ShowErrorBox(error, cursorTop + 1);
                 error = "";
             }
         }
+    }
+
+    void ShowErrorBox(string error, int line)
+    {
+        Console.SetCursorPosition(0, line);
+        Console.Write(new string(' ', Console.WindowWidth));
+        Console.SetCursorPosition(0, line);
+
+        Console.ForegroundColor = ConsoleColor.Red;
+
+        int width = error.Length + 4;
+        string topBorder = "  ╭" + new string('─', width) + "╮";
+        string middle = $"  │  {error}  │";
+        string bottomBorder = "  ╰" + new string('─', width) + "╯";
+
+        Console.WriteLine();
+        Console.WriteLine(topBorder);
+        Console.WriteLine(middle);
+        Console.WriteLine(bottomBorder);
+
+        Console.ResetColor();
     }
 
     void ShowField(string label, string value, bool isActive, bool? isValid)
