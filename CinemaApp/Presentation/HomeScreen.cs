@@ -24,10 +24,11 @@ class HomeScreen : IScreen
         ConsoleKey key;
         bool isLoggedIn = UserLogic.CurrentUser != null;
         string[] options = isLoggedIn ? loggedInOptions : guestOptions;
+        int topPosition = Console.CursorTop;
 
         do
         {
-            Console.Clear();
+            General.ClearConsole(topPosition);  
 
             Console.WriteLine("╔══════════════════════════════╗");
             Console.WriteLine("║          CINEMA APP          ║");
@@ -121,6 +122,6 @@ class HomeScreen : IScreen
                 return;
         }
 
-        Start(); //recursion
+        MenuLogic.NavigateTo(new HomeScreen(), true);
     }
 }

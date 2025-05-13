@@ -3,6 +3,7 @@ static class ReservationLogic
     private static Movie _selectedMovie;
     private static MovieSession _selectedSession;
     private static List<Seat> _selectedSeats = [];
+    private static List<Food> _selectedFoodItems = [];
 
     public static void SetSelectedMovie(Movie movie)
     {
@@ -23,9 +24,19 @@ static class ReservationLogic
         _selectedSeats = new List<Seat>(seats);
     }
 
+    public static void SetSelectedFoodItems(List<Food> foodItems)
+    {
+        foreach (var foodItem in foodItems)
+        {
+            LoggerLogic.Instance.Log($"Food Item added to reservation | ID: {foodItem.Id} | Type: {foodItem.Name}");
+        }
+        _selectedFoodItems = new List<Food>(foodItems);
+    }
+
     public static Movie GetSelectedMovie() => _selectedMovie;
     public static MovieSession GetSelectedSession() => _selectedSession;
     public static List<Seat> GetSelectedSeats() => _selectedSeats;
+    public static List<Food> GetSelectedFoodItems() => _selectedFoodItems;
 
     public static string GetConfirmationSummary()
     {
