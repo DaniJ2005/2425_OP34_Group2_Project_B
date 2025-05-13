@@ -2,7 +2,7 @@ static class ReservationLogic
 {
     private static Movie _selectedMovie;
     private static MovieSession _selectedSession;
-    private static List<Seat> _selectedSeats = [];
+    private static Dictionary<Seat, SeatPrice> _selectedSeats = [];
     private static List<Food> _selectedFoodItems = [];
 
     public static void SetSelectedMovie(Movie movie)
@@ -15,13 +15,13 @@ static class ReservationLogic
         LoggerLogic.Instance.Log($"Session selected | ID: {session.Id} | MovieHallID: {session.MovieHallId} | Date: {session.Date}");
         _selectedSession = session;
     }
-    public static void SetSelectedSeats(List<Seat> seats)
+    public static void SetSelectedSeats(Dictionary<Seat, SeatPrice> seats)
     {
         foreach (var seat in seats)
         {
-            LoggerLogic.Instance.Log($"Movie Seat | ID: {seat.Id} | Type: {seat.SeatTypeId}");
+            LoggerLogic.Instance.Log($"Movie Seat | ID: {seat.Key.Id} | Type: {seat.Key.SeatTypeId} | Price: {seat.Value.Price}");
         }
-        _selectedSeats = new List<Seat>(seats);
+        _selectedSeats = new Dictionary<Seat, SeatPrice>(seats);
     }
 
     public static void SetSelectedFoodItems(List<Food> foodItems)
@@ -35,7 +35,7 @@ static class ReservationLogic
 
     public static Movie GetSelectedMovie() => _selectedMovie;
     public static MovieSession GetSelectedSession() => _selectedSession;
-    public static List<Seat> GetSelectedSeats() => _selectedSeats;
+    public static Dictionary<Seat, SeatPrice> GetSelectedSeats() => _selectedSeats;
     public static List<Food> GetSelectedFoodItems() => _selectedFoodItems;
 
     public static void CreateReservation(string email)
@@ -62,12 +62,14 @@ static class ReservationLogic
             $"  - Time: {GetSelectedSession().StartTime}\n" +
             $"  - Hall: {GetSelectedSession().MovieHallId}\n\n";
 
-        List<Seat> sortedSeats = _selectedSeats.OrderBy(s => s.Type).ToList();
-
-        foreach (Seat seat in sortedSeats)
+        double totalPrice = 0;
+        foreach (var seat in _selectedSeats)
         {
-            summary += $"  - {seat.Type} - [Row {seat.Row}] [Seat {seat.Col}]\n";
+            summary += $"  - {seat.Key.Type} - [Row {seat.Key.Row}] [Seat {seat.Key.Col}] - €{seat.Value.Price:F2}\n";
+            totalPrice += seat.Value.Price;
         }
+
+        summary += $"\nTotal: €{totalPrice:F2}\n";
 
         return summary;
     }

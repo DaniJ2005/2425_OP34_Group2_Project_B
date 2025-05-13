@@ -53,17 +53,19 @@ static class SeatLogic
     public static void StoreSelection(MovieSession movieSession)
     {
         List<Seat> seatList = SeatAccess.GetAllByMovieHallId(movieSession.MovieHallId);
-        List<Seat> SelectedSeatList = [];
+        Dictionary<Seat, SeatPrice> SelectedSeatDict = new();
+
+        List<SeatPrice> SeatPrices = SeatPriceAccess.GetAllSeatPricesWithoutPromo();
 
         foreach (Seat seat in seatList)
         {
             if (SelectedSeatIds.Contains(seat.Id))
             {
-                SelectedSeatList.Add(seat);
+                SelectedSeatDict[seat] = SeatPrices.FirstOrDefault(sp => sp.SeatTypeId == seat.SeatTypeId);
             }
         }
 
-        ReservationLogic.SetSelectedSeats(SelectedSeatList);
+        ReservationLogic.SetSelectedSeats(SelectedSeatDict);
     }
 
     public static void MoveUp()

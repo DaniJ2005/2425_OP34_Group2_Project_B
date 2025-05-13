@@ -3,7 +3,7 @@ using Dapper;
 
 public static class ReservationAccess
 {
-    public static void CreateReservation(MovieSession movieSession, List<Seat> seats, List<Food> foodItems, string email)
+    public static void CreateReservation(MovieSession movieSession, Dictionary<Seat, SeatPrice> seats, List<Food> foodItems, string email)
     {
         using (var connection = Db.CreateConnection())
         {
@@ -24,13 +24,13 @@ public static class ReservationAccess
                     );
 
                     // Insert ticket's
-                    string ticketQuery = "INSERT INTO ticket (reservation_id, seat_id) VALUES (@ReservationId, @SeatId)";
+                    string ticketQuery = "INSERT INTO ticket (reservation_id, seat_id, seat_price_id) VALUES (@ReservationId, @SeatId, @SeatPriceId)";
 
                     foreach (var seat in seats)
                     {
                         connection.Execute(
                             ticketQuery,
-                            new { ReservationId = reservationId, SeatId = seat.Id },
+                            new { ReservationId = reservationId, SeatPriceId = seat.Value.Id, SeatId = seat.Key.Id },
                             transaction
                         );
                     }
