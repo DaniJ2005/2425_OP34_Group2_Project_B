@@ -8,7 +8,7 @@ public class UserManagementScreen : IScreen
     {
         int selectedIndex = 0;
         ConsoleKey key;
-        string[] options = { "Add Movie", "Update Movie", "Delete Movie", "View Movies", "Back" };
+        string[] options = { "Add User", "Update User", "Delete user", "View Users", "Back" };
         
         do
         {
@@ -46,13 +46,13 @@ public class UserManagementScreen : IScreen
                 switch (selectedIndex)
                 {
                     case 0:
-                        //MovieAdminLogic.AddSeat();
+                        //UserAdminLogic.AddUser();
                         break;
                     case 1:
-                        //MovieAdminLogic.UpdateSeat();
+                        //UserAdminLogic.UpdateUser();
                         break;
                     case 2:
-                        //MovieAdminLogic.ViewMovies();
+                        //UserAdminLogic.ViewUser();
                         break;
                     case 3:
                         MenuLogic.NavigateToPrevious();
