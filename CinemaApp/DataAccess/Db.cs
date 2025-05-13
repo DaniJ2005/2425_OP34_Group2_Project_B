@@ -65,7 +65,7 @@ public static class Db
         ReservationFoodTable.DeleteTable();
         TicketTable.DeleteTable();
         ReservationTable.DeleteTable();
-        //UserTable.DeleteTable();     // vanaf nu deze niet meer deleten?
+        // UserTable.DeleteTable();     // vanaf nu deze niet meer deleten?
         
         SeatPriceTable.DeleteTable();
         SeatTable.DeleteTable();

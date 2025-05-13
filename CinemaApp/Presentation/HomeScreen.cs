@@ -105,11 +105,11 @@ class HomeScreen : IScreen
                 break;
                 
             case "Login to Account":
-                MenuLogic.NavigateTo(new LoginScreen());
+                MenuLogic.NavigateTo(new Login());
                 break;
 
             case "Create an Account":
-                MenuLogic.NavigateTo(new RegisterScreen());
+                MenuLogic.NavigateTo(new Register());
                 break;
 
             case "Logout":
