@@ -91,4 +91,10 @@ static class ReservationLogic
         _selectedSeats.Clear();
         LoggerLogic.Instance.Log($"Cleared Seat");
     }
+
+    public static void ClearFood()
+    {
+        _selectedFoodItems.Clear();
+        LoggerLogic.Instance.Log($"Cleared Food Items");
+    }
 }
