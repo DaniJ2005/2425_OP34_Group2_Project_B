@@ -50,6 +50,7 @@ public class ExitScreen : IScreen
         if (selectedIndex == 1)
         {
             Console.WriteLine("Exiting program...");
+            Console.CursorVisible = true;
             Environment.Exit(0);
         }
         else 

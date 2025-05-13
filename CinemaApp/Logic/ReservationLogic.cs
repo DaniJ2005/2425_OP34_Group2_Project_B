@@ -51,25 +51,11 @@ static class ReservationLogic
 
         string summary = "";
 
-        if (UserLogic.CurrentUser != null && !string.IsNullOrEmpty(UserLogic.CurrentUser.UserName))
-        {
-            summary += $"User: {UserLogic.CurrentUser.UserName}\n";
-        }
-
         summary +=
             $"  - Movie: {GetSelectedMovie().Title}   ({GetSelectedMovie().Duration})\n" +
             $"  - Date: {GetSelectedSession().Date}\n" +
             $"  - Time: {GetSelectedSession().StartTime}\n" +
-            $"  - Hall: {GetSelectedSession().MovieHallId}\n\n";
-
-        double totalPrice = 0;
-        foreach (var seat in _selectedSeats)
-        {
-            summary += $"  - {seat.Key.Type} - [Row {seat.Key.Row}] [Seat {seat.Key.Col}] - €{seat.Value.Price:F2}\n";
-            totalPrice += seat.Value.Price;
-        }
-
-        summary += $"\nTotal: €{totalPrice:F2}\n";
+            $"  - Hall: {GetSelectedSession().MovieHallId}\n";
 
         return summary;
     }
