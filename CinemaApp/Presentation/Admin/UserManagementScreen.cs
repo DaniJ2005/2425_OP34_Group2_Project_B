@@ -1,12 +1,11 @@
-
 public class UserManagementScreen : IScreen
 {
     public string ScreenName { get; set; } = "User Management";
-
+    ConsoleKey key;
+    
     public void Start()
     {
         int selectedIndex = 0;
-        ConsoleKey key;
         string[] options = { "Add User", "Update User", "Delete User", "View Users", "Back" };
 
         do
@@ -123,6 +122,7 @@ public class UserManagementScreen : IScreen
             user = UserAdminLogic.GetUserById(id);
             if (user == null)
                 Console.WriteLine("User not found. Please try again.");
+            
                 
         } while (user == null);
 

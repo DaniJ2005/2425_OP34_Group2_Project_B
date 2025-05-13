@@ -102,19 +102,47 @@ public static class SeatConsoleUI
 
     public static void ViewSeatsUI()
     {
+
         var seats = SeatAdminLogic.GetAllSeats();
         if (seats.Count == 0)
         {
             Console.WriteLine("No seats found.");
             return;
         }
+        Console.WriteLine("╔════════════════════════════════════════════════════════════════════════╗");
+        Console.WriteLine("║                               SEATS LIST                              ║");
+        Console.WriteLine("╚════════════════════════════════════════════════════════════════════════╝");
+        Console.WriteLine("Press -> to scroll up, <- to scroll down, or [Esc] to go back.");
+
 
         var table = new Table<Seat>(maxColWidth: 20, pageSize: 10);
         table.SetColumns("Id", "MovieHallId", "Row", "Col", "SeatTypeId", "IsUnderMaintenance");
         table.AddRows(seats);
         table.Print("ID", "Hall", "Row", "Col", "Type", "Maintenance");
-        Console.WriteLine("Press any key to return...");
-        Console.ReadKey(true);
+        if ((Console.ReadKey(true).Key != ConsoleKey.RightArrow) && (Console.ReadKey(true).Key != ConsoleKey.LeftArrow))
+        {
+            Console.WriteLine("Invalid key. Please use the arrow keys to scroll.");
+        }
+        else if (Console.ReadKey(true).Key == ConsoleKey.RightArrow)
+        {
+            table.NextPage();
+        }
+        else if (Console.ReadKey(true).Key == ConsoleKey.LeftArrow)
+        {
+            table.PreviousPage();
+        }
+        
+        else
+        {
+            Console.WriteLine("No more seats to display.");
+        }
+        Console.WriteLine("Press esc to go back.");
+        while (Console.ReadKey(true).Key != ConsoleKey.Escape)
+        {
+            
+        }
+        Console.Clear();
+        Console.WriteLine("Returned to previous screen.");
     }
 
     private static (int Row, int Col)? NavigateSeatPosition(int movieHallId, int rows, int cols)
