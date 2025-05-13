@@ -112,10 +112,10 @@ public class OverviewScreen : IScreen
                     HandleGuestConfirm();
                     break;
                 case "Log In":
-                    MenuLogic.NavigateTo(new LoginScreen());
+                    MenuLogic.NavigateTo(new Login());
                     break;
                 case "Create Account":
-                    MenuLogic.NavigateTo(new RegisterScreen());
+                    MenuLogic.NavigateTo(new Register());
                     break;
                 case "Add Food":
                     HandleAddFood();
