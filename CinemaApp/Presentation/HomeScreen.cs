@@ -6,6 +6,7 @@ class HomeScreen : IScreen
 
     private string[] guestOptions = {
         "Book Tickets",
+        "admin screen",
         "Login to Account",
         "Create an Account",
         "Exit Application"
@@ -99,12 +100,16 @@ class HomeScreen : IScreen
                 MenuLogic.NavigateTo(new MovieScreen());
                 break;
 
+            case "admin screen":
+                MenuLogic.NavigateTo(new AdminScreen());
+                break;
+                
             case "Login to Account":
-                MenuLogic.NavigateTo(new LoginScreen());
+                MenuLogic.NavigateTo(new Login());
                 break;
 
             case "Create an Account":
-                MenuLogic.NavigateTo(new RegisterScreen());
+                MenuLogic.NavigateTo(new Register());
                 break;
 
             case "Logout":

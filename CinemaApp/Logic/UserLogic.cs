@@ -31,7 +31,7 @@
         {
             if (passwordIsEncrypted)
             {
-                if (CryptoHelper.VerifyEncryptedPassword(password, user.Password))
+                if (CryptoHelper.Verify(password, user.Password))
                     return LoginUser(user);
             }
             else
@@ -60,6 +60,7 @@
         {
             LoggerLogic.Instance.Log($"User logged out | ID: {CurrentUser.Id} | Email: {CurrentUser.Email}");
             CurrentUser = null;
+            SessionDataLogic.Logout();
         }
     }
 
@@ -90,12 +91,10 @@
             return null!;
         }
 
-        var hashedPassword = CryptoHelper.Encrypt(password);
-
         var newUser = new User
         {
             Email = email,
-            Password = hashedPassword,
+            Password = password,
             UserName = userName
         };
 

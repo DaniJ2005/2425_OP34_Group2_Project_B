@@ -10,4 +10,17 @@ public static class FoodAccess
             return connection.Query<Food>(sql).ToList();
         }
     }
+
+    public static List<Food> GetAllAvailableFood()
+    {
+        using (var connection = Db.CreateConnection())
+        {
+            string sql = "SELECT * FROM Food WHERE is_available = true;";
+            return connection.Query<Food>(sql).ToList();
+        }
+    }
+
+
 }
+
+

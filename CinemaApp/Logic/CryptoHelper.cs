@@ -1,108 +1,27 @@
+using System;
 using System.Security.Cryptography;
 using System.Text;
 
 public static class CryptoHelper
 {
-    // Default path to the encryption keys file
-    private static readonly string keysFilePath = "Cinemapp/encryption_keys.txt";
-    
-    // Method to retrieve keys and IV from the encryption_keys.txt file
-    private static (string key, string iv) GetKeysFromFile()
+    // Static key from environment or fallback
+    private static readonly string StaticKey = Environment.GetEnvironmentVariable("STATIC_KEY") ?? "fallback-secret";  // You can set this from environment if needed
+
+    // Fixed salt (16 bytes) for deterministic hashing
+    private static readonly byte[] FixedSalt = Encoding.UTF8.GetBytes("fixed-salt-123456");
+
+    // Hash the password+static key deterministically with a fixed salt
+    public static string Hash(string input)
     {
-        //default if file not found
-        string key = "02ccdc8be1bf4e1b";
-        string iv =  "a8531865fc88d5ed";
+        string combined = input + StaticKey;
 
-        try
-        {
-            // Read the encryption keys file line by line
-            string[] lines = File.ReadAllLines(keysFilePath);
+        // Use PBKDF2 with a high iteration count for security (adjust as necessary)
+        using var pbkdf2 = new Rfc2898DeriveBytes(combined, FixedSalt, 500_000, HashAlgorithmName.SHA256); // 500,000 iterations for better security
+        byte[] hash = pbkdf2.GetBytes(32); // 32-byte hash length
 
-            foreach (var line in lines)
-            {
-                if (line.StartsWith("key="))
-                {
-                    key = line.Substring(4); // Extract the key from the line
-                }
-                else if (line.StartsWith("iv="))
-                {
-                    iv = line.Substring(3); // Extract the IV from the line
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            // Log the error or handle it according to your application's needs
-            //throw new InvalidOperationException($"Error reading encryption keys from file: {ex.Message}");
-        }
-
-        return (key, iv);
+        return Convert.ToBase64String(hash);
     }
 
-    // Encrypts the input string using AES encryption
-    public static string Encrypt(string input)
-    {
-        var (key, iv) = GetKeysFromFile(); // Retrieve keys from the file
-
-        using (Aes aesAlg = Aes.Create())
-        {
-            aesAlg.Key = Encoding.UTF8.GetBytes(key); // Convert the key to byte array
-            aesAlg.IV = Encoding.UTF8.GetBytes(iv);   // Convert the IV to byte array
-
-            ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
-
-            using (MemoryStream msEncrypt = new MemoryStream())
-            {
-                using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
-                {
-                    using (StreamWriter swEncrypt = new StreamWriter(csEncrypt))
-                    {
-                        swEncrypt.Write(input);
-                    }
-                }
-
-                return Convert.ToBase64String(msEncrypt.ToArray()); // Return the encrypted string as base64
-            }
-        }
-    }
-
-    // Decrypts an encrypted string back to its original form
-    public static string Decrypt(string encryptedInput)
-    {
-        var (key, iv) = GetKeysFromFile(); // Retrieve keys from the file
-
-        byte[] cipherText = Convert.FromBase64String(encryptedInput);
-
-        using (Aes aesAlg = Aes.Create())
-        {
-            aesAlg.Key = Encoding.UTF8.GetBytes(key);
-            aesAlg.IV = Encoding.UTF8.GetBytes(iv);
-
-            ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
-
-            using (MemoryStream msDecrypt = new MemoryStream(cipherText))
-            {
-                using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
-                {
-                    using (StreamReader srDecrypt = new StreamReader(csDecrypt))
-                    {
-                        return srDecrypt.ReadToEnd();
-                    }
-                }
-            }
-        }
-    }
-
-    // Compares the plaintext password to the stored encrypted password
-    public static bool Verify(string password, string storedEncryptedPassword)
-    {
-        // Encrypt the plaintext password entered by the user
-        string encryptedPassword = Encrypt(password);
-
-        // Compare the encrypted password with the stored encrypted password
-        return encryptedPassword == storedEncryptedPassword;
-    }
-
-    // Compares an encrypted password to a stored encrypted password directly
-    public static bool VerifyEncryptedPassword(string encryptedPassword, string storedEncryptedPassword) => encryptedPassword == storedEncryptedPassword;
+    // Verify the input password against the stored hash
+    public static bool Verify(string input, string storedHash) => Hash(input) == storedHash;
 }

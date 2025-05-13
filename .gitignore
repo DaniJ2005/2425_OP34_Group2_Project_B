@@ -412,3 +412,5 @@ CinemaApp/DataSources/SessionData/*
 # Ignore encryption keys file
 Cinemapp/encryption_keys.txt
 
+.env
+
