@@ -1,8 +1,9 @@
+using System.Net.Quic;
 using Dapper;
 
 public static class ReservationAccess
 {
-    public static void CreateReservation()
+    public static void CreateReservation(MovieSession movieSession, Dictionary<Seat, SeatPrice> seats, List<Food> foodItems, string email)
     {
         using (var connection = Db.CreateConnection())
         {
@@ -12,48 +13,35 @@ public static class ReservationAccess
             {
                 try
                 {
-                    string insertReservationSql = @"
-                        INSERT INTO reservation (user_id, movie_session_id, status, created_at)
-                        VALUES (@UserId, @MovieSessionId, @Status, @CreatedAt)
-                    ";
+                    // Insert reservation & retrieve auto generated Id
+                    string reservationQuery = "INSERT INTO reservation (movie_session_id, email, status) VALUES (@MovieSessionId, @Email, @Status); SELECT last_insert_rowid();";
 
-                    var reservation = new
+                    long reservationId = connection .ExecuteScalar<long>
+                    (
+                        reservationQuery, 
+                        new { MovieSessionId = movieSession.Id, Email = email, Status = "Pending"}, 
+                        transaction
+                    );
+
+                    // Insert ticket's
+                    string ticketQuery = "INSERT INTO ticket (reservation_id, seat_id, seat_price_id) VALUES (@ReservationId, @SeatId, @SeatPriceId)";
+
+                    foreach (var seat in seats)
                     {
-                        UserId = UserLogic.CurrentUser.Id,
-                        MovieSessionId = 1, // Static test data
-                        Status = "Confirmed",
-                        CreatedAt = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss")
-                    };
+                        connection.Execute(
+                            ticketQuery,
+                            new { ReservationId = reservationId, SeatPriceId = seat.Value.Id, SeatId = seat.Key.Id },
+                            transaction
+                        );
+                    }
 
-                    connection.Execute(insertReservationSql, reservation, transaction);
-
-
-                    // Retrieve current reservation id
-                    long reservationId = connection.QuerySingle<long>("SELECT last_insert_rowid();", transaction: transaction);
-
-                    string insertTicketSql = @"
-                        INSERT INTO ticket (seat_id, reservation_id, seat_price_id) 
-                        VALUES (@SeatId, @ReservationId, @SeatPriceId);
-                    ";
-
-                    var tickets = new List<object>
-                    {
-                        new { SeatId = 1, ReservationId = reservationId, SeatPriceId = 1},
-                        new { SeatId = 2, ReservationId = reservationId, SeatPriceId = 1},
-                        new { SeatId = 3, ReservationId = reservationId, SeatPriceId = 1},
-                        new { SeatId = 4, ReservationId = reservationId, SeatPriceId = 1}
-                    };
-
-                    connection.Execute(insertTicketSql, tickets, transaction);
-
-                    // Commit transaction
                     transaction.Commit();
 
                 }
                 catch (Exception ex)
                 {
                     transaction.Rollback();
-                    throw new Exception($"Transaction failed: {ex.Message}");
+                    throw;
                 }
             }
         }

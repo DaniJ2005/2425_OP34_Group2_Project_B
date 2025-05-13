@@ -1,3 +1,5 @@
+using System.Runtime.CompilerServices;
+
 public class Role
 {
     public int Id { get; set; }
@@ -9,3 +11,5 @@ public class Role
     public bool ManageMovieHall { get; set; }
     public bool ManageReservations { get; set; }
 }
+
+

@@ -42,7 +42,6 @@ public static class Db
     public static void PopulateTables()
     {
         RoleTable.PopulateTable();         // needed for User
-       // needed for Reservation
 
         SeatTypeTable.PopulateTable();     // needed for Seat & SeatPrice
         MovieHallTable.PopulateTable();    // needed for Seat & MovieSession
@@ -53,9 +52,9 @@ public static class Db
         MovieTable.PopulateTable();        // needed for MovieSession
         MovieSessionTable.PopulateTable(); // needs Movie and MovieHall
 
-        ReservationTable.PopulateTable();  // needs User and MovieSession
+        //ReservationTable.PopulateTable();  // needs User and MovieSession
 
-        TicketTable.PopulateTable();       // needs Reservation, Seat, SeatPrice
+        //TicketTable.PopulateTable();       // needs Reservation, Seat, SeatPrice
         FoodTable.PopulateTable();
     }
 
