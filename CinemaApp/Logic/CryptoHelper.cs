@@ -9,8 +9,9 @@ public static class CryptoHelper
     // Method to retrieve keys and IV from the encryption_keys.txt file
     private static (string key, string iv) GetKeysFromFile()
     {
-        string key = "";
-        string iv = "";
+        //default if file not found
+        string key = "02ccdc8be1bf4e1b";
+        string iv =  "a8531865fc88d5ed";
 
         try
         {
@@ -32,7 +33,7 @@ public static class CryptoHelper
         catch (Exception ex)
         {
             // Log the error or handle it according to your application's needs
-            throw new InvalidOperationException($"Error reading encryption keys from file: {ex.Message}");
+            //throw new InvalidOperationException($"Error reading encryption keys from file: {ex.Message}");
         }
 
         return (key, iv);
