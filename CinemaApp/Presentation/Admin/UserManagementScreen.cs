@@ -83,7 +83,7 @@ public class UserManagementScreen : IScreen
         string password = GetSecurePassword();
 
         // Default role ID (you might want to add role selection)
-        int roleId = 2; // Assuming 2 is a standard user role
+        int roleId = 2;
 
         var user = new User 
         { 

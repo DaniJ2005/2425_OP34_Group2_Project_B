@@ -1,4 +1,3 @@
-using System;
 
 public class AdminScreen : IScreen
 {
@@ -19,7 +18,6 @@ public class AdminScreen : IScreen
             "Manage Movies",
             "Manage Seats",
             "Manage Users",
-            "View Booking Analytics",
             "Return to Home"
         };
 

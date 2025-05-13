@@ -1,5 +1,3 @@
-using System;
-
 public class MovieManagementScreen : IScreen
 {
     public string ScreenName { get; set; } = "Movie Management";
