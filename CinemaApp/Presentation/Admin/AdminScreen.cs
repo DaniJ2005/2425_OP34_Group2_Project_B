@@ -18,6 +18,7 @@ public class AdminScreen : IScreen
             "Manage Movies",
             "Manage Seats",
             "Manage Users",
+            "Manage Reservations",
             "Return to Home"
         };
 
@@ -87,7 +88,10 @@ public class AdminScreen : IScreen
                     case 2: // Manage Users
                         MenuLogic.NavigateTo(new UserManagementScreen());
                         break;
-                    case 3: // Return to Home
+                    case 3: // Manage Reservations
+                        MenuLogic.NavigateTo(new ReservationManagementScreen());
+                        break;
+                    case 4: // Return to Home
                         MenuLogic.NavigateTo(new HomeScreen());
                         return;
                 }

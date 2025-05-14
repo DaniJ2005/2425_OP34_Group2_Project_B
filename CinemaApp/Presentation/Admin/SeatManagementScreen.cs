@@ -6,7 +6,7 @@ public class SeatManagementScreen : IScreen
     {
         int selectedIndex = 0;
         ConsoleKey key;
-        string[] options = { "Add Seat", "Update Seat", "Delete Seat", "View Seats", "Back" };
+        string[] options = { "Add Seat", "Update Seat", "Delete Seat", "Back" };
 
         do
         {
@@ -52,10 +52,10 @@ public class SeatManagementScreen : IScreen
                     case 2:
                         SeatConsoleUI.DeleteSeatUI();
                         break;
+                    //case 3:
+                        //SeatConsoleUI.ViewSeatsUI();
+                        //break;
                     case 3:
-                        SeatConsoleUI.ViewSeatsUI();
-                        break;
-                    case 4:
                         MenuLogic.NavigateToPrevious();
                         LoggerLogic.Instance.Log("Returned to previous screen from Seat Management");
                         return;
