@@ -42,9 +42,6 @@ public static class Db
     public static void PopulateTables()
     {
         RoleTable.PopulateTable();         // needed for User
-        UserTable.PopulateTable();
-        
-       // needed for Reservation
 
         SeatTypeTable.PopulateTable();     // needed for Seat & SeatPrice
         MovieHallTable.PopulateTable();    // needed for Seat & MovieSession
@@ -67,7 +64,7 @@ public static class Db
         ReservationFoodTable.DeleteTable();
         TicketTable.DeleteTable();
         ReservationTable.DeleteTable();
-        UserTable.DeleteTable();     // vanaf nu deze niet meer deleten?
+        // UserTable.DeleteTable();     // vanaf nu deze niet meer deleten?
         
         SeatPriceTable.DeleteTable();
         SeatTable.DeleteTable();
@@ -78,6 +75,6 @@ public static class Db
         MovieHallTable.DeleteTable();
         
         FoodTable.DeleteTable();
-        RoleTable.DeleteTable();  //when commenting userTable, also comment this
+        RoleTable.DeleteTable();
     }
 }
