@@ -47,7 +47,7 @@ public class SeatScreen : IScreen
                 }
                 
                 SeatLogic.StoreSelection(moviesession);
-                MenuLogic.NavigateTo(new ConfirmSelectionScreen());
+                MenuLogic.NavigateTo(new OverviewScreen());
             }
 
             // Select Seat
