@@ -27,13 +27,12 @@ public class OverviewScreen : IScreen
     private void Screen()
     {
         ConsoleKey key;
-        int topPosition = Console.CursorTop;
 
         do
         {
             string confirmationSummary = ReservationLogic.GetConfirmationSummary();
 
-            General.ClearConsole(topPosition);
+            General.ClearConsole();
             Console.WriteLine("Reservation:\n");
             Console.WriteLine($"{confirmationSummary}");
 
