@@ -1,7 +1,6 @@
 ﻿public static class UserLogic
 {
     public static User? CurrentUser { get; set; }
-
     public static bool CanManageFoodMenu { get; private set; }
     public static bool CanManageAccounts { get; private set; }
     public static bool CanManageGuestAccounts { get; private set; }
@@ -31,7 +30,7 @@
         {
             if (passwordIsEncrypted)
             {
-                if (CryptoHelper.VerifyEncrypted(password, user.Password))
+                if (CryptoHelper.Verify(password, user.Password))
                     return LoginUser(user);
             }
             else

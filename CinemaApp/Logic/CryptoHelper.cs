@@ -24,5 +24,4 @@ public static class CryptoHelper
 
     // Verify the input password against the stored hash
     public static bool Verify(string input, string storedHash) => Hash(input) == storedHash;
-    public static bool VerifyEncrypted(string input, string storedHash) => input == storedHash;
 }

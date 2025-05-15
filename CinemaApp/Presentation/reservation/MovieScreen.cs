@@ -7,6 +7,7 @@ public class MovieScreen : IScreen
     public void Start()
     {
         ReservationLogic.ClearMovie();
+        ReservationLogic.ClearFood();
 
         // Move Access call to logic
         _movies = MovieAccess.GetAllMovies();
@@ -21,10 +22,11 @@ public class MovieScreen : IScreen
         movieTable.AddRows(_movies);
 
         ConsoleKey key;
+        int topPosition = Console.CursorTop;
 
         do
         {
-            General.ClearConsole();  
+            General.ClearConsole(topPosition);  
             Console.WriteLine("Select a Movie");
             Console.WriteLine("Use ^ v to navigate, <- -> to change page, [Enter] to select and [Escape] to cancel:\n");
 

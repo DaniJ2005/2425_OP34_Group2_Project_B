@@ -15,7 +15,7 @@ public class Login : FormScreen
         Fields.Add(new FormField("Password", true, input =>
         {
             if (foundUser == null) return (false, "Email must be valid first.");
-            return (UserLogic.Login(foundUser.Email, input, false) != null, "Incorrect password.");
+            return (CryptoHelper.Verify(input, foundUser.Password), "Incorrect password.");
         }));
     }
 
@@ -27,5 +27,6 @@ public class Login : FormScreen
         Console.WriteLine($"Welcome back, {foundUser.UserName}!");
         Console.WriteLine("\nPress any key to continue...");
         Console.ReadKey();
+        MenuLogic.NavigateToPrevious();
     }
 }

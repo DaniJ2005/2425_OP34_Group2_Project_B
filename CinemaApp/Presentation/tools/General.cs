@@ -1,3 +1,4 @@
+using System.Reflection;
 static class General
 {
     public static void PrintColoredString(string str, string color)
@@ -18,25 +19,37 @@ static class General
         }
     }
 
-    public static void ClearConsole()
+    public static void ClearConsole(int topPosition)
     {
-        Console.CursorVisible = false;
+        // Instead of clearing the whole console, just reset to the starting position
+        Console.SetCursorPosition(0, topPosition);      
 
-        // Use SetCursorPosition instead of WriteLine to avoid scrolling
-        Console.SetCursorPosition(0, 0);
-
-        string blankLine = new string(' ', Console.WindowWidth);
-        int height = Console.WindowHeight;
-
-        for (int i = 0; i < height; i++)
+        // Clear the screen area by writing 20 empty lines 
+        for (int i = 0; i < 20; i++)
         {
-            Console.Write(blankLine);
-
-            if (i < height - 1)
-                Console.SetCursorPosition(0, i + 1);
+        Console.WriteLine(new string(' ', Console.WindowWidth));
         }
 
-        Console.SetCursorPosition(0, 0);
+        Console.SetCursorPosition(0, topPosition);   
     }
 
+    public static void PrintProperties(object obj)
+    {
+        if (obj == null)
+        {
+            Console.WriteLine("Object is null.");
+            return;
+        }
+
+        Type type = obj.GetType();
+        PropertyInfo[] properties = type.GetProperties();
+
+        Console.WriteLine($"Properties of {type.Name}:");
+
+        foreach (var prop in properties)
+        {
+            var value = prop.GetValue(obj, null);
+            Console.Write($"{prop.Name}: {value} | ");
+        }
+    }
 }

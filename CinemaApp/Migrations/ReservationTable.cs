@@ -11,6 +11,7 @@ public static class ReservationTable
                     user_id INTEGER,
                     movie_session_id INTEGER,
                     email TEXT,
+                    total_price REAL,
                     status TEXT NOT NULL,
                     created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
                     FOREIGN KEY (user_id) REFERENCES user(id),
@@ -19,31 +20,6 @@ public static class ReservationTable
             ";
 
             connection.Execute(sql);
-        }
-    }
-
-    public static void PopulateTable()
-    {
-        using (var connection = Db.CreateConnection())
-        {
-            // Check if the table is empty
-            string checkSql = "SELECT COUNT(*) FROM reservation;";
-            int count = connection.ExecuteScalar<int>(checkSql);
-
-            if (count == 0) // Only insert if no records exist
-            {
-                string sql = @"
-                    INSERT INTO reservation (movie_session_id, status) 
-                    VALUES (@MovieSessionId, @Status)
-                ";
-
-                var SeatPrices = new[]
-                {
-                    new {MovieSessionId = 1, Status = "placeholder" },
-                };
-
-                connection.Execute(sql, SeatPrices);
-            }
         }
     }
 

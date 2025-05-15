@@ -42,5 +42,6 @@ public class Register : FormScreen
 
         Console.WriteLine("\nPress any key to continue...");
         Console.ReadKey();
+        MenuLogic.NavigateToPrevious();
     }
 }
