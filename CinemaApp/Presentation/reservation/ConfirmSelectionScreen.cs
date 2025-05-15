@@ -12,11 +12,10 @@ class ConfirmSelectionScreen : IScreen
         int selectedIndex = 0;
         ConsoleKey key;
         LoggerLogic.Instance.Log($"Confirm reservation | Summery:\n{ReservationLogic.GetConfirmationSummary()}");
-        int topPosition = Console.CursorTop;
 
         do
         {
-            General.ClearConsole(topPosition);  
+            General.ClearConsole();  
             Console.WriteLine("Please confirm your reservation:\n");
             Console.WriteLine(ReservationLogic.GetConfirmationSummary());
 

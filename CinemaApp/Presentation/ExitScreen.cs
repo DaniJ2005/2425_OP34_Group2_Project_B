@@ -14,11 +14,10 @@ public class ExitScreen : IScreen
     {
         int selectedIndex = 0;
         ConsoleKey key;
-        int topPosition = Console.CursorTop;
 
         do
         {
-            General.ClearConsole(topPosition);  
+            General.ClearConsole();  
             Console.WriteLine("Are you sure you want to exit?\n");
 
             if (selectedIndex == 0)

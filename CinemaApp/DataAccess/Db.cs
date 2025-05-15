@@ -76,6 +76,6 @@ public static class Db
         MovieHallTable.DeleteTable();
         
         FoodTable.DeleteTable();
-        RoleTable.DeleteTable();
+        // RoleTable.DeleteTable();  //when commenting userTable, also comment this
     }
 }
