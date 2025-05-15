@@ -29,10 +29,20 @@ class HomeScreen : IScreen
     {
         int selectedIndex = 0;
         ConsoleKey key;
+
         bool isLoggedIn = UserLogic.CurrentUser != null;
-        string[] options = isLoggedIn
-            ? (UserLogic.CurrentUser?.RoleId != 0 ? adminOptions : loggedInOptions)
-            : guestOptions;
+
+        string[] options;
+
+        if (isLoggedIn)
+        {
+            bool isAdmin = UserLogic.CurrentUser.RoleId != 0 || UserLogic.CurrentUser.RoleId != null;
+            options = isAdmin ? adminOptions : loggedInOptions;
+        }
+        else
+        {
+            options = guestOptions;
+        }
 
         do
         {
