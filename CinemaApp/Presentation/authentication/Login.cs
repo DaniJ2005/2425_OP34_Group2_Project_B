@@ -27,5 +27,6 @@ public class Login : FormScreen
         Console.WriteLine($"Welcome back, {foundUser.UserName}!");
         Console.WriteLine("\nPress any key to continue...");
         Console.ReadKey();
+        MenuLogic.NavigateToPrevious();
     }
 }

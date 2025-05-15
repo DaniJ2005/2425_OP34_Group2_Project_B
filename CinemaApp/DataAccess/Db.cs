@@ -52,8 +52,6 @@ public static class Db
         MovieTable.PopulateTable();        // needed for MovieSession
         MovieSessionTable.PopulateTable(); // needs Movie and MovieHall
 
-        //ReservationTable.PopulateTable();  // needs User and MovieSession
-
         //TicketTable.PopulateTable();       // needs Reservation, Seat, SeatPrice
         FoodTable.PopulateTable();
     }
