@@ -18,17 +18,25 @@ static class General
         }
     }
 
-    public static void ClearConsole(int topPosition)
+    public static void ClearConsole()
     {
-        // Instead of clearing the whole console, just reset to the starting position
-        Console.SetCursorPosition(0, topPosition);      
+        Console.CursorVisible = false;
 
-        // Clear the screen area by writing 20 empty lines 
-        for (int i = 0; i < 20; i++)
+        // Use SetCursorPosition instead of WriteLine to avoid scrolling
+        Console.SetCursorPosition(0, 0);
+
+        string blankLine = new string(' ', Console.WindowWidth);
+        int height = Console.WindowHeight;
+
+        for (int i = 0; i < height; i++)
         {
-        Console.WriteLine(new string(' ', Console.WindowWidth));
+            Console.Write(blankLine);
+
+            if (i < height - 1)
+                Console.SetCursorPosition(0, i + 1);
         }
 
-        Console.SetCursorPosition(0, topPosition);   
+        Console.SetCursorPosition(0, 0);
     }
+
 }
