@@ -5,13 +5,13 @@ Console.OutputEncoding = System.Text.Encoding.UTF8;
 Console.CursorVisible = false;
 
 //Dev only
-Db.DeleteTables();
+// Db.DeleteTables();
 
 // Initialize db tables
-Db.InitTables();
+// Db.InitTables();
 
 // Fill db with some data
-Db.PopulateTables();
+// Db.PopulateTables();
 
 // Start application
 if (!SessionDataLogic.HasPassedSymbolCheck())

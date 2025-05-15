@@ -165,6 +165,7 @@ public class OverviewScreen : IScreen
     private void HandleConfirmReservation(string email, double totalPrice)
     {
         ReservationLogic.CreateReservation(email, totalPrice);
+        Console.Clear();
         Console.WriteLine("Reservation Confirmed!");
         Console.WriteLine("Press any key to return...");
         Console.ReadKey();

@@ -100,7 +100,7 @@ public static class ReservationAccess
                     ON movie_session.movie_id = movie.id
                 INNER JOIN movie_hall
                     ON movie_session.movie_hall_id = movie_hall.id
-                WHERE user_id = 1;
+                WHERE user_id = @UserId;
             ";
             return connection.Query<Reservation>(sql, new { UserId = userId }).ToList();
         }
