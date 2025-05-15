@@ -7,8 +7,7 @@ class HomeScreen : IScreen
     private string[] adminOptions = {
         "Book Tickets",
         "admin screen",
-        "Login to Account",
-        "Create an Account",
+        "Logout",
         "Exit Application"
     };
 
@@ -36,7 +35,7 @@ class HomeScreen : IScreen
 
         if (isLoggedIn)
         {
-            bool isAdmin = UserLogic.CurrentUser.RoleId != 0 || UserLogic.CurrentUser.RoleId != null;
+            bool isAdmin = UserLogic.CurrentUser.RoleId == 1;
             options = isAdmin ? adminOptions : loggedInOptions;
         }
         else
