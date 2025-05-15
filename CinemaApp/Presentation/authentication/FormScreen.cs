@@ -10,6 +10,7 @@ public abstract class FormScreen : IScreen
     public void Start()
     {
         Console.Clear();
+        Console.CursorVisible = true;
 
         while (ActiveFieldIndex < Fields.Count)
         {
@@ -41,10 +42,11 @@ public abstract class FormScreen : IScreen
     {
         string input = "";
         ConsoleKeyInfo key;
+        int cursorTop = Console.CursorTop;
 
         while (true)
         {
-            General.ClearConsole();
+            General.ClearConsole(cursorTop);
             Console.WriteLine($"==== {ScreenName} ====\n");
 
             foreach (var f in Fields)
@@ -65,9 +67,7 @@ public abstract class FormScreen : IScreen
                 Console.SetCursorPosition(left, top);
                 Console.Write(field.MaskInput ? UserLogic.Mask(input) : input);
 
-                Console.CursorVisible = true;
                 key = Console.ReadKey(true);
-                Console.CursorVisible = false;
 
                 if (key.Key == ConsoleKey.Escape)
                 {

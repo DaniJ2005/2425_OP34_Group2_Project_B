@@ -31,7 +31,7 @@
         {
             if (passwordIsEncrypted)
             {
-                if (CryptoHelper.VerifyEncrypted(password, user.Password))
+                if (CryptoHelper.Verify(password, user.Password))
                     return LoginUser(user);
             }
             else

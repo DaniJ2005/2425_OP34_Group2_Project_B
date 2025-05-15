@@ -12,9 +12,10 @@ class SymbolCheckScreen : IScreen
         Console.OutputEncoding = System.Text.Encoding.UTF8;
         Console.CursorVisible = false;
 
+        int top = Console.CursorTop;
         string testSymbols = "← ↑ → ↓ ▧ ▣ ■ □";
 
-        General.ClearConsole();
+        General.ClearConsole(top);
 
         Console.WriteLine("╔═════════════════════════════════════════╗");
         Console.WriteLine("║           QUICK DISPLAY CHECK           ║");

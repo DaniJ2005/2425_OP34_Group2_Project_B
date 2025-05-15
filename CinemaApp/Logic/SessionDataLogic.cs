@@ -47,9 +47,9 @@ public static class SessionDataLogic
         var user = UserAccess.GetByEmail(flag.Email ?? "");
         if (user == null) return;
 
-        UserLogic.Login(flag.Email, flag.Password, true);
+        UserLogic.Login(flag.Email ?? "", flag.Password ?? "", true);
 
-        if (UserLogic.CurrentUser != null)
+        if (user != null)
             LoggerLogic.Instance.Log($"Auto-login successful | Email: {user.Email}");
 
 
