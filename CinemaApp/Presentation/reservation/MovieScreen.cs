@@ -7,6 +7,7 @@ public class MovieScreen : IScreen
     public void Start()
     {
         ReservationLogic.ClearMovie();
+        ReservationLogic.ClearFood();
 
         // Move Access call to logic
         _movies = MovieAccess.GetAllMovies();

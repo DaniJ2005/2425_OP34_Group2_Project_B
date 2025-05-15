@@ -14,6 +14,7 @@ class HomeScreen : IScreen
 
     private string[] loggedInOptions = {
         "Book Tickets",
+        "View Reservations",
         "Logout",
         "Exit Application"
     };
@@ -98,6 +99,10 @@ class HomeScreen : IScreen
         {
             case "Book Tickets":
                 MenuLogic.NavigateTo(new MovieScreen());
+                break;
+
+            case "View Reservations":
+                MenuLogic.NavigateTo(new ViewAllReservationsScreen());
                 break;
 
             case "admin screen":

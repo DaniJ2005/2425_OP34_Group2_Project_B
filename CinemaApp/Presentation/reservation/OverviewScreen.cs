@@ -3,24 +3,30 @@ public class OverviewScreen : IScreen
     public string ScreenName { get; set; }
     private int _selectedIndex = 0;
     private List<KeyValuePair<Seat, SeatPrice>> _seats;
-    private List<string> _buttons;
-
+    private string[] _buttons;
+    private List<KeyValuePair<Food, int>> _selectedFoods = [];
+    private User _currentUser;
     public OverviewScreen() => ScreenName = "Confirm Reservation";
 
     public void Start()
     {
         _seats = ReservationLogic.GetSelectedSeats().ToList();
-        if (UserLogic.CurrentUser != null)
+        _selectedFoods = ReservationLogic.GetSelectedFoodItems().ToList();
+        _currentUser = UserLogic.CurrentUser;
+        
+
+        if (_currentUser != null)
         {
             // If logged in
-            _buttons = new(){ "Add Food", "Confirm Reservation" };
+            _buttons = new[] { "Add Food", "Confirm Reservation" };
         }
         else
         {
             // If not logged in
-            // _buttons = new(){ "Add Food", "Log In", "Create Account", "Continue as Guest"};
-            _buttons = new(){ "Add Food", "Continue as Guest"};
+            // _buttons = new[] { "Add Food", "Log In", "Create Account", "Continue as Guest" };
+            _buttons = new[] { "Add Food", "Log In", "Continue as Guest" };
         }
+
         Screen();
     }
 
@@ -35,20 +41,47 @@ public class OverviewScreen : IScreen
 
             General.ClearConsole(topPosition);
             Console.WriteLine("Reservation:\n");
+
+            if (_currentUser != null)
+            {
+                Console.WriteLine($"User: {_currentUser.Email}\n");
+            }
+            else
+            {
+                Console.WriteLine("No logged in user\n");
+            }
+
             Console.WriteLine($"{confirmationSummary}");
 
+            double totalPrice = 0;
+            
+            // Display Selected food items
+            foreach (var selectedFoodKvp in _selectedFoods)
+            {
+                int quantity = selectedFoodKvp.Value;
+                Food food = selectedFoodKvp.Key;
+
+                totalPrice += food.Price * quantity;
+
+                Console.WriteLine($" - {quantity}x {food.Name} - €{food.Price * quantity:F2}");
+            }
+
+            Console.WriteLine();
+
+            // Display Selected seats
             for (int i = 0; i < _seats.Count; i++)
             {
                 var seatText = $" - Seat | Row: {_seats[i].Key.Row} | Col: {_seats[i].Key.Col} | Price: €{_seats[i].Value.Price}";
+                totalPrice += _seats[i].Value.Price;
                 if (_selectedIndex == i)
                     Highlight(seatText);
                 else
                     Console.WriteLine(seatText);
             }
 
-            Console.WriteLine();
+            Console.WriteLine($"\nTotal: €{totalPrice:F2}\n");
 
-            for (int i = 0; i < _buttons.Count; i++)
+            for (int i = 0; i < _buttons.Length; i++)
             {
                 int buttonIndex = _seats.Count + i;
                 if (_selectedIndex == buttonIndex)
@@ -68,11 +101,11 @@ public class OverviewScreen : IScreen
                     break;
 
                 case ConsoleKey.DownArrow:
-                    if (_selectedIndex < _seats.Count + _buttons.Count - 1) _selectedIndex++;
+                    if (_selectedIndex < _seats.Count + _buttons.Length - 1) _selectedIndex++;
                     break;
 
                 case ConsoleKey.Enter:
-                    HandleSelection();
+                    HandleSelection(totalPrice);
                     break;
 
                 case ConsoleKey.Escape:
@@ -91,7 +124,7 @@ public class OverviewScreen : IScreen
         Console.ResetColor();
     }
 
-    private void HandleSelection()
+    private void HandleSelection(double totalPrice)
     {   
         // If selected a seat
         if (_selectedIndex < _seats.Count)
@@ -106,10 +139,10 @@ public class OverviewScreen : IScreen
             {
                 case "Confirm Reservation":
                     // If user logged in
-                    HandleConfirmReservation(UserLogic.CurrentUser.Email);
+                    HandleConfirmReservation(_currentUser.Email, totalPrice);
                     break;
                 case "Continue as Guest":
-                    HandleGuestConfirm();
+                    HandleGuestConfirm(totalPrice);
                     break;
                 case "Log In":
                     MenuLogic.NavigateTo(new Login());
@@ -127,22 +160,25 @@ public class OverviewScreen : IScreen
     private void HandleSeatAction(KeyValuePair<Seat, SeatPrice> seatKvp)
     {
         Console.WriteLine($"\n[Seat Selected] {seatKvp.Key.Id} - {seatKvp.Value.Price}");
-        Console.ReadKey(true);
     }
 
-    private void HandleConfirmReservation(string email)
+    private void HandleConfirmReservation(string email, double totalPrice)
     {
-        ReservationLogic.CreateReservation(email);
+        ReservationLogic.CreateReservation(email, totalPrice);
+        Console.Clear();
+        Console.WriteLine("Reservation Confirmed!");
+        Console.WriteLine("Press any key to return...");
+        Console.ReadKey();
         MenuLogic.NavigateTo(new HomeScreen(), clearStack: true);
     }
 
-    private void HandleGuestConfirm()
+    private void HandleGuestConfirm(double totalPrice)
     {
         Console.Clear();
         Console.WriteLine("Enter email for the reservation.");
 
         string email = Console.ReadLine();
-        ReservationLogic.CreateReservation(email);
+        ReservationLogic.CreateReservation(email, totalPrice);
 
         Console.WriteLine("Reservation Confirmed!");
         Console.WriteLine("Press any key to return...");

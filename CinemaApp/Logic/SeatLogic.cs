@@ -7,6 +7,8 @@ static class SeatLogic
     public static int X = 0;
     public static int Y = 0;
 
+    public static int SeatSelectionLimit = 10;
+
     public static void LoadSeats(MovieSession movieSession)
     {
         // Reset HashSet's
@@ -46,7 +48,10 @@ static class SeatLogic
         }
         else
         {
-            SelectedSeatIds.Add(currentSeat.Id);
+            if (SelectedSeatIds.Count < SeatSelectionLimit)
+            {
+                SelectedSeatIds.Add(currentSeat.Id);
+            }
         }
     }
 

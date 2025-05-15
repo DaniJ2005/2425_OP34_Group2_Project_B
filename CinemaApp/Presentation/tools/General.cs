@@ -1,3 +1,4 @@
+using System.Reflection;
 static class General
 {
     public static void PrintColoredString(string str, string color)
@@ -30,5 +31,25 @@ static class General
         }
 
         Console.SetCursorPosition(0, topPosition);   
+    }
+
+    public static void PrintProperties(object obj)
+    {
+        if (obj == null)
+        {
+            Console.WriteLine("Object is null.");
+            return;
+        }
+
+        Type type = obj.GetType();
+        PropertyInfo[] properties = type.GetProperties();
+
+        Console.WriteLine($"Properties of {type.Name}:");
+
+        foreach (var prop in properties)
+        {
+            var value = prop.GetValue(obj, null);
+            Console.Write($"{prop.Name}: {value} | ");
+        }
     }
 }
