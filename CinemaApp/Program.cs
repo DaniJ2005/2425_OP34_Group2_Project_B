@@ -1,4 +1,5 @@
-﻿// Enable UTF-8 output
+﻿// Dit is een nieuwere versie
+// Enable UTF-8 output
 Console.OutputEncoding = System.Text.Encoding.UTF8;
 
 //hide cursor
