@@ -24,7 +24,7 @@ public class FoodScreen : IScreen
 
         do
         {
-            Console.Clear();
+            General.ClearConsole();
             Console.WriteLine("Select food and drinks!\n");
             Console.WriteLine("Use ^ v to navigate, <- -> to change page,");
             Console.WriteLine("Press [SPACE] to add & [BACKSPACE] to remove an item,");

@@ -15,7 +15,7 @@ public class Login : FormScreen
         Fields.Add(new FormField("Password", true, input =>
         {
             if (foundUser == null) return (false, "Email must be valid first.");
-            return (CryptoHelper.Verify(input, foundUser.Password), "Incorrect password.");
+            return (UserLogic.Login(foundUser.Email, input) != null, "Incorrect password.");
         }));
     }
 
