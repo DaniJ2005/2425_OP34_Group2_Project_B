@@ -33,13 +33,12 @@ public class OverviewScreen : IScreen
     private void Screen()
     {
         ConsoleKey key;
-        int topPosition = Console.CursorTop;
 
         do
         {
             string confirmationSummary = ReservationLogic.GetConfirmationSummary();
 
-            General.ClearConsole(topPosition);
+            General.ClearConsole();
             Console.WriteLine("Reservation:\n");
 
             if (_currentUser != null)
@@ -165,7 +164,7 @@ public class OverviewScreen : IScreen
     private void HandleConfirmReservation(string email, double totalPrice)
     {
         ReservationLogic.CreateReservation(email, totalPrice);
-        Console.Clear();
+        General.ClearConsole();
         Console.WriteLine("Reservation Confirmed!");
         Console.WriteLine("Press any key to return...");
         Console.ReadKey();
@@ -174,7 +173,7 @@ public class OverviewScreen : IScreen
 
     private void HandleGuestConfirm(double totalPrice)
     {
-        Console.Clear();
+        General.ClearConsole();
         Console.WriteLine("Enter email for the reservation.");
 
         string email = Console.ReadLine();

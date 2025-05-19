@@ -22,7 +22,7 @@ public class ViewAllReservationsScreen : IScreen
 
         do
         {
-            Console.Clear();
+            General.ClearConsole();
 
             Console.WriteLine("Your Reservations:\n");
 

@@ -19,19 +19,27 @@ static class General
         }
     }
 
-    public static void ClearConsole(int topPosition)
+    public static void ClearConsole()
     {
-        // Instead of clearing the whole console, just reset to the starting position
-        Console.SetCursorPosition(0, topPosition);      
+        // Hide the cursor for a cleaner look while redrawing
+        Console.CursorVisible = false;
 
-        // Clear the screen area by writing 20 empty lines 
-        for (int i = 0; i < 20; i++)
+        // Cache the blank line and console dimensions
+        string blankLine = new string(' ', Console.WindowWidth);
+        int height = Console.WindowHeight;
+
+        // Minimize flicker by locking cursor at (0, 0) and overwriting line-by-line
+        Console.SetCursorPosition(0, 0);
+        
+        for (int i = 0; i < height; i++)
         {
-        Console.WriteLine(new string(' ', Console.WindowWidth));
+            Console.Write(blankLine);
         }
 
-        Console.SetCursorPosition(0, topPosition);   
+        // Reset to top-left corner
+        Console.SetCursorPosition(0, 0);
     }
+
 
     public static void PrintProperties(object obj)
     {

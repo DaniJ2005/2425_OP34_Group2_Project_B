@@ -20,7 +20,7 @@ public class ViewSingleReservationScreen : IScreen
 
         do
         {
-            Console.Clear();
+            General.ClearConsole();
 
             Console.WriteLine("Your Reservation:\n");
 
