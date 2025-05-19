@@ -1,3 +1,23 @@
-﻿// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Welcome to this amazing program");
-Menu.Start();
+﻿// Dit is een nieuwere versie
+// Enable UTF-8 output
+Console.OutputEncoding = System.Text.Encoding.UTF8;
+
+//hide cursor
+Console.CursorVisible = false;
+
+//Dev only
+// Db.DeleteTables();
+
+// Initialize db tables
+// Db.InitTables();
+
+// Fill db with some data
+// Db.PopulateTables();
+
+// Start application
+if (!SessionDataLogic.HasPassedSymbolCheck())
+    MenuLogic.NavigateTo(new SymbolCheckScreen());
+
+SessionDataLogic.TryAutoLogin();
+
+MenuLogic.NavigateTo(new HomeScreen());

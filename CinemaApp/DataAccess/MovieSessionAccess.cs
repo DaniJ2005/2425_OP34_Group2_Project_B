@@ -1,0 +1,112 @@
+using Dapper;
+
+public static class MovieSessionAccess
+{
+    public static List<MovieSession> GetAllByMovieId(int movieId)
+    {
+        using (var connection = Db.CreateConnection())
+        {
+            string sql = @"SELECT
+                id AS Id,
+                movie_hall_id AS MovieHallId,
+                movie_id AS MovieId,
+                start_time AS StartTime,
+                date AS Date
+                FROM movie_session WHERE movie_id = @MovieId";
+            return connection.Query<MovieSession>(sql, new { MovieId = movieId }).ToList();
+        }
+    }
+    
+    public static List<MovieSession> GetAll()
+    {
+        using (var connection = Db.CreateConnection())
+        {
+            string sql = @"
+                SELECT
+                id AS Id,
+                movie_hall_id AS MovieHallId,
+                movie_id AS MovieId,
+                start_time AS StartTime,
+                date AS Date
+                FROM movie_session";
+            return connection.Query<MovieSession>(sql).ToList();
+        }
+    }
+    
+    public static MovieSession GetById(int id)
+    {
+        using (var connection = Db.CreateConnection())
+        {
+            string sql = @"
+                SELECT
+                id AS Id,
+                movie_hall_id AS MovieHallId,
+                movie_id AS MovieId,
+                start_time AS StartTime,
+                date AS Date
+                FROM movie_session
+                WHERE id = @Id";
+            return connection.QueryFirstOrDefault<MovieSession>(sql, new { Id = id });
+        }
+    }
+    
+    public static void AddMovieSession(MovieSession session)
+    {
+        using (var connection = Db.CreateConnection())
+        {
+            string sql = @"INSERT INTO movie_session 
+                (movie_hall_id, movie_id, start_time, date)
+                VALUES 
+                (@MovieHallId, @MovieId, @StartTime, @Date);
+                SELECT LAST_INSERT_ID()";
+            
+            int id = connection.ExecuteScalar<int>(sql, new { 
+                session.MovieHallId, 
+                session.MovieId, 
+                session.StartTime, 
+                session.Date
+            });
+            
+            session.Id = id;
+        }
+    }
+    
+    public static void UpdateMovieSession(MovieSession session)
+    {
+        using (var connection = Db.CreateConnection())
+        {
+            string sql = @"UPDATE movie_session 
+                SET movie_hall_id = @MovieHallId,
+                    movie_id = @MovieId,
+                    start_time = @StartTime,
+                    date = @Date
+                WHERE id = @Id";
+            
+            connection.Execute(sql, new { 
+                session.MovieHallId, 
+                session.MovieId, 
+                session.StartTime, 
+                session.Date,
+                session.Id
+            });
+        }
+    }
+    
+    public static void DeleteMovieSession(int id)
+    {
+        using (var connection = Db.CreateConnection())
+        {
+            // Check if there are any tickets sold for this session
+            string checkSql = @"SELECT COUNT(*) FROM ticket WHERE movie_session_id = @Id";
+            int ticketCount = connection.ExecuteScalar<int>(checkSql, new { Id = id });
+            
+            if (ticketCount > 0)
+            {
+                throw new InvalidOperationException("Cannot delete movie session with sold tickets");
+            }
+            
+            string sql = "DELETE FROM movie_session WHERE id = @Id";
+            connection.Execute(sql, new { Id = id });
+        }
+    }
+}

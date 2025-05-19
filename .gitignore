@@ -396,3 +396,21 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+# Sqlite database
+CinemaApp/DataSources/DB/project.db
+!CinemaApp/DataSources/DB.gitkeep
+
+# Log files
+CinemaApp/DataSources/Logs/*.txt
+!CinemaApp/DataSources/Logs.gitkeep
+
+# Flag files (used for auth, symbols, etc.)
+CinemaApp/DataSources/SessionData/*
+!CinemaApp/DataSources/SessionData/.gitkeep
+
+# Ignore encryption keys file
+Cinemapp/encryption_keys.txt
+
+.env
+
