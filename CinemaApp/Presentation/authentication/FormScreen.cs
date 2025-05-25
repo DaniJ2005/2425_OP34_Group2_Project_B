@@ -1,119 +1,129 @@
 public abstract class FormScreen : IScreen
 {
     public string ScreenName { get; set; }
-
     protected List<FormField> Fields = new();
     protected int ActiveFieldIndex = 0;
 
     public abstract void OnFormSubmit();
 
-    public void Start()
+    public virtual void Start()
     {
-        General.ClearConsole();
-
-        while (ActiveFieldIndex < Fields.Count)
-        {
-            var field = Fields[ActiveFieldIndex];
-            field.IsActive = true;
-
-            string input = ReadInput(field);
-
-            if (input == null)
-                return; // user canceled
-
-            field.Value = input;
-            field.IsActive = false;
-
-            var (isValid, errorMessage) = field.Validator(input);
-            if (!isValid)
-            {
-                ShowErrorBox(errorMessage);
-                continue;
-            }
-
-            ActiveFieldIndex++;
-        }
-
-        OnFormSubmit();
-    }
-
-    string ReadInput(FormField field)
-    {
-        string input = "";
-        ConsoleKeyInfo key;
-        int cursorTop = Console.CursorTop;
+        Console.CursorVisible = false;
 
         while (true)
         {
-            General.ClearConsole();
-            Console.WriteLine($"==== {ScreenName} ====\n");
+            Console.Clear();
+            Console.WriteLine($"==== {ScreenName.ToUpper()} ====\n");
 
-            foreach (var f in Fields)
+            for (int i = 0; i < Fields.Count; i++)
             {
-                bool? isValid = f == field ? null : f.Validator(f.Value).isValid;
-                ShowField(f.Label, f.MaskInput ? UserLogic.Mask(f.Value) : f.Value, f.IsActive, isValid);
+                var field = Fields[i];
+                string displayValue = field.MaskInput ? UserLogic.Mask(field.Value) : field.Value;
+
+                if (i == ActiveFieldIndex)
+                {
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.Write("> ");
+                }
+                else
+                {
+                    Console.Write("  ");
+                }
+
+                Console.ResetColor();
+                Console.WriteLine($"{field.Label}: {displayValue}");
             }
 
-            Console.Write($"\n> {field.Label}: ");
-            int left = Console.CursorLeft;
-            int top = Console.CursorTop;
-            Console.WriteLine(); // reserve space for error
+            Console.WriteLine("\n[↑][↓] Navigate    [Enter] Edit   [ESC] Cancel   [F]inish");
 
-            while (true)
+            var key = Console.ReadKey(true).Key;
+
+            if (key == ConsoleKey.UpArrow && ActiveFieldIndex > 0)
+                ActiveFieldIndex--;
+            else if (key == ConsoleKey.DownArrow && ActiveFieldIndex < Fields.Count - 1)
+                ActiveFieldIndex++;
+            else if (key == ConsoleKey.Enter)
+                EditActiveField();
+            else if (key == ConsoleKey.F)
             {
-                Console.SetCursorPosition(left, top);
-                Console.Write(new string(' ', Console.WindowWidth - left));
-                Console.SetCursorPosition(left, top);
-                Console.Write(field.MaskInput ? UserLogic.Mask(input) : input);
-
-                Console.CursorVisible = true;
-                key = Console.ReadKey(true);
-                Console.CursorVisible = false;
-
-                if (key.Key == ConsoleKey.Escape)
+                if (Fields.All(f => f.Validator(f.Value).isValid))
                 {
-                    MenuLogic.NavigateToPrevious();
-                    return null;
+                    OnFormSubmit();
+                    return;
                 }
-                else if (key.Key == ConsoleKey.Backspace && input.Length > 0)
+                else
                 {
-                    input = input[..^1];
+                    ShowErrorBox("Please fix validation errors.");
                 }
-                else if (key.Key == ConsoleKey.Enter)
-                {
-                    return input;
-                }
-                else if (!char.IsControl(key.KeyChar))
-                {
-                    input += key.KeyChar;
-                }
+            }
+            else if (key == ConsoleKey.Escape)
+            {
+                MenuLogic.NavigateToPrevious();
+                return;
             }
         }
     }
 
-    void ShowField(string label, string value, bool isActive, bool? isValid)
+    private void EditActiveField()
     {
-        var prefix = isActive ? "> " : "  ";
+        var field = Fields[ActiveFieldIndex];
+        string input = field.Value;
+        int inputTop = Fields.Count + 3;
 
-        Console.ForegroundColor = isValid == true ? ConsoleColor.Green :
-                                  isValid == false ? ConsoleColor.Red :
-                                  ConsoleColor.White;
+        Console.SetCursorPosition(0, inputTop);
+        Console.WriteLine($"Enter new value for {field.Label}:");
+        Console.Write("> ");
+        Console.CursorVisible = true;
 
-        if (isActive) Console.BackgroundColor = ConsoleColor.DarkGray;
+        while (true)
+        {
+            Console.SetCursorPosition(2, inputTop + 1);
+            Console.Write(new string(' ', Console.WindowWidth - 2));
+            Console.SetCursorPosition(2, inputTop + 1);
+            Console.Write(field.MaskInput ? UserLogic.Mask(input) : input);
 
-        Console.WriteLine($"{prefix}{label}: {value}");
-        Console.ResetColor();
+            var key = Console.ReadKey(true);
+
+            if (key.Key == ConsoleKey.Backspace && input.Length > 0)
+                input = input[..^1];
+            else if (key.Key == ConsoleKey.Enter)
+            {
+                var (valid, error) = field.Validator(input);
+                if (!valid)
+                {
+                    ShowErrorBox(error);
+                }
+                else
+                {
+                    field.Value = input;
+                    break;
+                }
+            }
+            else if (key.Key == ConsoleKey.UpArrow && ActiveFieldIndex > 0)
+            {
+                field.Value = input;
+                ActiveFieldIndex--;
+                break;
+            }
+            else if (key.Key == ConsoleKey.DownArrow && ActiveFieldIndex < Fields.Count - 1)
+            {
+                field.Value = input;
+                ActiveFieldIndex++;
+                break;
+            }
+            else if (!char.IsControl(key.KeyChar))
+                input += key.KeyChar;
+        }
+
+        Console.CursorVisible = false;
     }
 
-    void ShowErrorBox(string error)
+    private void ShowErrorBox(string error)
     {
-        Console.WriteLine();
         Console.ForegroundColor = ConsoleColor.Red;
-        int width = error.Length + 4;
-        Console.WriteLine("  ╭" + new string('─', width) + "╮");
-        Console.WriteLine($"  │  {error}  │");
-        Console.WriteLine("  ╰" + new string('─', width) + "╯");
+        Console.WriteLine($"\nError: {error}");
         Console.ResetColor();
+        Console.WriteLine("Press any key to continue...");
         Console.ReadKey();
     }
 }
