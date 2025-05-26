@@ -21,6 +21,7 @@ class HomeScreen : IScreen
     private string[] loggedInOptions = {
         "Book Tickets",
         "View Reservations",
+        "admin screen",
         "Logout",
         "Exit Application"
     };
