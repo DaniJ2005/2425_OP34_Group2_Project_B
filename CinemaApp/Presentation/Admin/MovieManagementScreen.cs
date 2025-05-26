@@ -8,7 +8,6 @@ public class MovieManagementScreen : IScreen
         ConsoleKey key;
         string[] options = { "Add Movie", "Update Movie", "Delete Movie", "View Movies", "Back" };
 
-
         do
         {
             Console.Clear();
@@ -16,7 +15,6 @@ public class MovieManagementScreen : IScreen
             Console.WriteLine("║       MOVIE MANAGEMENT       ║");
             Console.WriteLine("╚══════════════════════════════╝");
             Console.WriteLine("[↑][↓] to navigate, [ENTER] to select, [ESC] to go back\n");
-
 
             for (int i = 0; i < options.Length; i++)
             {
@@ -47,18 +45,14 @@ public class MovieManagementScreen : IScreen
                 {
                     case 0: // Add Movie
                         ShowAddMovie();
-                        ShowAddMovie();
                         break;
                     case 1: // Update Movie
-                        ShowUpdateMovie();
                         ShowUpdateMovie();
                         break;
                     case 2: // Delete Movie
                         ShowDeleteMovie();
-                        ShowDeleteMovie();
                         break;
                     case 3: // View Movies
-                        ShowViewMovies();
                         ShowViewMovies();
                         break;
                     case 4: // Back
@@ -96,7 +90,7 @@ public class MovieManagementScreen : IScreen
                 Genre = fields[2].Value,
                 Duration = fields[3].Value,
                 Language = fields[4].Value,
-                MinAge = int.Parse(fields[5].Value)
+                MinAge = fields[5].Value
             },
             MovieAdminLogic.AddMovie);
 
@@ -159,7 +153,7 @@ public class MovieManagementScreen : IScreen
                         Genre = fields[2].Value,
                         Duration = fields[3].Value,
                         Language = fields[4].Value,
-                        MinAge = int.Parse(fields[5].Value)
+                        MinAge = fields[5].Value
                     },
                     MovieAdminLogic.UpdateMovie);
 

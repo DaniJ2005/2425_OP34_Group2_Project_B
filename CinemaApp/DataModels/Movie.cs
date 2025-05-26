@@ -7,8 +7,10 @@ public class Movie
     public string Duration { get; set; }
     public string Language { get; set; }
 
-    public int MinAge { get; set; }
-
-    // Read-only property for UI purposes
-    public string MinAgeDisplay => $"{MinAge}+";
+    private int _minAge;
+    public string MinAge
+    {
+        get => _minAge + "+";
+        set => _minAge = int.Parse(value);
+    }
 }
