@@ -1,12 +1,12 @@
 public abstract class FormScreen : IScreen
 {
     public string ScreenName { get; set; }
+
     protected List<FormField> Fields = new();
     protected int ActiveFieldIndex = 0;
 
     public abstract void OnFormSubmit();
 
-    public virtual void Start()
     public virtual void Start()
     {
         General.ClearConsole();
@@ -48,7 +48,7 @@ public abstract class FormScreen : IScreen
             General.ClearConsole();
             Console.WriteLine($"==== {ScreenName.ToUpper()} ====\n");
 
-            for (int i = 0; i < Fields.Count; i++)
+            foreach (var f in Fields)
             {
                 bool? isValid = f == field ? null : f.Validator(f.Value).isValid;
                 ShowField(f.Label, f.MaskInput ? UserLogic.Mask(f.Value) : f.Value, f.IsActive, isValid);
@@ -108,10 +108,14 @@ public abstract class FormScreen : IScreen
         Console.ResetColor();
     }
 
-    private void ShowErrorBox(string error)
+    void ShowErrorBox(string error)
     {
+        Console.WriteLine();
         Console.ForegroundColor = ConsoleColor.Red;
-        Console.WriteLine($"\nError: {error}");
+        int width = error.Length + 4;
+        Console.WriteLine("  ╭" + new string('─', width) + "╮");
+        Console.WriteLine($"  │  {error}  │");
+        Console.WriteLine("  ╰" + new string('─', width) + "╯");
         Console.ResetColor();
         Console.WriteLine("Press any key to retry...");
         Console.ReadKey(true);

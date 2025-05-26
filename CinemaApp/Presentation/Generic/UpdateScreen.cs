@@ -54,7 +54,7 @@ public class UpdateScreen<T> : FormScreen
                     {
                         Console.Write($"  | {oldValue}  ");
                         Console.ForegroundColor = ConsoleColor.Cyan;
-                        Console.Write("[R]evert");
+                        Console.Write("[Revert]");
                         Console.ResetColor();
                     }
 

@@ -21,7 +21,7 @@ class HomeScreen : IScreen
     private string[] loggedInOptions = {
         "Book Tickets",
         "View Reservations",
-        "admin screen",
+        "admin screen", // tijdelijk omdat, rol id niet goed uit db word geladen
         "Logout",
         "Exit Application"
     };

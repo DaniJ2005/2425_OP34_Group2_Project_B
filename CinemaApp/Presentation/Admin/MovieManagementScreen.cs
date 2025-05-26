@@ -75,7 +75,6 @@ public class MovieManagementScreen : IScreen
     }
 
     private void ShowAddMovie()
-    private void ShowAddMovie()
     {
         var fields = new List<FormField>
         {
@@ -97,7 +96,7 @@ public class MovieManagementScreen : IScreen
                 Genre = fields[2].Value,
                 Duration = fields[3].Value,
                 Language = fields[4].Value,
-                MinAge = fields[5].Value
+                MinAge = int.Parse(fields[5].Value)
             },
             MovieAdminLogic.AddMovie);
 
@@ -160,7 +159,7 @@ public class MovieManagementScreen : IScreen
                         Genre = fields[2].Value,
                         Duration = fields[3].Value,
                         Language = fields[4].Value,
-                        MinAge = fields[5].Value
+                        MinAge = int.Parse(fields[5].Value)
                     },
                     MovieAdminLogic.UpdateMovie);
 
