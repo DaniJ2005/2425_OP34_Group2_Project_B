@@ -1,19 +1,19 @@
 public class UserManagementScreen : IScreen
 {
     public string ScreenName { get; set; } = "User Management";
-    ConsoleKey key;
-    
+
     public void Start()
     {
         int selectedIndex = 0;
+        ConsoleKey key;
         string[] options = { "Add User", "Update User", "Delete User", "View Users", "Back" };
 
         do
         {
             Console.Clear();
-            Console.WriteLine("╔══════════════════════════════╗");
-            Console.WriteLine("║       USER MANAGEMENT        ║");
-            Console.WriteLine("╚══════════════════════════════╝");
+            Console.WriteLine("╔════════════════════════════╗");
+            Console.WriteLine("║       USER MANAGEMENT      ║");
+            Console.WriteLine("╚════════════════════════════╝");
             Console.WriteLine("[↑][↓] to navigate, [ENTER] to select, [ESC] to go back\n");
 
             for (int i = 0; i < options.Length; i++)
@@ -31,278 +31,147 @@ public class UserManagementScreen : IScreen
                 }
             }
 
-            ConsoleKeyInfo keyInfo = Console.ReadKey(true);
-            key = keyInfo.Key;
+            key = Console.ReadKey(true).Key;
 
-            if (key == ConsoleKey.UpArrow && selectedIndex > 0)
-                selectedIndex--;
-            else if (key == ConsoleKey.DownArrow && selectedIndex < options.Length - 1)
-                selectedIndex++;
+            if (key == ConsoleKey.UpArrow && selectedIndex > 0) selectedIndex--;
+            else if (key == ConsoleKey.DownArrow && selectedIndex < options.Length - 1) selectedIndex++;
             else if (key == ConsoleKey.Enter)
             {
                 Console.Clear();
                 switch (selectedIndex)
                 {
-                    case 0:
-                        AddUserFlow();
-                        break;
-                    case 1:
-                        UpdateUserFlow();
-                        break;
-                    case 2:
-                        DeleteUserFlow();
-                        break;
-                    case 3:
-                        ViewUsersFlow();
-                        break;
+                    case 0: ShowAddUser(); break;
+                    case 1: ShowUpdateUser(); break;
+                    case 2: ShowDeleteUser(); break;
+                    case 3: ShowViewUsers(); break;
                     case 4:
                         MenuLogic.NavigateToPrevious();
-                        LoggerLogic.Instance.Log("Returned to admin menu from user management");
                         return;
                 }
-
-                Console.WriteLine("\nPress any key to continue...");
-                Console.ReadKey();
             }
             else if (key == ConsoleKey.Escape)
             {
                 MenuLogic.NavigateToPrevious();
-                LoggerLogic.Instance.Log("User pressed Escape - returning to admin menu");
                 return;
             }
+
         } while (true);
     }
 
-    private void AddUserFlow()
+    private void ShowAddUser()
     {
-        Console.WriteLine("=== Add New User ===\n");
-
-        string email = GetValidInput("Email", s => UserLogic.ValidateEmail(s), "Please enter a valid email address");
-        string username = GetValidInput("Username", s => UserLogic.ValidateUserName(s), "Username must be at least 3 characters");
-        string password = GetSecurePassword();
-
-        // Default role ID (you might want to add role selection)
-        int roleId = 2;
-
-        var user = new User 
-        { 
-            Email = email, 
-            UserName = username, 
-            Password = password,
-            RoleId = roleId
+        var fields = new List<FormField>
+        {
+            new FormField("Email", false, v => (UserLogic.ValidateEmail(v), UserLogic.ValidateEmail(v) ? "" : "Invalid email")),
+            new FormField("UserName", false, v => (UserLogic.ValidateUserName(v), UserLogic.ValidateUserName(v) ? "" : "Invalid username")),
+            new FormField("Password", true, v => (UserLogic.ValidatePassword(v), UserLogic.ValidatePassword(v) ? "" : "Invalid password")),
+            new FormField("RoleId", false, v => {
+                var valid = new[] { "1", "2", "3" }.Contains(v);
+                return (valid, valid ? "" : "RoleId must be 1 (Admin), 2 (User), or 3 (Guest)");
+            })
         };
 
-        if (UserAdminLogic.AddUser(user))
-            Console.WriteLine("\nUser successfully added.");
-        else
-            Console.WriteLine("\nFailed to add user. Please check the logs for details.");
-    }
-
-    private void UpdateUserFlow()
-    {
-        Console.WriteLine("=== Update User ===\n");
-        
-        // First display users to help with selection
-        ViewUsersFlow();
-        
-        // Get user ID with error handling
-        int id;
-        User user = null;
-        
-        do {
-            Console.Write("\nEnter user ID to update (or 0 to cancel): ");
-            if (!int.TryParse(Console.ReadLine(), out id))
+        var createScreen = new CreateScreen<User>(
+            "Add User",
+            fields,
+            () => new User
             {
-                Console.WriteLine("Invalid ID format. Please enter a number.");
-                continue;
-            }
-            
-            if (id == 0) return;
-            
-            user = UserAdminLogic.GetUserById(id);
-            if (user == null)
-                Console.WriteLine("User not found. Please try again.");
-            
-                
-        } while (user == null);
+                Email = fields[0].Value,
+                UserName = fields[1].Value,
+                Password = fields[2].Value,
+                RoleId = int.Parse(fields[3].Value)
+            },
+            UserAdminLogic.AddUser
+        );
 
-        // Now update user properties with current values as defaults
-        Console.WriteLine($"\nUpdating user: {user.UserName} (ID: {user.Id})");
-        Console.WriteLine("(Press Enter to keep current value)\n");
-
-        string input;
-        
-        Console.Write($"New Email [{user.Email}]: ");
-        input = Console.ReadLine();
-        if (!string.IsNullOrWhiteSpace(input))
-        {
-            if (UserLogic.ValidateEmail(input))
-                user.Email = input;
-            else
-                Console.WriteLine("Invalid email format - keeping current email.");
-        }
-
-        Console.Write($"New Username [{user.UserName}]: ");
-        input = Console.ReadLine();
-        if (!string.IsNullOrWhiteSpace(input))
-        {
-            if (UserLogic.ValidateUserName(input))
-                user.UserName = input;
-            else
-                Console.WriteLine("Invalid username format - keeping current username.");
-        }
-
-        Console.Write("New Password (leave blank to keep current): ");
-        input = Console.ReadLine();
-        if (!string.IsNullOrWhiteSpace(input))
-        {
-            if (UserLogic.ValidatePassword(input))
-                user.Password = input;
-            else
-                Console.WriteLine("Invalid password - keeping current password.");
-        }
-
-        if (UserAdminLogic.UpdateUser(user))
-            Console.WriteLine("\nUser updated successfully.");
-        else
-            Console.WriteLine("\nFailed to update user. Please check the logs for details.");
+        createScreen.Start();
     }
 
-    private void DeleteUserFlow()
-    {
-        Console.WriteLine("=== Delete User ===\n");
-        
-        // First display users to help with selection
-        ViewUsersFlow();
-        
-        int id;
-        User user = null;
-        
-        do {
-            Console.Write("\nEnter user ID to delete (or 0 to cancel): ");
-            if (!int.TryParse(Console.ReadLine(), out id))
-            {
-                Console.WriteLine("Invalid ID format. Please enter a number.");
-                continue;
-            }
-            
-            if (id == 0) return;
-            
-            user = UserAdminLogic.GetUserById(id);
-            if (user == null)
-                Console.WriteLine("User not found. Please try again.");
-                
-        } while (user == null);
-
-        Console.WriteLine($"\nAre you sure you want to delete user: {user.UserName} (ID: {user.Id})? [y/N]");
-        string confirmation = Console.ReadLine().ToLower();
-        
-        if (confirmation == "y" || confirmation == "yes")
-        {
-            if (UserAdminLogic.DeleteUser(user))
-                Console.WriteLine("User deleted successfully.");
-            else
-                Console.WriteLine("Failed to delete user. Please check the logs for details.");
-        }
-        else
-        {
-            Console.WriteLine("Delete operation cancelled.");
-        }
-    }
-
-    private void ViewUsersFlow()
+    private void ShowUpdateUser()
     {
         var users = UserAdminLogic.GetAllUsers();
-        
         if (users.Count == 0)
         {
-            Console.WriteLine("No users found in the system.");
+            Console.WriteLine("No users to update.");
+            Console.ReadKey();
             return;
         }
-        
-        Console.WriteLine("╔════╦══════════════════════════╦═══════════════╦════════╗");
-        Console.WriteLine("║ ID ║ Email                    ║ Username      ║ Role   ║");
-        Console.WriteLine("╠════╬══════════════════════════╬═══════════════╬════════╣");
 
-        foreach (var user in users)
-        {
-            string roleName = GetRoleName(user.RoleId);
-            Console.WriteLine($"║ {user.Id,-2} ║ {user.Email,-24} ║ {user.UserName,-13} ║ {roleName,-6} ║");
-        }
+        var table = new Table<User>(maxColWidth: 40, pageSize: 10);
+        table.SetColumns("Id", "Email", "UserName", "Password", "RoleId");
+        table.AddRows(users);
 
-        Console.WriteLine("╚════╩══════════════════════════╩═══════════════╩════════╝");
-    }
-    
-    // Helper methods for input validation
-    private string GetValidInput(string prompt, Func<string, bool> validator, string errorMessage)
-    {
-        string input;
-        bool isValid;
-        
-        do {
-            Console.Write($"{prompt}: ");
-            input = Console.ReadLine();
-            isValid = validator(input);
-            
-            if (!isValid)
-                Console.WriteLine(errorMessage);
-                
-        } while (!isValid);
-        
-        return input;
-    }
-    
-    private string GetSecurePassword()
-    {
-        string password;
-        bool isValid;
-        
-        do {
-            Console.Write("Password: ");
-            password = ReadMaskedInput();
-            isValid = UserLogic.ValidatePassword(password);
-            
-            if (!isValid)
-                Console.WriteLine("Password must be at least 8 characters with uppercase, lowercase, and numbers");
-                
-        } while (!isValid);
-        
-        return password;
-    }
-    
-    private string ReadMaskedInput()
-    {
-        string input = "";
-        ConsoleKeyInfo key;
-        
-        do {
-            key = Console.ReadKey(true);
-            
-            if (key.Key != ConsoleKey.Enter && key.Key != ConsoleKey.Backspace)
-            {
-                input += key.KeyChar;
-                Console.Write("*");
-            }
-            else if (key.Key == ConsoleKey.Backspace && input.Length > 0)
-            {
-                input = input.Substring(0, input.Length - 1);
-                Console.Write("\b \b");
-            }
-        } while (key.Key != ConsoleKey.Enter);
-        
-        Console.WriteLine();
-        return input;
-    }
-    
-    private string GetRoleName(int roleId)
-    {
-        // This would ideally come from a role service or database
-        switch (roleId)
+        ConsoleKey key;
+        do
         {
-            case 1: return "Admin";
-            case 2: return "User";
-            case 3: return "Guest";
-            default: return "Unknown";
-        }
+            Console.Clear();
+            Console.WriteLine("Select user to update:\n");
+            table.Print("Id", "Email", "UserName", "Password", "RoleId");
+            Console.WriteLine("\n[↑][↓] Navigate  [←][→] Page  [ENTER] Edit  [ESC] Cancel");
+
+            key = Console.ReadKey(true).Key;
+            if (key == ConsoleKey.Enter)
+            {
+                var selected = table.GetSelected();
+
+                var fields = new List<FormField>
+                {
+                    new FormField("Email", false, v => (UserLogic.ValidateEmail(v), UserLogic.ValidateEmail(v) ? "" : "Invalid email"))
+                        { Value = selected.Email, OriginalValue = selected.Email },
+                    new FormField("UserName", false, v => (UserLogic.ValidateUserName(v), UserLogic.ValidateUserName(v) ? "" : "Invalid username"))
+                        { Value = selected.UserName, OriginalValue = selected.UserName },
+                    new FormField("Password", true, v => (UserLogic.ValidatePassword(v), UserLogic.ValidatePassword(v) ? "" : "Invalid password"))
+                        { Value = selected.Password, OriginalValue = selected.Password },
+                    new FormField("RoleId", false, v => {
+                        var valid = new[] { "1", "2", "3" }.Contains(v);
+                        return (valid, valid ? "" : "RoleId must be 1 (Admin), 2 (User), or 3 (Guest)");
+                    })
+                        { Value = selected.RoleId.ToString(), OriginalValue = selected.RoleId.ToString() }
+                };
+
+                var updateScreen = new UpdateScreen<User>(
+                    "Update User",
+                    fields,
+                    () => new User
+                    {
+                        Id = selected.Id,
+                        Email = fields[0].Value,
+                        UserName = fields[1].Value,
+                        Password = fields[2].Value,
+                        RoleId = int.Parse(fields[3].Value)
+                    },
+                    UserAdminLogic.UpdateUser
+                );
+
+                MenuLogic.NavigateTo(updateScreen);
+                return;
+            }
+            else if (key == ConsoleKey.UpArrow) table.MoveUp();
+            else if (key == ConsoleKey.DownArrow) table.MoveDown();
+            else if (key == ConsoleKey.LeftArrow) table.PreviousPage();
+            else if (key == ConsoleKey.RightArrow) table.NextPage();
+            else if (key == ConsoleKey.Escape) return;
+
+        } while (true);
+    }
+
+    private void ShowDeleteUser()
+    {
+        var deleteScreen = new DeleteScreen<User>(
+            UserAdminLogic.GetAllUsers,
+            u => UserAdminLogic.DeleteUser(u)
+        );
+
+        deleteScreen.Start();
+    }
+
+    private void ShowViewUsers()
+    {
+        var readScreen = new ReadScreen<User>(
+            UserAdminLogic.GetAllUsers,
+            new[] { "Id", "Email", "UserName", "Password", "RoleId" }
+        );
+
+        readScreen.Start();
     }
 }

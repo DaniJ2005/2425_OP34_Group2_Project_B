@@ -7,7 +7,7 @@ public class MovieManagementScreen : IScreen
         int selectedIndex = 0;
         ConsoleKey key;
         string[] options = { "Add Movie", "Update Movie", "Delete Movie", "View Movies", "Back" };
-        
+
         do
         {
             Console.Clear();
@@ -15,7 +15,7 @@ public class MovieManagementScreen : IScreen
             Console.WriteLine("║       MOVIE MANAGEMENT       ║");
             Console.WriteLine("╚══════════════════════════════╝");
             Console.WriteLine("[↑][↓] to navigate, [ENTER] to select, [ESC] to go back\n");
-            
+
             for (int i = 0; i < options.Length; i++)
             {
                 if (i == selectedIndex)
@@ -31,202 +31,161 @@ public class MovieManagementScreen : IScreen
                 }
             }
 
-            ConsoleKeyInfo keyInfo = Console.ReadKey(true);
-            key = keyInfo.Key;
+            key = Console.ReadKey(true).Key;
+            key = Console.ReadKey(true).Key;
 
-            if (key == ConsoleKey.UpArrow && selectedIndex > 0)
-                selectedIndex--;
-            else if (key == ConsoleKey.DownArrow && selectedIndex < options.Length - 1)
-                selectedIndex++;
+            if (key == ConsoleKey.UpArrow && selectedIndex > 0) selectedIndex--;
+            else if (key == ConsoleKey.DownArrow && selectedIndex < options.Length - 1) selectedIndex++;
+            if (key == ConsoleKey.UpArrow && selectedIndex > 0) selectedIndex--;
+            else if (key == ConsoleKey.DownArrow && selectedIndex < options.Length - 1) selectedIndex++;
             else if (key == ConsoleKey.Enter)
             {
                 Console.Clear();
                 switch (selectedIndex)
                 {
                     case 0: // Add Movie
-                        AddMovieUI();
+                        ShowAddMovie();
                         break;
                     case 1: // Update Movie
-                        UpdateMovieUI();
+                        ShowUpdateMovie();
                         break;
                     case 2: // Delete Movie
-                        DeleteMovieUI();
+                        ShowDeleteMovie();
                         break;
                     case 3: // View Movies
-                        ViewMoviesUI();
+                        ShowViewMovies();
                         break;
                     case 4: // Back
                         MenuLogic.NavigateToPrevious();
                         return;
                 }
-                
-                Console.WriteLine("\nPress any key to continue...");
-                Console.ReadKey();
             }
             else if (key == ConsoleKey.Escape)
             {
                 MenuLogic.NavigateToPrevious();
-                LoggerLogic.Instance.Log("User pressed Escape - returning to admin menu");
                 return;
             }
         } while (true);
     }
 
-    private void AddMovieUI()
+    private void ShowAddMovie()
     {
-        Console.WriteLine("╔══════════════════════════════╗");
-        Console.WriteLine("║          ADD MOVIE           ║");
-        Console.WriteLine("╚══════════════════════════════╝");
-        Console.WriteLine();
-
-        var movie = new Movie();
-
-        Console.Write("Title: ");
-        movie.Title = Console.ReadLine();
-
-        Console.Write("Description: ");
-        movie.Description = Console.ReadLine();
-
-        Console.Write("Genre: ");
-        movie.Genre = Console.ReadLine();
-
-        Console.Write("Duration (e.g. 120 min): ");
-        movie.Duration = Console.ReadLine();
-
-        Console.Write("Language: ");
-        movie.Language = Console.ReadLine();
-
-        Console.Write("Minimum Age (e.g. 13): ");
-        int minAge;
-        if (int.TryParse(Console.ReadLine(), out minAge))
+        var fields = new List<FormField>
         {
-            movie.MinAge = minAge.ToString();
-        }
-        else
-        {
-            Console.WriteLine("Invalid age format. Using default of 0+");
-            movie.MinAge = "0";
-        }
+            new("Title", false, v => (!string.IsNullOrWhiteSpace(v), "Title required")),
+            new("Description"),
+            new("Genre"),
+            new("Duration"),
+            new("Language"),
+            new("Min Age", false, v => (int.TryParse(v, out _), "Must be a number"))
+        };
 
-        bool success = MovieAdminLogic.AddMovie(movie);
-        Console.WriteLine(success ? "\nFailed to add movie!" : "\nMovie added successfully!");
-    }
-
-    private void UpdateMovieUI()
-    {
-        Console.WriteLine("╔══════════════════════════════╗");
-        Console.WriteLine("║         UPDATE MOVIE         ║");
-        Console.WriteLine("╚══════════════════════════════╝");
-        Console.WriteLine();
-
-        ViewMoviesUI();
-        Console.Write("\nEnter ID of movie to update: ");
-        int id;
-        if (!int.TryParse(Console.ReadLine(), out id))
-        {
-            Console.WriteLine("Invalid ID format!");
-            return;
-        }
-
-        var movie = MovieAdminLogic.GetMovieById(id);
-        if (movie == null)
-        {
-            Console.WriteLine("Movie not found!");
-            return;
-        }
-
-        Console.WriteLine("\nLeave blank to keep current value\n");
-
-        Console.Write($"Title ({movie.Title}): ");
-        string title = Console.ReadLine();
-        if (!string.IsNullOrWhiteSpace(title)) movie.Title = title;
-
-        Console.Write($"Description ({movie.Description}): ");
-        string description = Console.ReadLine();
-        if (!string.IsNullOrWhiteSpace(description)) movie.Description = description;
-
-        Console.Write($"Genre ({movie.Genre}): ");
-        string genre = Console.ReadLine();
-        if (!string.IsNullOrWhiteSpace(genre)) movie.Genre = genre;
-
-        Console.Write($"Duration ({movie.Duration}): ");
-        string duration = Console.ReadLine();
-        if (!string.IsNullOrWhiteSpace(duration)) movie.Duration = duration;
-
-        Console.Write($"Language ({movie.Language}): ");
-        string language = Console.ReadLine();
-        if (!string.IsNullOrWhiteSpace(language)) movie.Language = language;
-
-        Console.Write($"Minimum Age ({movie.MinAge}): ");
-        string minAge = Console.ReadLine();
-        if (!string.IsNullOrWhiteSpace(minAge))
-        {
-            // Remove any "+" character that might be present
-            minAge = minAge.Replace("+", "");
-            if (int.TryParse(minAge, out int age))
+        var createScreen = new CreateScreen<Movie>(
+            "Add Movie",
+            fields,
+            () => new Movie
             {
-                movie.MinAge = age.ToString();
-            }
-            else
-            {
-                Console.WriteLine("Invalid age format. Keeping current value.");
-            }
-        }
+                Title = fields[0].Value,
+                Description = fields[1].Value,
+                Genre = fields[2].Value,
+                Duration = fields[3].Value,
+                Language = fields[4].Value,
+                MinAge = fields[5].Value
+            },
+            MovieAdminLogic.AddMovie);
 
-        bool success = MovieAdminLogic.UpdateMovie(movie);
-        Console.WriteLine(success ? "\nMovie updated successfully!" : "\nFailed to update movie!");
+        createScreen.Start();
     }
 
-    private void DeleteMovieUI()
-    {
-        Console.WriteLine("╔══════════════════════════════╗");
-        Console.WriteLine("║         DELETE MOVIE         ║");
-        Console.WriteLine("╚══════════════════════════════╝");
-        Console.WriteLine();
-
-        ViewMoviesUI();
-        Console.Write("\nEnter ID of movie to delete: ");
-        int id;
-        if (!int.TryParse(Console.ReadLine(), out id))
-        {
-            Console.WriteLine("Invalid ID format!");
-            return;
-        }
-
-        Console.Write("Are you sure? This will delete all associated sessions. (y/n): ");
-        if (Console.ReadLine().ToLower() == "y")
-        {
-            bool success = MovieAdminLogic.DeleteMovie(id);
-            Console.WriteLine(success ? "\nMovie deleted successfully!" : "\nFailed to delete movie! (Movie may have active sessions)");
-        }
-    }
-
-    private void ViewMoviesUI()
+    private void ShowUpdateMovie()
     {
         var movies = MovieAdminLogic.GetAllMovies();
-        
-        Console.WriteLine("╔════════════════════════════════════════════════════════════════════════╗");
-        Console.WriteLine("║                               MOVIES LIST                              ║");
-        Console.WriteLine("╚════════════════════════════════════════════════════════════════════════╝");
-        
         if (movies.Count == 0)
         {
-            Console.WriteLine("\nNo movies found in the database.");
+            Console.WriteLine("No movies to update.");
+            Console.ReadKey();
+            Console.WriteLine("No movies to update.");
+            Console.ReadKey();
             return;
         }
-        
-        Console.WriteLine("\nID   | Title                          | Genre           | Duration | Age  | Language");
-        Console.WriteLine("-----+--------------------------------+-----------------+----------+------+---------");
-        
-        foreach (var movie in movies)
+
+        var table = new Table<Movie>(maxColWidth: 40, pageSize: 10);
+        table.SetColumns("Id", "Title", "Description", "Genre", "Duration", "MinAge", "Language");
+        table.AddRows(movies);
+
+        ConsoleKey key;
+        do
         {
-            Console.WriteLine($"{movie.Id,-5}| {TruncateString(movie.Title, 30),-30} | {TruncateString(movie.Genre, 15),-15} | {movie.Duration,-8} | {movie.MinAge,-4} | {movie.Language}");
-        }
+            Console.Clear();
+            Console.WriteLine("Select movie to update:\n");
+            table.Print("Id", "Title", "Description", "Genre", "Duration", "MinAge", "Language");
+            Console.WriteLine("\n[↑][↓] Navigate  [←][→] Page  [ENTER] Edit  [ESC] Cancel");
+
+            key = Console.ReadKey(true).Key;
+            if (key == ConsoleKey.Enter)
+            {
+                var selected = table.GetSelected();
+
+                var fields = new List<FormField>
+                {
+                    new("Title", false, v => (!string.IsNullOrWhiteSpace(v), "Title required")) 
+                        { Value = selected.Title, OriginalValue = selected.Title },
+                    new("Description") 
+                        { Value = selected.Description, OriginalValue = selected.Description },
+                    new("Genre") 
+                        { Value = selected.Genre, OriginalValue = selected.Genre },
+                    new("Duration") 
+                        { Value = selected.Duration, OriginalValue = selected.Duration },
+                    new("Language") 
+                        { Value = selected.Language, OriginalValue = selected.Language },
+                    new("Min Age", false, v => (int.TryParse(v, out _), "Must be a valid number")) 
+                        { Value = selected.MinAge.ToString(), OriginalValue = selected.MinAge.ToString() }
+                };
+
+                var updateScreen = new UpdateScreen<Movie>(
+                    "Update Movie",
+                    fields,
+                    () => new Movie
+                    {
+                        Id = selected.Id,
+                        Title = fields[0].Value,
+                        Description = fields[1].Value,
+                        Genre = fields[2].Value,
+                        Duration = fields[3].Value,
+                        Language = fields[4].Value,
+                        MinAge = fields[5].Value
+                    },
+                    MovieAdminLogic.UpdateMovie);
+
+                // 🧭 NAVIGABLE!
+                MenuLogic.NavigateTo(updateScreen);
+                return;
+            }
+            else if (key == ConsoleKey.UpArrow) table.MoveUp();
+            else if (key == ConsoleKey.DownArrow) table.MoveDown();
+            else if (key == ConsoleKey.LeftArrow) table.PreviousPage();
+            else if (key == ConsoleKey.RightArrow) table.NextPage();
+            else if (key == ConsoleKey.Escape) return;
+
+        } while (true);
     }
-    
-    private string TruncateString(string str, int maxLength)
+
+    private void ShowDeleteMovie()
     {
-        if (string.IsNullOrEmpty(str)) return string.Empty;
-        return str.Length <= maxLength ? str : str.Substring(0, maxLength - 3) + "...";
+        var deleteScreen = new DeleteScreen<Movie>(
+            MovieAdminLogic.GetAllMovies,
+            m => MovieAdminLogic.DeleteMovie(m.Id));
+
+        deleteScreen.Start();
+    }
+
+    private void ShowViewMovies()
+    {
+        var readScreen = new ReadScreen<Movie>(
+            MovieAdminLogic.GetAllMovies,
+            new[] { "Id", "Title", "Description", "Genre", "Duration", "MinAge", "Language" });
+
+        readScreen.Start();
     }
 }
+
