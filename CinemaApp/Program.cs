@@ -1,17 +1,18 @@
-﻿// Enable UTF-8 output
+﻿// Dit is een nieuwere versie
+// Enable UTF-8 output
 Console.OutputEncoding = System.Text.Encoding.UTF8;
 
 //hide cursor
 Console.CursorVisible = false;
 
 //Dev only
-Db.DeleteTables();
+// Db.DeleteTables();
 
 // Initialize db tables
-Db.InitTables();
+// Db.InitTables();
 
 // Fill db with some data
-Db.PopulateTables();
+// Db.PopulateTables();
 
 // Start application
 if (!SessionDataLogic.HasPassedSymbolCheck())

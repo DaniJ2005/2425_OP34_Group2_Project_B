@@ -21,6 +21,34 @@ public static class UserTable
         }
     }
 
+    public static void PopulateTable()
+    {
+        using (var connection = Db.CreateConnection())
+        {
+            // Check if the table is empty
+            string checkSql = "SELECT COUNT(*) FROM user;";
+            int count = connection.ExecuteScalar<int>(checkSql);
+
+            if (count == 0) // Only insert if no records exist
+            {
+                string sql = @"
+                    INSERT INTO user (role_id, username, email, password)
+                    VALUES (@RoleId, @Username, @Email, @Password);
+                ";
+
+                var defaultUser = new
+                {
+                    RoleId = 1,
+                    Username = "admin",
+                    Email = "admin@admin.com",
+                    Password = CryptoHelper.Hash("12345678")
+                };
+
+                connection.Execute(sql, defaultUser);
+            }
+        }
+    }
+
     public static void DeleteTable()
     {
         using (var connection = Db.CreateConnection())

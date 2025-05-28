@@ -2,17 +2,18 @@ public class FoodScreen : IScreen
 {
     public string ScreenName { get; set; }
     private List<Food> _foods = new();
-    private List<Food> _selectedFoods = new();
+    private Dictionary<Food, int> _selectedFoods;
     public FoodScreen() => ScreenName = "Food";
 
     public void Start()
     {
-        ReservationLogic.ClearFood();
         _foods = FoodAccess.GetAllAvailableFood();
-        SelectFood();
+        _selectedFoods = ReservationLogic.GetSelectedFoodItems();
+
+        Screen();
     }
 
-    public void SelectFood()
+    public void Screen()
     {
         Table<Food> foodTable = new(maxColWidth: 40, pageSize: 10);
         foodTable.SetColumns("Id", "Name", "Price");
@@ -20,44 +21,36 @@ public class FoodScreen : IScreen
         foodTable.AddRows(_foods);
 
         ConsoleKey key;
-        int topPosition = Console.CursorTop;
 
         do
         {
-            General.ClearConsole(topPosition);  
-            Console.WriteLine("Select food and drinks");
-            Console.WriteLine("Use ^ v to navigate, <- -> to change page, [Enter] to select and [Escape] to cancel:\n");
+            General.ClearConsole();
+            Console.WriteLine("Select food and drinks!\n");
+            Console.WriteLine("Use ^ v to navigate, <- -> to change page,");
+            Console.WriteLine("Press [SPACE] to add & [BACKSPACE] to remove an item,");
+            Console.WriteLine("Press [ESC] to return...");
             Console.WriteLine("");
             
-             Dictionary<Food,int> quantities = new Dictionary<Food,int>();
+            Console.WriteLine("Your cart:\n");
+
+            double totalPrice = 0;
             
-            foreach (var food in _selectedFoods)
+            foreach (var selectedFoodKvp in _selectedFoods)
             {
-                if (quantities.ContainsKey(food))
-                {
-                    quantities[food]++;
-                }
-                else
-                {
-                    quantities[food] = 1;
-                }
-            }
-            Console.WriteLine("Your cart: ");
-            foreach (var kv in quantities)
-            {
-                Console.WriteLine($"- x{kv.Value} - {kv.Key.Name} €{kv.Key.Price * kv.Value}");
+                int quantity = selectedFoodKvp.Value;
+                Food food = selectedFoodKvp.Key;
+
+                totalPrice += food.Price * quantity;
+
+                Console.WriteLine($" - {quantity}x {food.Name} - €{food.Price * quantity:F2}");
             }
 
-            double total = 0;
-            foreach (var food in _selectedFoods)
-            {
-                total += food.Price;
-            }
-            Console.WriteLine($"Total: €{total}");
+            Console.WriteLine($"\nTotal: €{totalPrice:F2}");
 
             foodTable.Print("No", "Item", "Price");
 
             key = Console.ReadKey(true).Key;
+            Food selectedFood = foodTable.GetSelected();
 
             if (key == ConsoleKey.Escape)
                 MenuLogic.NavigateToPrevious();
@@ -72,11 +65,27 @@ public class FoodScreen : IScreen
                 foodTable.PreviousPage();
             if (key == ConsoleKey.Spacebar)
             {
-                _selectedFoods.Add(foodTable.GetSelected());
+                var existingFood = _selectedFoods.Keys.FirstOrDefault(f => f.Id == selectedFood.Id);
+
+                if (existingFood != null)
+                {
+                    _selectedFoods[existingFood]++;
+                }
+                else
+                {
+                    _selectedFoods[selectedFood] = 1;
+                }
             }
-            if (key == ConsoleKey.Backspace)
+            if (key == ConsoleKey.Backspace && _selectedFoods.ContainsKey(selectedFood))
             {
-                
+                if (_selectedFoods[selectedFood] > 1)
+                {
+                    _selectedFoods[selectedFood]--;
+                }
+                else
+                {
+                    _selectedFoods.Remove(selectedFood);
+                }
             }
 
         } while (key != ConsoleKey.Enter);

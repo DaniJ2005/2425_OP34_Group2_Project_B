@@ -6,14 +6,21 @@ class HomeScreen : IScreen
 
     private string[] guestOptions = {
         "Book Tickets",
-        "admin screen",
         "Login to Account",
         "Create an Account",
         "Exit Application"
     };
 
+    private string[] adminOptions = {
+        "Book Tickets",
+        "admin screen",
+        "Logout",
+        "Exit Application"
+    };
+
     private string[] loggedInOptions = {
         "Book Tickets",
+        "View Reservations",
         "Logout",
         "Exit Application"
     };
@@ -22,13 +29,24 @@ class HomeScreen : IScreen
     {
         int selectedIndex = 0;
         ConsoleKey key;
+
         bool isLoggedIn = UserLogic.CurrentUser != null;
-        string[] options = isLoggedIn ? loggedInOptions : guestOptions;
-        int topPosition = Console.CursorTop;
+        string[] options;
+        
+        if (isLoggedIn)
+        {
+            bool isAdmin = UserLogic.CurrentUser.RoleId != 0;
+            options = isAdmin ? adminOptions : loggedInOptions;
+        }
+        else
+        {
+            options = guestOptions;
+        }
+
 
         do
         {
-            General.ClearConsole(topPosition);  
+            General.ClearConsole();
 
             Console.WriteLine("╔══════════════════════════════╗");
             Console.WriteLine("║          CINEMA APP          ║");
@@ -98,6 +116,10 @@ class HomeScreen : IScreen
         {
             case "Book Tickets":
                 MenuLogic.NavigateTo(new MovieScreen());
+                break;
+
+            case "View Reservations":
+                MenuLogic.NavigateTo(new ViewAllReservationsScreen());
                 break;
 
             case "admin screen":

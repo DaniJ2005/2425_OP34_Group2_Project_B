@@ -18,12 +18,11 @@ public class SeatScreen : IScreen
     public void Screen(MovieSession moviesession)
     {
         ConsoleKey key;
-        int topPosition = Console.CursorTop;
 
         do
         {
-            General.ClearConsole(topPosition);  
-            Console.WriteLine("Please Select your seats.\n");
+            General.ClearConsole();  
+            Console.WriteLine($"Please Select your seats. (Max {SeatLogic.SeatSelectionLimit})\n");
             Console.WriteLine("[←][↑][→][↓] to navigate\n[SPACE] to select a seat,\n[ENTER] to confirm your selection.\n");
 
             if(error != "")

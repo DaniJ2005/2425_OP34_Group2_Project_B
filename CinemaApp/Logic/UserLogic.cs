@@ -1,7 +1,6 @@
 ﻿public static class UserLogic
 {
     public static User? CurrentUser { get; set; }
-
     public static bool CanManageFoodMenu { get; private set; }
     public static bool CanManageAccounts { get; private set; }
     public static bool CanManageGuestAccounts { get; private set; }
@@ -30,15 +29,11 @@
         if (user != null)
         {
             if (passwordIsEncrypted)
-            {
-                if (CryptoHelper.Verify(password, user.Password))
+                if (CryptoHelper.VerifyEncrypted(password, user.Password))
                     return LoginUser(user);
-            }
-            else
-            {
-                if (CryptoHelper.Verify(password, user.Password))
-                    return LoginUser(user);
-            }
+
+            if (CryptoHelper.Verify(password, user.Password))
+                return LoginUser(user);
         }
 
         LoggerLogic.Instance.Log($"User login failed | Email: {email}");
