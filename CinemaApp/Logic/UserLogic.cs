@@ -24,7 +24,7 @@
     public static User Login(string email, string password, bool passwordIsEncrypted = false)
     {
         var user = UserAccess.GetByEmail(email);
-        
+
         if (user != null)
         {
             if (passwordIsEncrypted)
@@ -126,4 +126,13 @@
             }
         }
     }
+
+    public static string GetRole()
+    {
+        if (CurrentUser?.RoleId == null)
+            return "";
+
+        var role = RoleAccess.GetRoleById(CurrentUser.RoleId);
+        return role?.Name ?? "Unknown";
+    }    
 }

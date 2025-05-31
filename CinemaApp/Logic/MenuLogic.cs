@@ -21,7 +21,7 @@ public static class MenuLogic
             return;
         }
         
-        NavigateTo(new ExitScreen());
+        NavigateTo(new ExitLogoutScreen(false));
     }
 
     public static void RestartScreen()

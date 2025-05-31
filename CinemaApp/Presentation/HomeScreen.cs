@@ -92,8 +92,7 @@ class HomeScreen : IScreen
                 if (key == ConsoleKey.Escape)
                 {
                     ReservationLogic.ClearSelection();
-                    MenuLogic.NavigateToPrevious();
-                    LoggerLogic.Instance.Log("User pressed Escape - returning to previous menu.");
+                    MenuLogic.NavigateTo(new ExitLogoutScreen(false));
                     return;
                 }
 
@@ -135,12 +134,11 @@ class HomeScreen : IScreen
                     break;
 
                 case "Logout":
-                    LoggerLogic.Instance.Log($"User {UserLogic.CurrentUser?.UserName} logged out.");
-                    UserLogic.Logout();
+                    MenuLogic.NavigateTo(new ExitLogoutScreen(true));
                     break;
 
                 case "Exit Application":
-                    MenuLogic.NavigateTo(new ExitScreen());
+                    MenuLogic.NavigateTo(new ExitLogoutScreen(false));
                     return;
         }
 
