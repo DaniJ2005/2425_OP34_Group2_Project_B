@@ -27,7 +27,7 @@ public static class MovieAccess
             string sql = @"INSERT INTO movie 
                 (title, description, genre, duration, language, min_age)
                 VALUES 
-                (@Title, @Description, @Genre, @Duration, @Language, @MinAgeValue);
+                (@Title, @Description, @Genre, @Duration, @Language, @MinAgeDb);
                 SELECT LAST_INSERT_ID()";
 
             // Extract the numeric value from MinAge (remove the "+" sign)
@@ -56,7 +56,7 @@ public static class MovieAccess
                     genre = @Genre,
                     duration = @Duration,
                     language = @Language,
-                    min_age = @MinAgeValue
+                    min_age = @MinAgeDb
                 WHERE id = @Id";
 
             // Extract the numeric value from MinAge (remove the "+" sign)

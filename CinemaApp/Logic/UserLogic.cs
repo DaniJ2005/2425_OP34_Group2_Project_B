@@ -8,10 +8,9 @@
     public static bool CanManageMovieHall { get; private set; }
     public static bool CanManageReservations { get; private set; }
 
-    public static bool IsAuthenticated()
-    {
-        return SessionDataLogic.IsAuthenticated();
-    }
+    public static bool IsAuthenticated() => SessionDataLogic.IsAuthenticated();
+
+    public static bool IsAdmin() => CurrentUser != null && CurrentUser.RoleId != 0;
 
     public static User CheckEmail(string email)
     {

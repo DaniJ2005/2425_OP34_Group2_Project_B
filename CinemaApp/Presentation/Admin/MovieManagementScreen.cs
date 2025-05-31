@@ -32,7 +32,6 @@ public class MovieManagementScreen : IScreen
             }
 
             key = Console.ReadKey(true).Key;
-            key = Console.ReadKey(true).Key;
 
             if (key == ConsoleKey.UpArrow && selectedIndex > 0) selectedIndex--;
             else if (key == ConsoleKey.DownArrow && selectedIndex < options.Length - 1) selectedIndex++;
@@ -104,8 +103,6 @@ public class MovieManagementScreen : IScreen
         {
             Console.WriteLine("No movies to update.");
             Console.ReadKey();
-            Console.WriteLine("No movies to update.");
-            Console.ReadKey();
             return;
         }
 
@@ -157,7 +154,6 @@ public class MovieManagementScreen : IScreen
                     },
                     MovieAdminLogic.UpdateMovie);
 
-                // 🧭 NAVIGABLE!
                 MenuLogic.NavigateTo(updateScreen);
                 return;
             }
