@@ -45,7 +45,7 @@ public class ExitScreen : IScreen
 
         } while (key != ConsoleKey.Enter);
 
-        Console.Clear();
+        General.ClearConsole();
         if (selectedIndex == 1)
         {
             Console.WriteLine("Exiting program...");

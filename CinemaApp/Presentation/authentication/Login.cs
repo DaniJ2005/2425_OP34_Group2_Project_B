@@ -22,7 +22,7 @@ public class Login : FormScreen
     public override void OnFormSubmit()
     {
         UserLogic.Login(Fields[0].Value, Fields[1].Value);
-        Console.Clear();
+        General.ClearConsole();
         Console.WriteLine("==== Login Successful ====\n");
         Console.WriteLine($"Welcome back, {foundUser.UserName}!");
         Console.WriteLine("\nPress any key to continue...");

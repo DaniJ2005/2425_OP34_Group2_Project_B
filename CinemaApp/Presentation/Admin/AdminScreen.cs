@@ -23,7 +23,7 @@ public class AdminScreen : IScreen
 
         do
         {
-            Console.Clear();
+            General.ClearConsole();
             Console.WriteLine("╔══════════════════════════════╗");
             Console.WriteLine("║          ADMIN PANEL         ║");
             Console.WriteLine("╚══════════════════════════════╝");

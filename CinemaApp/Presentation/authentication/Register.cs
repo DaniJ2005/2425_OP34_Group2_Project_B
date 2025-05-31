@@ -28,7 +28,7 @@ public class Register : FormScreen
 
         var newUser = UserLogic.RegisterUser(email, password, fullName);
 
-        Console.Clear();
+        General.ClearConsole();
         if (newUser != null)
         {
             Console.WriteLine("==== Registration Complete ====\n");

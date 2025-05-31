@@ -111,7 +111,7 @@ class HomeScreen : IScreen
             string selectedOption = options[selectedIndex];
             LoggerLogic.Instance.Log($"User selected menu option: {selectedOption}");
 
-            Console.Clear();
+            General.ClearConsole();
             switch (selectedOption)
             {
                 case "Book Tickets":
