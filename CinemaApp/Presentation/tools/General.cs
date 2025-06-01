@@ -18,6 +18,73 @@ static class General
             Console.Write(str);
         }
     }
+    
+    public static void PrintColoredBoxedTitle(string title, ConsoleColor borderColor, bool fancy = false)
+    {
+        const int totalWidth = 30;
+        int contentWidth = totalWidth - 2;
+
+        if (title.Length > contentWidth)
+        {
+            title = contentWidth > 3
+                ? title.Substring(0, contentWidth - 3) + "..."
+                : title.Substring(0, contentWidth);
+        }
+
+        // Optional uppercase for fancy
+        string displayTitle = fancy ? title.ToUpper() : title;
+
+        int paddingLeft = (contentWidth - displayTitle.Length) / 2;
+        int paddingRight = contentWidth - displayTitle.Length - paddingLeft;
+
+        string horizontal = new string('═', contentWidth);
+        string spacer = new string(' ', contentWidth);
+
+        // Top border
+        Console.ForegroundColor = borderColor;
+        Console.WriteLine("╔" + horizontal + "╗");
+        Console.ResetColor();
+
+        // Top spacer (fancy only)
+        if (fancy)
+        {
+            Console.ForegroundColor = borderColor;
+            Console.Write("║");
+            Console.ResetColor();
+            Console.Write(spacer);
+            Console.ForegroundColor = borderColor;
+            Console.WriteLine("║");
+            Console.ResetColor();
+        }
+
+        // Title line
+        Console.ForegroundColor = borderColor;
+        Console.Write("║");
+        Console.ResetColor();
+        Console.Write(new string(' ', paddingLeft));
+        Console.Write(displayTitle);
+        Console.Write(new string(' ', paddingRight));
+        Console.ForegroundColor = borderColor;
+        Console.WriteLine("║");
+        Console.ResetColor();
+
+        // Bottom spacer (fancy only)
+        if (fancy)
+        {
+            Console.ForegroundColor = borderColor;
+            Console.Write("║");
+            Console.ResetColor();
+            Console.Write(spacer);
+            Console.ForegroundColor = borderColor;
+            Console.WriteLine("║");
+            Console.ResetColor();
+        }
+
+        // Bottom border
+        Console.ForegroundColor = borderColor;
+        Console.WriteLine("╚" + horizontal + "╝");
+        Console.ResetColor();
+    }
 
     public static void ClearConsole()
     {
@@ -30,7 +97,7 @@ static class General
 
         // Minimize flicker by locking cursor at (0, 0) and overwriting line-by-line
         Console.SetCursorPosition(0, 0);
-        
+
         for (int i = 0; i < height; i++)
         {
             Console.Write(blankLine);

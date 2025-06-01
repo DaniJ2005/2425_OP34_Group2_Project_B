@@ -29,19 +29,27 @@ public class Register : FormScreen
         var newUser = UserLogic.RegisterUser(email, password, fullName);
 
         General.ClearConsole();
+        General.PrintColoredBoxedTitle(newUser != null ? "Registration Complete" : "Registration Failed", 
+                                       newUser != null ? ConsoleColor.Green : ConsoleColor.Red);
+        Console.WriteLine();
+
+
         if (newUser != null)
         {
-            Console.WriteLine("==== Registration Complete ====\n");
-            Console.WriteLine($"Email: {email}");
-            Console.WriteLine($"Full Name: {fullName}");
-        }
-        else
-        {
-            Console.WriteLine("==== Registration Failed ====\n");
+            Console.Write("Email: ");
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.WriteLine(email);
+            Console.ResetColor();
+
+            Console.Write("Full Name: ");
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.WriteLine(fullName);
+            Console.ResetColor();
         }
 
         Console.WriteLine("\nPress any key to continue...");
         Console.ReadKey();
+
         MenuLogic.NavigateToPrevious();
     }
 }

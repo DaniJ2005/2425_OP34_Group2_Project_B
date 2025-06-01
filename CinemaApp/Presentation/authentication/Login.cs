@@ -23,10 +23,20 @@ public class Login : FormScreen
     {
         UserLogic.Login(Fields[0].Value, Fields[1].Value);
         General.ClearConsole();
-        Console.WriteLine("==== Login Successful ====\n");
-        Console.WriteLine($"Welcome back, {foundUser.UserName}!");
+
+        General.PrintColoredBoxedTitle("Login Successful", ConsoleColor.Green);
+
+        Console.WriteLine();
+
+        Console.Write("Welcome back, ");
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.Write(foundUser.UserName);
+        Console.ResetColor();
+        Console.WriteLine("!");
+
         Console.WriteLine("\nPress any key to continue...");
         Console.ReadKey();
+
         MenuLogic.NavigateToPrevious();
     }
 }

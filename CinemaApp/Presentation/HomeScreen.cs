@@ -31,115 +31,100 @@ class HomeScreen : IScreen
         ConsoleKey key;
 
         bool isAuthenticated = UserLogic.IsAuthenticated();
-        bool isAdmin = UserLogic.IsAuthenticated() && UserLogic.IsAdmin();
+        bool isAdmin = UserLogic.IsAdmin();
         string[] options = isAdmin ? _adminOptions :
                            isAuthenticated ? _userOptions : _guestOptions;
+
+        ConsoleColor boxColor = isAdmin ? ConsoleColor.Yellow :
+                                 isAuthenticated ? ConsoleColor.Green : ConsoleColor.Cyan;
 
         do
         {
             General.ClearConsole();
+            General.PrintColoredBoxedTitle("Cinema app", boxColor, true);
+            Console.WriteLine();
 
-            if (isAdmin)
-                Console.ForegroundColor = ConsoleColor.Yellow;
-            else if (isAuthenticated)
-                Console.ForegroundColor = ConsoleColor.Green;
-            else
-                Console.ForegroundColor = ConsoleColor.Cyan;
-
-            Console.WriteLine("╔══════════════════════════════╗");
-            Console.WriteLine("║          CINEMA APP          ║");
-            Console.WriteLine("╚══════════════════════════════╝");
-            Console.ResetColor();
-
-
-
-                if (isAuthenticated)
-                    Console.WriteLine($"Welcome back, {UserLogic.CurrentUser?.UserName}!\n");
-
-                Console.WriteLine("[↓][↑] to navigate\n[ENTER] to confirm your selection.\n");
-
-                for (int i = 0; i < options.Length; i++)
-                {
-                    bool isSelected = i == selectedIndex;
-
-                    // Add space above the last item (Exit)
-                    if (i == options.Length - 1)
-                        Console.WriteLine();
-
-                    // Highlight selection
-                    if (isSelected)
-                    {
-                        Console.ForegroundColor = ConsoleColor.Black;
-                        Console.BackgroundColor = ConsoleColor.White;
-                        Console.WriteLine($"> {options[i]}");
-                        Console.ResetColor();
-                    }
-                    else
-                    {
-                        Console.WriteLine($"  {options[i]}");
-                    }
-
-                    if (options[i] == "Book Tickets")
-                    {
-                        Console.WriteLine("  -------------");
-                    }
-                }
-
-
-                ConsoleKeyInfo keyInfo = Console.ReadKey(true);
-                key = keyInfo.Key;
-
-                if (key == ConsoleKey.Escape)
-                {
-                    ReservationLogic.ClearSelection();
-                    MenuLogic.NavigateTo(new ExitLogoutScreen(false));
-                    return;
-                }
-
-                if (key == ConsoleKey.UpArrow && selectedIndex > 0)
-                {
-                    selectedIndex--;
-                }
-                else if (key == ConsoleKey.DownArrow && selectedIndex < options.Length - 1)
-                {
-                    selectedIndex++;
-                }
-
-            } while (key != ConsoleKey.Enter);
-
-            string selectedOption = options[selectedIndex];
-            LoggerLogic.Instance.Log($"User selected menu option: {selectedOption}");
-
-            General.ClearConsole();
-            switch (selectedOption)
+            if (isAuthenticated)
             {
-                case "Book Tickets":
-                    MenuLogic.NavigateTo(new MovieScreen());
-                    break;
+                Console.Write("Welcome back, ");
+                Console.ForegroundColor = ConsoleColor.Blue;
+                Console.Write(UserLogic.CurrentUser?.UserName);
+                Console.ResetColor();
+                Console.WriteLine("!\n");
+            }
+            else
+            {
+                Console.WriteLine("Welcome, guest!\n");
+            }
 
-                case "View Reservations":
-                    MenuLogic.NavigateTo(new ViewAllReservationsScreen());
-                    break;
+            Console.WriteLine("[↓][↑] Navigate   [ENTER] Confirm   [ESC] Exit\n");
 
-                case "Admin Panel":
-                    MenuLogic.NavigateTo(new AdminScreen());
-                    break;
-                    
-                case "Login to Account":
-                    MenuLogic.NavigateTo(new Login());
-                    break;
+            for (int i = 0; i < options.Length; i++)
+            {
+                if (i == 0) Console.WriteLine("────────────");
 
-                case "Create an Account":
-                    MenuLogic.NavigateTo(new Register());
-                    break;
+                bool isSelected = (i == selectedIndex);
+                if (isSelected)
+                {
+                    Console.BackgroundColor = ConsoleColor.White;
+                    Console.ForegroundColor = ConsoleColor.Black;
+                    Console.WriteLine($"> {options[i]}");
+                    Console.ResetColor();
+                }
+                else
+                {
+                    Console.WriteLine($"  {options[i]}");
+                }
 
-                case "Logout":
-                    MenuLogic.NavigateTo(new ExitLogoutScreen(true));
-                    break;
+                if (i == 0) Console.WriteLine("────────────");
 
-                case "Exit Application":
-                    MenuLogic.NavigateTo(new ExitLogoutScreen(false));
-                    return;
+                if (i == options.Length - 2) Console.WriteLine(); // Space before Exit
+            }
+
+            ConsoleKeyInfo keyInfo = Console.ReadKey(true);
+            key = keyInfo.Key;
+
+            if (key == ConsoleKey.Escape)
+            {
+                ReservationLogic.ClearSelection();
+                MenuLogic.NavigateTo(new ExitLogoutScreen(false));
+                return;
+            }
+
+            if (key == ConsoleKey.UpArrow && selectedIndex > 0)
+                selectedIndex--;
+            else if (key == ConsoleKey.DownArrow && selectedIndex < options.Length - 1)
+                selectedIndex++;
+
+        } while (key != ConsoleKey.Enter);
+
+        string selectedOption = options[selectedIndex];
+        LoggerLogic.Instance.Log($"User selected menu option: {selectedOption}");
+
+        General.ClearConsole();
+        switch (selectedOption)
+        {
+            case "Book Tickets":
+                MenuLogic.NavigateTo(new MovieScreen());
+                break;
+            case "View Reservations":
+                MenuLogic.NavigateTo(new ViewAllReservationsScreen());
+                break;
+            case "Admin Panel":
+                MenuLogic.NavigateTo(new AdminScreen());
+                break;
+            case "Login to Account":
+                MenuLogic.NavigateTo(new Login());
+                break;
+            case "Create an Account":
+                MenuLogic.NavigateTo(new Register());
+                break;
+            case "Logout":
+                MenuLogic.NavigateTo(new ExitLogoutScreen(true));
+                break;
+            case "Exit Application":
+                MenuLogic.NavigateTo(new ExitLogoutScreen(false));
+                return;
         }
 
         MenuLogic.NavigateTo(new HomeScreen(), true);
