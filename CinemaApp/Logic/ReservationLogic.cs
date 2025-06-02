@@ -46,6 +46,11 @@ static class ReservationLogic
         ClearSelection();
     }
 
+    public static void CancelReservation(Reservation reservation)
+    {
+        ReservationAccess.CancelReservation(reservation);
+    }
+
     public static List<Reservation> GetAllReservationsForCurrentUser()
     {
         User currentUser = UserLogic.CurrentUser;
