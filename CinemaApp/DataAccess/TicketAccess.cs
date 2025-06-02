@@ -13,10 +13,10 @@ public static class TicketAccess
                         seat_id as SeatId
                     FROM ticket
                     JOIN reservation ON ticket.reservation_id = reservation.id
-                    WHERE reservation.movie_session_id = @MovieSessionId;";
+                    WHERE reservation.movie_session_id = @MovieSessionId AND reservation.status != 'Cancelled';";
             return connection.Query<Ticket>(sql, new { MovieSessionId = movieSessionId }).ToList();
         }
-        
+
     }
 
     public static List<Ticket> GetTicketsByReservationId(int reservationId)
@@ -38,9 +38,11 @@ public static class TicketAccess
                         INNER JOIN seat_price ON ticket.seat_price_id = seat_price.id
                         INNER JOIN seat ON ticket.seat_id = seat.id
                         INNER JOIN seat_type ON seat.seat_type_id = seat_type.id
+                        INNER JOIN reservation ON ticket.reservation_id = reservation.id
                         WHERE reservation_id = @ReservationId";
             return connection.Query<Ticket>(sql, new { ReservationId = reservationId }).ToList();
         }
-        
+
     }
+
 }
