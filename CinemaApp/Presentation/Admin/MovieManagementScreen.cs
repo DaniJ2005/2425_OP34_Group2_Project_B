@@ -10,7 +10,7 @@ public class MovieManagementScreen : IScreen
 
         do
         {
-            Console.Clear();
+            General.ClearConsole();
             Console.WriteLine("╔══════════════════════════════╗");
             Console.WriteLine("║       MOVIE MANAGEMENT       ║");
             Console.WriteLine("╚══════════════════════════════╝");
@@ -32,7 +32,6 @@ public class MovieManagementScreen : IScreen
             }
 
             key = Console.ReadKey(true).Key;
-            key = Console.ReadKey(true).Key;
 
             if (key == ConsoleKey.UpArrow && selectedIndex > 0) selectedIndex--;
             else if (key == ConsoleKey.DownArrow && selectedIndex < options.Length - 1) selectedIndex++;
@@ -40,7 +39,7 @@ public class MovieManagementScreen : IScreen
             else if (key == ConsoleKey.DownArrow && selectedIndex < options.Length - 1) selectedIndex++;
             else if (key == ConsoleKey.Enter)
             {
-                Console.Clear();
+                General.ClearConsole();
                 switch (selectedIndex)
                 {
                     case 0: // Add Movie
@@ -104,8 +103,6 @@ public class MovieManagementScreen : IScreen
         {
             Console.WriteLine("No movies to update.");
             Console.ReadKey();
-            Console.WriteLine("No movies to update.");
-            Console.ReadKey();
             return;
         }
 
@@ -116,7 +113,7 @@ public class MovieManagementScreen : IScreen
         ConsoleKey key;
         do
         {
-            Console.Clear();
+            General.ClearConsole();
             Console.WriteLine("Select movie to update:\n");
             table.Print("Id", "Title", "Description", "Genre", "Duration", "MinAge", "Language");
             Console.WriteLine("\n[↑][↓] Navigate  [←][→] Page  [ENTER] Edit  [ESC] Cancel");
@@ -157,7 +154,6 @@ public class MovieManagementScreen : IScreen
                     },
                     MovieAdminLogic.UpdateMovie);
 
-                // 🧭 NAVIGABLE!
                 MenuLogic.NavigateTo(updateScreen);
                 return;
             }

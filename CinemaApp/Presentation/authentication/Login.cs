@@ -22,11 +22,21 @@ public class Login : FormScreen
     public override void OnFormSubmit()
     {
         UserLogic.Login(Fields[0].Value, Fields[1].Value);
-        Console.Clear();
-        Console.WriteLine("==== Login Successful ====\n");
-        Console.WriteLine($"Welcome back, {foundUser.UserName}!");
+        General.ClearConsole();
+
+        General.PrintColoredBoxedTitle("Login Successful", ConsoleColor.Green);
+
+        Console.WriteLine();
+
+        Console.Write("Welcome back, ");
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.Write(foundUser.UserName);
+        Console.ResetColor();
+        Console.WriteLine("!");
+
         Console.WriteLine("\nPress any key to continue...");
         Console.ReadKey();
+
         MenuLogic.NavigateToPrevious();
     }
 }

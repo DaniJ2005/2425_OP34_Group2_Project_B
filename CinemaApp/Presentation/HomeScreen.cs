@@ -4,24 +4,23 @@ public class HomeScreen : IScreen
 
     public HomeScreen() => ScreenName = "Home";
 
-    private string[] guestOptions = {
+    private readonly string[] _guestOptions = {
         "Book Tickets",
         "Login to Account",
         "Create an Account",
         "Exit Application"
     };
 
-    private string[] adminOptions = {
+    private readonly string[] _userOptions = {
         "Book Tickets",
-        "admin screen",
+        "View Reservations",
         "Logout",
         "Exit Application"
     };
 
-    private string[] loggedInOptions = {
+    private readonly string[] _adminOptions = {
         "Book Tickets",
-        "View Reservations",
-        "admin screen", // tijdelijk omdat, rol id niet goed uit db word geladen
+        "Admin Panel",
         "Logout",
         "Exit Application"
     };
@@ -31,47 +30,44 @@ public class HomeScreen : IScreen
         int selectedIndex = 0;
         ConsoleKey key;
 
-        bool isLoggedIn = UserLogic.CurrentUser != null;
-        string[] options;
-        
-        if (isLoggedIn)
-        {
-            bool isAdmin = UserLogic.CurrentUser.RoleId != 0;
-            options = isAdmin ? adminOptions : loggedInOptions;
-        }
-        else
-        {
-            options = guestOptions;
-        }
+        bool isAuthenticated = UserLogic.IsAuthenticated();
+        bool isAdmin = UserLogic.IsAdmin();
+        string[] options = isAdmin ? _adminOptions :
+                           isAuthenticated ? _userOptions : _guestOptions;
 
+        ConsoleColor boxColor = isAdmin ? ConsoleColor.Yellow :
+                                 isAuthenticated ? ConsoleColor.Green : ConsoleColor.Cyan;
 
         do
         {
             General.ClearConsole();
+            General.PrintColoredBoxedTitle("Cinema app", boxColor, true);
+            Console.WriteLine();
 
-            Console.WriteLine("╔══════════════════════════════╗");
-            Console.WriteLine("║          CINEMA APP          ║");
-            Console.WriteLine("╚══════════════════════════════╝");
+            if (isAuthenticated)
+            {
+                Console.Write("Welcome back, ");
+                Console.ForegroundColor = ConsoleColor.Blue;
+                Console.Write(UserLogic.CurrentUser?.UserName);
+                Console.ResetColor();
+                Console.WriteLine("!\n");
+            }
+            else
+            {
+                Console.WriteLine("Welcome, guest!\n");
+            }
 
-
-            if (isLoggedIn)
-                Console.WriteLine($"Welcome back, {UserLogic.CurrentUser?.UserName}!\n");
-
-            Console.WriteLine("[↓][↑] to navigate\n[ENTER] to confirm your selection.\n");
+            Console.WriteLine("[↓][↑] Navigate   [ENTER] Confirm   [ESC] Exit\n");
 
             for (int i = 0; i < options.Length; i++)
             {
-                bool isSelected = i == selectedIndex;
+                if (i == 0) Console.WriteLine("────────────");
 
-                // Add space above the last item (Exit)
-                if (i == options.Length - 1)
-                    Console.WriteLine();
-
-                // Highlight selection
+                bool isSelected = (i == selectedIndex);
                 if (isSelected)
                 {
-                    Console.ForegroundColor = ConsoleColor.Black;
                     Console.BackgroundColor = ConsoleColor.White;
+                    Console.ForegroundColor = ConsoleColor.Black;
                     Console.WriteLine($"> {options[i]}");
                     Console.ResetColor();
                 }
@@ -80,12 +76,10 @@ public class HomeScreen : IScreen
                     Console.WriteLine($"  {options[i]}");
                 }
 
-                if (options[i] == "Book Tickets")
-                {
-                    Console.WriteLine("  -------------");
-                }
-            }
+                if (i == 0) Console.WriteLine("────────────");
 
+                if (i == options.Length - 2) Console.WriteLine(); // Space before Exit
+            }
 
             ConsoleKeyInfo keyInfo = Console.ReadKey(true);
             key = keyInfo.Key;
@@ -93,55 +87,43 @@ public class HomeScreen : IScreen
             if (key == ConsoleKey.Escape)
             {
                 ReservationLogic.ClearSelection();
-                MenuLogic.NavigateToPrevious();
-                LoggerLogic.Instance.Log("User pressed Escape - returning to previous menu.");
+                MenuLogic.NavigateTo(new ExitLogoutScreen(false));
                 return;
             }
 
             if (key == ConsoleKey.UpArrow && selectedIndex > 0)
-            {
                 selectedIndex--;
-            }
             else if (key == ConsoleKey.DownArrow && selectedIndex < options.Length - 1)
-            {
                 selectedIndex++;
-            }
 
         } while (key != ConsoleKey.Enter);
 
         string selectedOption = options[selectedIndex];
         LoggerLogic.Instance.Log($"User selected menu option: {selectedOption}");
 
-        Console.Clear();
+        General.ClearConsole();
         switch (selectedOption)
         {
             case "Book Tickets":
                 MenuLogic.NavigateTo(new MovieScreen());
                 break;
-
             case "View Reservations":
                 MenuLogic.NavigateTo(new ViewAllReservationsScreen());
                 break;
-
-            case "admin screen":
+            case "Admin Panel":
                 MenuLogic.NavigateTo(new AdminScreen());
                 break;
-                
             case "Login to Account":
                 MenuLogic.NavigateTo(new Login());
                 break;
-
             case "Create an Account":
                 MenuLogic.NavigateTo(new Register());
                 break;
-
             case "Logout":
-                LoggerLogic.Instance.Log($"User {UserLogic.CurrentUser?.UserName} logged out.");
-                UserLogic.Logout();
+                MenuLogic.NavigateTo(new ExitLogoutScreen(true));
                 break;
-
             case "Exit Application":
-                MenuLogic.NavigateTo(new ExitScreen());
+                MenuLogic.NavigateTo(new ExitLogoutScreen(false));
                 return;
         }
 

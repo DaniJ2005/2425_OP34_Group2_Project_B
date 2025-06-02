@@ -10,7 +10,7 @@ public class UserManagementScreen : IScreen
 
         do
         {
-            Console.Clear();
+            General.ClearConsole();
             Console.WriteLine("╔════════════════════════════╗");
             Console.WriteLine("║       USER MANAGEMENT      ║");
             Console.WriteLine("╚════════════════════════════╝");
@@ -37,7 +37,7 @@ public class UserManagementScreen : IScreen
             else if (key == ConsoleKey.DownArrow && selectedIndex < options.Length - 1) selectedIndex++;
             else if (key == ConsoleKey.Enter)
             {
-                Console.Clear();
+                General.ClearConsole();
                 switch (selectedIndex)
                 {
                     case 0: ShowAddUser(); break;
@@ -104,7 +104,7 @@ public class UserManagementScreen : IScreen
         ConsoleKey key;
         do
         {
-            Console.Clear();
+            General.ClearConsole();
             Console.WriteLine("Select user to update:\n");
             table.Print("Id", "Email", "UserName", "Password", "RoleId");
             Console.WriteLine("\n[↑][↓] Navigate  [←][→] Page  [ENTER] Edit  [ESC] Cancel");

@@ -5,6 +5,9 @@ Console.OutputEncoding = System.Text.Encoding.UTF8;
 //hide cursor
 Console.CursorVisible = false;
 
+// Allow Dapper to correctly map snake_case columns (min_age) to PascalCase properties (MinAgeDb)
+Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
+
 //Dev only
 // Db.DeleteTables();
 

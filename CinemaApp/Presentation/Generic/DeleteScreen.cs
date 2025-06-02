@@ -18,7 +18,7 @@ public class DeleteScreen<T>
         ConsoleKey key;
         do
         {
-            Console.Clear();
+            General.ClearConsole();
             Console.WriteLine("Select item to delete:\n");
             table.Print();
 

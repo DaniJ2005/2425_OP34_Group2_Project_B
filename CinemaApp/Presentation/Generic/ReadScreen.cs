@@ -21,7 +21,7 @@ public class ReadScreen<T>
         ConsoleKey key;
         do
         {
-            Console.Clear();
+            General.ClearConsole();
             Console.WriteLine("==== Viewing Items ====\n");
             Console.WriteLine("[↑][↓] to navigate, [←][→] to change page, [ESC] to return.\n");
             table.Print(_headers);
