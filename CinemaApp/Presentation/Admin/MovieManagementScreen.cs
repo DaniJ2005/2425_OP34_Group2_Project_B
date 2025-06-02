@@ -35,8 +35,6 @@ public class MovieManagementScreen : IScreen
 
             if (key == ConsoleKey.UpArrow && selectedIndex > 0) selectedIndex--;
             else if (key == ConsoleKey.DownArrow && selectedIndex < options.Length - 1) selectedIndex++;
-            if (key == ConsoleKey.UpArrow && selectedIndex > 0) selectedIndex--;
-            else if (key == ConsoleKey.DownArrow && selectedIndex < options.Length - 1) selectedIndex++;
             else if (key == ConsoleKey.Enter)
             {
                 General.ClearConsole();
