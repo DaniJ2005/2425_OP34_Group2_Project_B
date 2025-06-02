@@ -88,25 +88,38 @@ static class General
 
     public static void ClearConsole()
     {
-        // Hide the cursor for a cleaner look while redrawing
-        Console.CursorVisible = false;
-
-        // Cache the blank line and console dimensions
-        string blankLine = new string(' ', Console.WindowWidth);
-        int height = Console.WindowHeight;
-
-        // Minimize flicker by locking cursor at (0, 0) and overwriting line-by-line
-        Console.SetCursorPosition(0, 0);
-
-        for (int i = 0; i < height; i++)
+        try
         {
-            Console.Write(blankLine);
+            Console.CursorVisible = false;
+
+            // Ensure the buffer height is not taller than the window height
+            if (Console.BufferHeight > Console.WindowHeight)
+            {
+                Console.BufferHeight = Console.WindowHeight;
+            }
+
+            // Set origin
+            Console.SetCursorPosition(0, 0);
+
+            int width = Console.WindowWidth;
+            int height = Console.WindowHeight;
+
+            string emptyLine = new string(' ', width);
+
+            for (int i = 0; i < height; i++)
+            {
+                Console.Write(emptyLine);
+            }
+
+            // Reset position after clearing
+            Console.SetCursorPosition(0, 0);
         }
-
-        // Reset to top-left corner
-        Console.SetCursorPosition(0, 0);
+        catch (IOException)
+        {
+            // In case of issues (like redirected output), fall back to Console.Clear
+            Console.Clear();
+        }
     }
-
 
     public static void PrintProperties(object obj)
     {
