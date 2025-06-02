@@ -1,4 +1,4 @@
-class HomeScreen : IScreen
+public class HomeScreen : IScreen
 {
     public string ScreenName { get; set; }
 

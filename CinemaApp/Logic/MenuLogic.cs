@@ -1,6 +1,6 @@
 public static class MenuLogic
 {
-    static Stack<IScreen> screenStack = new Stack<IScreen>();
+    public static Stack<IScreen> screenStack = new Stack<IScreen>();
 
     public static void NavigateTo(IScreen screen, bool clearStack = false)
     {
