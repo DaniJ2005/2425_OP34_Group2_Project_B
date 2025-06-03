@@ -2,11 +2,11 @@ using Dapper;
 
 public static class UserAccess
 {
-    public static void Write(User user)
+    public static void Write(User user) // only for guest so role_id = null
     {
         using (var connection = Db.CreateConnection())
         {
-            string sql = "INSERT INTO user (role_id, username, email, password) VALUES (@RoleId, @UserName, @Email, @Password)";
+            string sql = "INSERT INTO user (username, email, password) VALUES (@UserName, @Email, @Password)";
             connection.Execute(sql, user);
         }
     }
