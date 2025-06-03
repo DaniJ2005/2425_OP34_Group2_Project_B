@@ -89,18 +89,23 @@ public class FoodScreen : IScreen
 
             if (key == ConsoleKey.Spacebar)
             {
-                if (_selectedFoods.ContainsKey(selectedFood))
-                    _selectedFoods[selectedFood]++;
+                var existingFood = _selectedFoods.Keys.FirstOrDefault(f => f.Id == selectedFood.Id);
+                if (existingFood != null)
+                    _selectedFoods[existingFood]++;
                 else
                     _selectedFoods[selectedFood] = 1;
             }
 
-            if (key == ConsoleKey.Backspace && _selectedFoods.ContainsKey(selectedFood))
+            if (key == ConsoleKey.Backspace)
             {
-                if (_selectedFoods[selectedFood] > 1)
-                    _selectedFoods[selectedFood]--;
-                else
-                    _selectedFoods.Remove(selectedFood);
+                var existingFood = _selectedFoods.Keys.FirstOrDefault(f => f.Id == selectedFood.Id);
+                if (existingFood != null)
+                {
+                    if (_selectedFoods[existingFood] > 1)
+                        _selectedFoods[existingFood]--;
+                    else
+                        _selectedFoods.Remove(existingFood);
+                }
             }
 
         } while (key != ConsoleKey.Enter);
