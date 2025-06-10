@@ -163,11 +163,40 @@ public class OverviewScreen : IScreen
 
     private void HandleConfirmReservation(string email, double totalPrice)
     {
-        ReservationLogic.CreateReservation(email, totalPrice);
         General.ClearConsole();
-        Console.WriteLine("Reservation Confirmed!");
+        Console.WriteLine("Reservation Confirmed!\n");
+
+        string confirmationSummary = ReservationLogic.GetConfirmationSummary();
+
+        Console.WriteLine($"Email: {email}\n");
+
+        Console.WriteLine($"{confirmationSummary}");
+        
+        // Display Selected food items
+        foreach (var selectedFoodKvp in _selectedFoods)
+        {
+            int quantity = selectedFoodKvp.Value;
+            Food food = selectedFoodKvp.Key;
+
+            Console.WriteLine($" - {quantity}x {food.Name} - €{food.Price * quantity:F2}");
+        }
+
+        Console.WriteLine();
+
+        // Display Selected seats
+        for (int i = 0; i < _seats.Count; i++)
+        {
+            var seatText = $" - Seat | Row: {_seats[i].Key.Row} | Col: {_seats[i].Key.Col} | Price: €{_seats[i].Value.Price}";
+            if (_selectedIndex == i)
+                Highlight(seatText);
+            else
+                Console.WriteLine(seatText);
+        }
+
+        Console.WriteLine($"\nTotal: €{totalPrice:F2}\n");
         Console.WriteLine("Press any key to return...");
-        Console.ReadKey();
+        ReservationLogic.CreateReservation(email, totalPrice);
+        Console.ReadKey(true);
         MenuLogic.NavigateTo(new HomeScreen(), clearStack: true);
     }
 
@@ -177,11 +206,42 @@ public class OverviewScreen : IScreen
         Console.WriteLine("Enter email for the reservation.");
 
         string email = Console.ReadLine();
-        ReservationLogic.CreateReservation(email, totalPrice);
+        Console.Clear();
 
-        Console.WriteLine("Reservation Confirmed!");
+        Console.WriteLine("Reservation Confirmed!\n");
+
+        string confirmationSummary = ReservationLogic.GetConfirmationSummary();
+
+        Console.WriteLine($"Email: {email}\n");
+
+        Console.WriteLine($"{confirmationSummary}");
+        
+        // Display Selected food items
+        foreach (var selectedFoodKvp in _selectedFoods)
+        {
+            int quantity = selectedFoodKvp.Value;
+            Food food = selectedFoodKvp.Key;
+
+            Console.WriteLine($" - {quantity}x {food.Name} - €{food.Price * quantity:F2}");
+        }
+
+        Console.WriteLine();
+
+        // Display Selected seats
+        for (int i = 0; i < _seats.Count; i++)
+        {
+            var seatText = $" - Seat | Row: {_seats[i].Key.Row} | Col: {_seats[i].Key.Col} | Price: €{_seats[i].Value.Price}";
+            if (_selectedIndex == i)
+                Highlight(seatText);
+            else
+                Console.WriteLine(seatText);
+        }
+
+        Console.WriteLine($"\nTotal: €{totalPrice:F2}\n");
+
         Console.WriteLine("Press any key to return...");
-        Console.ReadKey();
+        ReservationLogic.CreateReservation(email, totalPrice);
+        Console.ReadKey(true);
         MenuLogic.NavigateTo(new HomeScreen(), clearStack: true);
     }
 
