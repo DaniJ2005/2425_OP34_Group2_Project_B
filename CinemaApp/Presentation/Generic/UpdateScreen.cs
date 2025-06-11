@@ -2,6 +2,7 @@ public class UpdateScreen<T> : FormScreen
 {
     private readonly Func<T> _mapToUpdatedModel;
     private readonly Func<T, bool> _submitUpdate;
+    private const int WrapWidth = 80;
 
     public UpdateScreen(string screenName, List<FormField> fields,
         Func<T> mapToUpdatedModel, Func<T, bool> submitUpdate)
@@ -26,9 +27,10 @@ public class UpdateScreen<T> : FormScreen
             General.ClearConsole();
             General.PrintColoredBoxedTitle($"{ScreenName.ToUpper()}", ConsoleColor.Yellow);
             Console.WriteLine($"\n[↑][↓] Navigate  [Enter] Edit  [ESC] Cancel  {actionLabel}");
+            Console.WriteLine();
+            Console.WriteLine();
 
             int maxLabelLength = Fields.Max(f => f.Label.Length);
-            int maxInputLength = Fields.Max(f => (f.Value ?? "").Length);
 
             for (int i = 0; i < Fields.Count; i++)
             {
@@ -36,35 +38,49 @@ public class UpdateScreen<T> : FormScreen
                 string oldValue = field.OriginalValue ?? "";
                 string newValue = field.Value ?? "";
                 bool isDifferent = !string.Equals(newValue, oldValue);
-
+                var newLines = WrapText(newValue, WrapWidth);
+                var oldLines = isDifferent ? WrapText(oldValue, WrapWidth) : new List<string>();
                 string labelPadded = field.Label.PadRight(maxLabelLength);
-                string newValuePadded = newValue.PadRight(maxInputLength);
 
-                if (i == selectedIndex)
+                int lineCount = Math.Max(newLines.Count, oldLines.Count);
+
+                for (int j = 0; j < lineCount; j++)
                 {
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.Write("> ");
-                    Console.ResetColor();
+                    string prefix = i == selectedIndex ? "> " : "  ";
+                    Console.Write(prefix);
 
-                    Console.Write($"{labelPadded}: ");
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.Write(newValuePadded);
-                    Console.ResetColor();
+                    if (j == 0)
+                        Console.Write($"{labelPadded}: ");
+                    else
+                        Console.Write(new string(' ', maxLabelLength + 2));
 
-                    if (isDifferent)
+                    string newLine = j < newLines.Count ? newLines[j] : "";
+                    string oldLine = j < oldLines.Count ? oldLines[j] : "";
+
+                    if (i == selectedIndex)
                     {
-                        Console.Write($"  | {oldValue}  ");
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.Write(newLine.PadRight(WrapWidth));
+                        Console.ResetColor();
+                    }
+                    else
+                    {
+                        Console.Write(newLine.PadRight(WrapWidth));
                     }
 
-                    Console.WriteLine();
-                }
-                else
-                {
-                    Console.Write("  ");
-                    Console.Write($"{labelPadded}: {newValuePadded}");
+                    if (j < oldLines.Count)
+                    {
+                        Console.Write("  | ");
+                        Console.Write(oldLine);
 
-                    if (isDifferent)
-                        Console.Write($"  | {oldValue}");
+                        if (j == oldLines.Count - 1 && isDifferent)
+                        {
+                            Console.Write("  ");
+                            Console.ForegroundColor = ConsoleColor.Cyan;
+                            Console.Write("[Revert]");
+                            Console.ResetColor();
+                        }
+                    }
 
                     Console.WriteLine();
                 }
@@ -109,9 +125,11 @@ public class UpdateScreen<T> : FormScreen
             General.ClearConsole();
             General.PrintColoredBoxedTitle($"{ScreenName.ToUpper()}", ConsoleColor.Yellow);
             Console.WriteLine("\n[←][→] Move Cursor  [Backspace] Delete  [Esc] Cancel Edit  [Enter] Confirm");
+            Console.WriteLine($"Editing '{field.Label}': Type to change the value, or press → to select [Revert] and restore the original.");
+
+            Console.WriteLine();
 
             int maxLabelLength = Fields.Max(f => f.Label.Length);
-            int maxInputLength = Math.Max(input.Length, Fields.Max(f => (f.Value ?? "").Length));
 
             for (int i = 0; i < Fields.Count; i++)
             {
@@ -119,57 +137,77 @@ public class UpdateScreen<T> : FormScreen
                 string displayValue = (i == index) ? input : f.Value ?? "";
                 string oldValue = f.OriginalValue ?? "";
                 string labelPadded = f.Label.PadRight(maxLabelLength);
-                string inputPadded = displayValue.PadRight(maxInputLength);
 
-                if (i == index)
+                var newLines = WrapText(displayValue, WrapWidth);
+                var oldLines = (!string.Equals(displayValue, oldValue))
+                    ? WrapText(oldValue, WrapWidth)
+                    : new List<string>();
+
+                int lineCount = Math.Max(newLines.Count, oldLines.Count);
+
+                for (int j = 0; j < lineCount; j++)
                 {
-                    Console.Write("> ");
-                    Console.Write($"{labelPadded}: ");
+                    string prefix = i == index ? "> " : "  ";
+                    Console.Write(prefix);
 
-                    if (isInRevertMode)
+                    if (j == 0)
+                        Console.Write($"{labelPadded}: ");
+                    else
+                        Console.Write(new string(' ', maxLabelLength + 2));
+
+                    string newLine = j < newLines.Count ? newLines[j] : "";
+                    string oldLine = j < oldLines.Count ? oldLines[j] : "";
+
+                    if (i == index)
                     {
-                        Console.Write(inputPadded);
-                        Console.Write($"  | {oldValue}  ");
-                        Console.BackgroundColor = ConsoleColor.Cyan;
-                        Console.ForegroundColor = ConsoleColor.Black;
-                        Console.Write("[Revert]");
-                        Console.ResetColor();
+                        if (isInRevertMode)
+                        {
+                            Console.Write(newLine.PadRight(WrapWidth));
+                        }
+                        else
+                        {
+                            Console.ForegroundColor = ConsoleColor.Yellow;
+                            Console.Write(newLine.PadRight(WrapWidth));
+                            Console.ResetColor();
+                        }
                     }
                     else
                     {
-                        Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.Write(inputPadded);
-                        Console.ResetColor();
+                        Console.Write(newLine.PadRight(WrapWidth));
+                    }
 
-                        if (isDifferent)
+                    if (j < oldLines.Count)
+                    {
+                        Console.Write("  | ");
+                        Console.Write(oldLine);
+
+                        if (j == oldLines.Count - 1 && isDifferent && i == index)
                         {
-                            Console.Write($"  | {oldValue}  ");
-                            Console.ForegroundColor = ConsoleColor.Cyan;
-                            Console.Write("[Revert]");
-                            Console.ResetColor();
+                            Console.Write("  ");
+
+                            if (isInRevertMode)
+                            {
+                                Console.BackgroundColor = ConsoleColor.Yellow;
+                                Console.ForegroundColor = ConsoleColor.Black;
+                                Console.Write("[Revert]");
+                                Console.ResetColor();
+                            }
+                            else
+                            {
+                                Console.ForegroundColor = ConsoleColor.Cyan;
+                                Console.Write("[Revert]");
+                                Console.ResetColor();
+                            }
                         }
                     }
 
                     Console.WriteLine();
                 }
-                else
-                {
-                    Console.Write("  ");
-                    Console.Write($"{labelPadded}: {inputPadded}");
-
-                    if (!string.Equals(displayValue, oldValue))
-                        Console.Write($"  | {oldValue}");
-
-                    Console.WriteLine();
-                }
             }
 
-            // Position cursor
-            int cursorLeft = isInRevertMode
-                ? 2 + maxLabelLength + 2 + input.Length + 4 + originalValue.Length + 2
-                : 2 + maxLabelLength + 2 + cursorPos;
-            int cursorTop = 2 + index;
-
+            int cursorTop = 2 + Fields.Take(index).Sum(f => Math.Max(WrapText(f.Value ?? "", WrapWidth).Count,
+                                                                     WrapText(f.OriginalValue ?? "", WrapWidth).Count));
+            int cursorLeft = 2 + maxLabelLength + 2 + cursorPos;
             cursorLeft = Math.Min(cursorLeft, Console.WindowWidth - 1);
             Console.CursorVisible = !isInRevertMode;
             Console.SetCursorPosition(cursorLeft, cursorTop);
@@ -258,5 +296,15 @@ public class UpdateScreen<T> : FormScreen
             }
         }
         return true;
+    }
+
+    private List<string> WrapText(string text, int maxWidth)
+    {
+        var lines = new List<string>();
+        for (int i = 0; i < text.Length; i += maxWidth)
+        {
+            lines.Add(text.Substring(i, Math.Min(maxWidth, text.Length - i)));
+        }
+        return lines;
     }
 }
