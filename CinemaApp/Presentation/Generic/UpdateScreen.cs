@@ -24,7 +24,8 @@ public class UpdateScreen<T> : FormScreen
         do
         {
             General.ClearConsole();
-            Console.WriteLine($"=== {ScreenName.ToUpper()} ===\n");
+            General.PrintColoredBoxedTitle($"{ScreenName.ToUpper()}", ConsoleColor.Yellow);
+            Console.WriteLine($"\n[↑][↓] Navigate  [Enter] Edit  [ESC] Cancel  {actionLabel}");
 
             int maxLabelLength = Fields.Max(f => f.Label.Length);
             int maxInputLength = Fields.Max(f => (f.Value ?? "").Length);
@@ -53,9 +54,6 @@ public class UpdateScreen<T> : FormScreen
                     if (isDifferent)
                     {
                         Console.Write($"  | {oldValue}  ");
-                        Console.ForegroundColor = ConsoleColor.Cyan;
-                        Console.Write("[Revert]");
-                        Console.ResetColor();
                     }
 
                     Console.WriteLine();
@@ -71,8 +69,6 @@ public class UpdateScreen<T> : FormScreen
                     Console.WriteLine();
                 }
             }
-
-            Console.WriteLine($"\n[↑][↓] Navigate  [Enter] Edit  [ESC] Cancel  {actionLabel}");
 
             key = Console.ReadKey(true).Key;
 
@@ -114,7 +110,8 @@ public class UpdateScreen<T> : FormScreen
             bool isDifferent = !string.Equals(input, originalValue);
 
             General.ClearConsole();
-            Console.WriteLine($"=== {ScreenName.ToUpper()} ===\n");
+            General.PrintColoredBoxedTitle($"{ScreenName.ToUpper()}", ConsoleColor.Yellow);
+            Console.WriteLine("\n[←][→] Move Cursor  [Backspace] Delete  [Esc] Cancel Edit  [Enter] Confirm");
 
             int maxLabelLength = Fields.Max(f => f.Label.Length);
             int maxInputLength = Math.Max(input.Length, Fields.Max(f => (f.Value ?? "").Length));
@@ -138,7 +135,7 @@ public class UpdateScreen<T> : FormScreen
                         Console.Write($"  | {oldValue}  ");
                         Console.BackgroundColor = ConsoleColor.Cyan;
                         Console.ForegroundColor = ConsoleColor.Black;
-                        Console.Write("[R]evert");
+                        Console.Write("[Revert]");
                         Console.ResetColor();
                     }
                     else
@@ -151,7 +148,7 @@ public class UpdateScreen<T> : FormScreen
                         {
                             Console.Write($"  | {oldValue}  ");
                             Console.ForegroundColor = ConsoleColor.Cyan;
-                            Console.Write("[R]evert");
+                            Console.Write("[Revert]");
                             Console.ResetColor();
                         }
                     }
@@ -169,8 +166,6 @@ public class UpdateScreen<T> : FormScreen
                     Console.WriteLine();
                 }
             }
-
-            Console.WriteLine("\n[←][→] Move Cursor  [Backspace] Delete  [Esc] Cancel Edit  [Enter] Confirm");
 
             // Position cursor
             int cursorLeft = isInRevertMode

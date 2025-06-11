@@ -14,8 +14,14 @@ public abstract class FormScreen : IScreen
         while (ActiveFieldIndex < Fields.Count)
         {
             var field = Fields[ActiveFieldIndex];
-            field.IsActive = true;
 
+            if (field is SelectField || field is DateField || field is TimeField)
+            {
+                ActiveFieldIndex++;
+                continue;
+            }
+
+            field.IsActive = true;
             string input = ReadInput(field);
 
             if (input == null)

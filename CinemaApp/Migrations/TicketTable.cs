@@ -6,7 +6,7 @@ public static class TicketTable
         using (var connection = Db.CreateConnection())
         {
             string sql = @"
-                CREATE TABLE ticket (
+                CREATE TABLE IF NOT EXISTS ticket (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     seat_id INTEGER,
                     reservation_id INTEGER,

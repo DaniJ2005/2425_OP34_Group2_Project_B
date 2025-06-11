@@ -5,7 +5,7 @@ public class MovieSessionScreen : IScreen
     public List<string> _uniqueDates { get; private set; }
 
     public string ScreenName { get; set; }
-    public MovieSessionScreen() => ScreenName = "MovieSession";
+    public MovieSessionScreen() => ScreenName = "Select a movie session";
 
     public void Start()
     {
@@ -23,6 +23,9 @@ public class MovieSessionScreen : IScreen
 
         if (_movieSessions.Count == 0)
         {
+            General.ClearConsole();
+            General.PrintColoredBoxedTitle($"{ScreenName}", ConsoleColor.White);
+            Console.WriteLine();
             DisplayMovieInfo();
             Console.WriteLine("No movie sessions available.\n");
             Console.WriteLine("Press any key to return...");
@@ -39,6 +42,8 @@ public class MovieSessionScreen : IScreen
         {
             General.ClearConsole();  
 
+            General.PrintColoredBoxedTitle($"{ScreenName}", ConsoleColor.White);
+            Console.WriteLine();
             DisplayMovieInfo();
             DisplayDateOptions(_uniqueDates, selectedDateIndex, isSelectingDate);
 
@@ -94,12 +99,38 @@ public class MovieSessionScreen : IScreen
         Console.WriteLine(_movie.Title);
         Console.WriteLine("");
         Console.WriteLine("Description:");
-        Console.WriteLine(_movie.Description);
+        WriteWrapped(_movie.Description);
         Console.WriteLine("");
         Console.WriteLine($"Genre: {_movie.Genre} | Language: {_movie.Language}");
         Console.WriteLine($"Duration: {_movie.Duration} | Minimum age: {_movie.MinAge}");
         Console.WriteLine("");
         Console.WriteLine("---------------------------------------------------------------\n");
+    }
+
+    public static void WriteWrapped(string text, int maxWidth = 80)
+    {
+        var words = text.Split(' ');
+        int currentLineLength = 0;
+
+        foreach (var word in words)
+        {
+            if (currentLineLength + word.Length + 1 > maxWidth)
+            {
+                Console.WriteLine();
+                currentLineLength = 0;
+            }
+
+            if (currentLineLength > 0)
+            {
+                Console.Write(" ");
+                currentLineLength++;
+            }
+
+            Console.Write(word);
+            currentLineLength += word.Length;
+        }
+
+        Console.WriteLine(); // Final newline
     }
 
     private void DisplayDateOptions(List<string> dates, int selectedIndex, bool isSelectingDate)

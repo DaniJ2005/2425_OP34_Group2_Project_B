@@ -6,7 +6,7 @@ public static class SeatPriceTable
         using (var connection = Db.CreateConnection())
         {
             string sql = @"
-                CREATE TABLE seat_price (
+                CREATE TABLE IF NOT EXISTS seat_price (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     seat_type_id INTEGER,
                     promo TEXT NOT NULL,

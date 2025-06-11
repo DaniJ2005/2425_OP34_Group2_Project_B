@@ -3,7 +3,7 @@ public class FoodScreen : IScreen
     public string ScreenName { get; set; }
     private List<Food> _foods = new();
     private Dictionary<Food, int> _selectedFoods;
-    public FoodScreen() => ScreenName = "Food";
+    public FoodScreen() => ScreenName = "Select Food Items";
 
     public void Start()
     {
@@ -24,9 +24,10 @@ public class FoodScreen : IScreen
         do
         {
             General.ClearConsole();
+            General.PrintColoredBoxedTitle($"{ScreenName}", ConsoleColor.White);
+            Console.WriteLine();
 
             // Header
-            Console.WriteLine("Select food and drinks!");
             Console.WriteLine("Use ↑ ↓ to navigate, ← → to change page.");
             Console.WriteLine("Press [SPACE] to add & [BACKSPACE] to remove an item.");
             Console.WriteLine("Press [ENTER] to confirm, [ESC] to return...\n");

@@ -58,7 +58,7 @@ public static class MovieSessionAccess
                 (movie_hall_id, movie_id, start_time, date)
                 VALUES 
                 (@MovieHallId, @MovieId, @StartTime, @Date);
-                SELECT LAST_INSERT_ID()";
+                SELECT last_insert_rowid();";
             
             int id = connection.ExecuteScalar<int>(sql, new { 
                 session.MovieHallId, 
@@ -94,19 +94,41 @@ public static class MovieSessionAccess
     
     public static void DeleteMovieSession(int id)
     {
-        using (var connection = Db.CreateConnection())
+        try
         {
-            // Check if there are any tickets sold for this session
-            string checkSql = @"SELECT COUNT(*) FROM ticket WHERE movie_session_id = @Id";
-            int ticketCount = connection.ExecuteScalar<int>(checkSql, new { Id = id });
-            
-            if (ticketCount > 0)
+            using (var connection = Db.CreateConnection())
             {
-                throw new InvalidOperationException("Cannot delete movie session with sold tickets");
+                connection.Execute("PRAGMA foreign_keys = ON;");
+
+                // Check if there are any tickets sold for this session
+                string checkSql = @"SELECT COUNT(*) FROM reservation WHERE movie_session_id = @Id";
+                int ticketCount = connection.ExecuteScalar<int>(checkSql, new { Id = id });
+
+                LoggerLogic.Instance.Log($"----------- {id}");
+
+                if (ticketCount > 0)
+                {
+                    throw new InvalidOperationException("Cannot delete movie session with sold tickets");
+                }
+
+                string sql = "DELETE FROM movie_session WHERE id = @Id";
+                int rowsAffected = connection.Execute(sql, new { Id = id });
+
+                if (rowsAffected == 0)
+                {
+                    throw new Exception($"No movie session found with ID {id} to delete.");
+                }
             }
-            
-            string sql = "DELETE FROM movie_session WHERE id = @Id";
-            connection.Execute(sql, new { Id = id });
+        }
+        catch (InvalidOperationException ex)
+        {
+            LoggerLogic.Instance.Log($"DeleteMovieSession failed: {ex.Message}");
+            throw;  // rethrow if you want the caller to handle it too
+        }
+        catch (Exception ex)
+        {
+            LoggerLogic.Instance.Log($"Unexpected error deleting movie session ID {id}: {ex.Message}");
+            throw;  // or handle error gracefully here, depending on your design
         }
     }
 }

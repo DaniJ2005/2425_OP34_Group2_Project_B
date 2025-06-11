@@ -1,5 +1,4 @@
-﻿// Dit is een nieuwere versie
-// Enable UTF-8 output
+﻿// Enable UTF-8 output
 Console.OutputEncoding = System.Text.Encoding.UTF8;
 
 //hide cursor
@@ -11,11 +10,11 @@ Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
 //Dev only
 // Db.DeleteTables();
 
-// Initialize db tables
-// Db.InitTables();
+// Initialize db tables to ensure they exist
+Db.InitTables();
 
 // Fill db with some data
-// Db.PopulateTables();
+Db.PopulateTables();
 
 // Start application
 if (!SessionDataLogic.HasPassedSymbolCheck())

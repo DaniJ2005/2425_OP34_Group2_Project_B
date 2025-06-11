@@ -1,15 +1,10 @@
 public static class MovieAdminLogic
 {
-    public static List<Movie> GetAllMovies()
-    {
-        return MovieAccess.GetAllMovies();
-    }
-    
-    public static Movie GetMovieById(int id)
-    {
-        return MovieAccess.GetMovieById(id);
-    }
-    
+    public static List<Movie> GetAllMovies() => MovieAccess.GetAllMovies();
+
+    public static List<MovieHall> GetAllMovieHalls() => MovieHallAccess.GetAllMovieHalls();
+
+    public static Movie GetMovieById(int id) => MovieAccess.GetMovieById(id);
     public static bool AddMovie(Movie movie)
     {
         try
@@ -56,28 +51,21 @@ public static class MovieAdminLogic
     }
     
     // Methods for movie sessions
-    public static List<MovieSession> GetAllMovieSessions()
-    {
-        return MovieSessionAccess.GetAll();
-    }
+    public static List<MovieSession> GetAllMovieSessions() => MovieSessionAccess.GetAll();
     
-    public static List<MovieSession> GetMovieSessionsByMovieId(int movieId)
-    {
-        return MovieSessionAccess.GetAllByMovieId(movieId);
-    }
+    public static List<MovieSession> GetMovieSessionsByMovieId(int movieId) => MovieSessionAccess.GetAllByMovieId(movieId);
     
-    public static MovieSession GetMovieSessionById(int id)
-    {
-        return MovieSessionAccess.GetById(id);
-    }
+    public static MovieSession GetMovieSessionById(int id) => MovieSessionAccess.GetById(id);
     
     public static bool AddMovieSession(MovieSession session)
     {
         try
         {
-            MovieSessionAccess.AddMovieSession(session);
             var sessionDate = DateTime.Parse(session.Date);
-            LoggerLogic.Instance.Log($"Movie session added: Movie ID {session.MovieId} at {sessionDate.ToShortDateString()} {session.StartTime}");
+
+            MovieSessionAccess.AddMovieSession(session);
+
+            LoggerLogic.Instance.Log($"Movie session added: Movie ID {session.MovieId} at {session.StartTime}");
             return true;
         }
         catch (Exception ex)

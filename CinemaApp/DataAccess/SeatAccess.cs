@@ -1,6 +1,5 @@
 using Dapper;
 
-
 public static class SeatAccess
 {
     public static List<Seat> GetAllSeats()

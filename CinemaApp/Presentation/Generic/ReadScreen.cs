@@ -22,7 +22,7 @@ public class ReadScreen<T>
         do
         {
             General.ClearConsole();
-            Console.WriteLine("==== Viewing Items ====\n");
+            General.PrintColoredBoxedTitle("Viewing Items", ConsoleColor.Yellow);
             Console.WriteLine("[↑][↓] to navigate, [←][→] to change page, [ESC] to return.\n");
             table.Print(_headers);
 

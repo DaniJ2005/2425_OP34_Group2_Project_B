@@ -55,7 +55,10 @@ public class Table<T>
     public void Print(params string[] customHeaders)
     {
         if (_rows.Count == 0)
+        {
+            Console.WriteLine("No data to choose from, sorry for the inconvenience.");
             return;
+        }   
 
         SetCustomHeader(customHeaders);
         CalculateColumnWidths();

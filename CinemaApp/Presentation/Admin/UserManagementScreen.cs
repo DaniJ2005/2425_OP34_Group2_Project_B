@@ -11,9 +11,7 @@ public class UserManagementScreen : IScreen
         do
         {
             General.ClearConsole();
-            Console.WriteLine("╔════════════════════════════╗");
-            Console.WriteLine("║       USER MANAGEMENT      ║");
-            Console.WriteLine("╚════════════════════════════╝");
+            General.PrintColoredBoxedTitle($"{ScreenName}", ConsoleColor.Yellow);
             Console.WriteLine("[↑][↓] to navigate, [ENTER] to select, [ESC] to go back\n");
 
             for (int i = 0; i < options.Length; i++)

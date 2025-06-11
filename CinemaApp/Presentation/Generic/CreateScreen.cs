@@ -16,5 +16,6 @@ public class CreateScreen<T> : FormScreen
         var model = _mapToModel();
         bool success = _submitModel(model);
         Console.WriteLine(success ? "\nCreated successfully!" : "\nCreation failed.");
+        Console.ReadKey(true);
     }
 }

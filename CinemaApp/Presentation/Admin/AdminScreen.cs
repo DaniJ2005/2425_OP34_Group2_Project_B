@@ -15,17 +15,17 @@ public class AdminScreen : IScreen
         var permissionOptions = new (bool Permission, string Label)[]
         {
             (UserLogic.CanManageMovieSessions, "Manage Movies"),
-            (UserLogic.CanManageMovieHall, "Manage Seats"),
+            // (UserLogic.CanManageMovieHall, "Manage Seats"),
             (UserLogic.CanManageAccounts, "Manage Users"),
-            (UserLogic.CanManageGuestAccounts, "Manage Guests"),
-            (UserLogic.CanManageFoodMenu, "Manage Food Menu"),
-            (UserLogic.CanManageReservations, "Manage Reservations")
+            // (UserLogic.CanManageGuestAccounts, "Manage Guests"),
+            // (UserLogic.CanManageFoodMenu, "Manage Food Menu"),
+            // (UserLogic.CanManageReservations, "Manage Reservations")
         };
 
         string[] menuOptions = permissionOptions
             .Where(po => po.Permission)
             .Select(po => po.Label)
-            .Concat(new[] { "Return to Home" })
+            .Concat(new[] { "Manage Sessions", "Return to Home" })
             .ToArray();
 
 
@@ -94,11 +94,14 @@ public class AdminScreen : IScreen
                     case "Manage Movies":
                         MenuLogic.NavigateTo(new MovieManagementScreen());
                         break;
-                    case "Manage Seats":
-                        MenuLogic.NavigateTo(new SeatManagementScreen());
-                        break;
+                    // case "Manage Seats":
+                    //     MenuLogic.NavigateTo(new SeatManagementScreen());
+                    //     break;
                     case "Manage Users":
                         MenuLogic.NavigateTo(new UserManagementScreen());
+                        break;
+                    case "Manage Sessions":
+                        MenuLogic.NavigateTo(new SessionManagementScreen());
                         break;
                     // case "Manage Guests":
                     //     MenuLogic.NavigateTo(new GuestManagementScreen());
