@@ -37,7 +37,6 @@ public class SelectField : FormField
 
         do
         {
-            // Clear entire console using your helper method
             General.ClearConsole();
 
             Console.WriteLine($"{Label}:");
@@ -102,10 +101,7 @@ public class SelectField : FormField
                 _selectedIndex = _page * PageSize;
             }
             else if (key == ConsoleKey.Escape)
-            {
-                MenuLogic.NavigateToPrevious();
-                break;
-            }
+                MenuLogic.NavigateTo(new SessionManagementScreen());
 
         } while (key != ConsoleKey.Enter);
 

@@ -80,7 +80,7 @@ public abstract class FormScreen : IScreen
 
                 if (key.Key == ConsoleKey.Escape)
                 {
-                    MenuLogic.NavigateToPrevious();
+                    // MenuLogic.NavigateToPrevious();
                     return null;
                 }
                 else if (key.Key == ConsoleKey.Backspace && input.Length > 0)

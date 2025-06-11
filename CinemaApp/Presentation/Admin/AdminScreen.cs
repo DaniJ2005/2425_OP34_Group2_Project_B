@@ -16,7 +16,7 @@ public class AdminScreen : IScreen
         {
             (UserLogic.CanManageMovieSessions, "Manage Movies"),
             // (UserLogic.CanManageMovieHall, "Manage Seats"),
-            (UserLogic.CanManageAccounts, "Manage Users"),
+            // (UserLogic.CanManageAccounts, "Manage Users"),
             // (UserLogic.CanManageGuestAccounts, "Manage Guests"),
             // (UserLogic.CanManageFoodMenu, "Manage Food Menu"),
             // (UserLogic.CanManageReservations, "Manage Reservations")

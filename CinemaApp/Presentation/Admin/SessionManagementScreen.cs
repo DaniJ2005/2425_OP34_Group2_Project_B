@@ -6,7 +6,7 @@ public class SessionManagementScreen : IScreen
     {
         int selectedIndex = 0;
         ConsoleKey key;
-        string[] options = { "Add Session", "Update Session", "Delete Session", "View Session", "Back" };
+        string[] options = { "Add Session", "Update Session", "Delete Session", "View Session" };
 
         do
         {
@@ -50,9 +50,6 @@ public class SessionManagementScreen : IScreen
                     case 3: // View Session
                         ShowViewSession();
                         break;
-                    case 4: // Back
-                        MenuLogic.NavigateToPrevious();
-                        return;
                 }
             }
             else if (key == ConsoleKey.Escape)

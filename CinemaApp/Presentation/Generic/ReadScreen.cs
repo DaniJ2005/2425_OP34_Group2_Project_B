@@ -43,7 +43,6 @@ public class ReadScreen<T>
                     table.NextPage();
                     break;
                 case ConsoleKey.Escape:
-                    MenuLogic.NavigateToPrevious();
                     return;
             }
 

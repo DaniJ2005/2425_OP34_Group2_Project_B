@@ -6,7 +6,7 @@ public class MovieManagementScreen : IScreen
     {
         int selectedIndex = 0;
         ConsoleKey key;
-        string[] options = { "Add Movie", "Update Movie", "Delete Movie", "View Movies", "Back" };
+        string[] options = { "Add Movie", "Update Movie", "Delete Movie", "View Movies" };
 
         do
         {
@@ -50,9 +50,6 @@ public class MovieManagementScreen : IScreen
                     case 3: // View Movies
                         ShowViewMovies();
                         break;
-                    case 4: // Back
-                        MenuLogic.NavigateToPrevious();
-                        return;
                 }
             }
             else if (key == ConsoleKey.Escape)
@@ -131,8 +128,8 @@ public class MovieManagementScreen : IScreen
                         { Value = selected.Duration, OriginalValue = selected.Duration },
                     new("Language") 
                         { Value = selected.Language, OriginalValue = selected.Language },
-                    new("Min Age", false, v => (int.TryParse(v, out _), "Must be a valid number")) 
-                        { Value = selected.MinAge.ToString(), OriginalValue = selected.MinAge.ToString() }
+                    new("Min Age", false, v => (int.TryParse(v, out _), "Must be a valid number (without +)")) 
+                        { Value = selected.MinAgeDb.ToString(), OriginalValue = selected.MinAgeDb.ToString() }
                 };
 
                 var updateScreen = new UpdateScreen<Movie>(
@@ -146,7 +143,7 @@ public class MovieManagementScreen : IScreen
                         Genre = fields[2].Value,
                         Duration = fields[3].Value,
                         Language = fields[4].Value,
-                        MinAge = fields[5].Value
+                        MinAgeDb = int.Parse(fields[5].Value.Replace("+", ""))
                     },
                     MovieAdminLogic.UpdateMovie);
 

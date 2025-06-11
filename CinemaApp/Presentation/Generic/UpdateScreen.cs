@@ -79,10 +79,7 @@ public class UpdateScreen<T> : FormScreen
             else if (key == ConsoleKey.Enter)
                 EditField(selectedIndex);
             else if (key == ConsoleKey.Escape)
-            {
-                MenuLogic.NavigateToPrevious();
                 return;
-            }
             else if (key == ConsoleKey.U || key == ConsoleKey.S)
             {
                 if (ValidateAllFields())
