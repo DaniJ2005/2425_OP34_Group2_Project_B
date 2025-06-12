@@ -6,7 +6,7 @@ public static class MovieAccess
     {
         using (var connection = Db.CreateConnection())
         {
-            string sql = "SELECT * FROM movie;";
+            string sql = "SELECT id as Id, title as Title, description as Description, genre as Genre, duration as Duration, language as Language, min_age as MinAge FROM movie;";
             return connection.Query<Movie>(sql).ToList();
         }
     }
@@ -15,7 +15,7 @@ public static class MovieAccess
     {
         using (var connection = Db.CreateConnection())
         {
-            string sql = "SELECT * FROM movie WHERE id = @Id;";
+            string sql = "SELECT id as Id, title as Title, description as Description, genre as Genre, duration as Duration, language as Language, min_age as MinAge FROM movie WHERE id = @Id;";
             return connection.QueryFirstOrDefault<Movie>(sql, new { Id = id });
         }
     }
