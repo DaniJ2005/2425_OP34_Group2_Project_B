@@ -7,15 +7,21 @@ public abstract class FormScreen : IScreen
 
     public abstract void OnFormSubmit();
 
-    public void Start()
+    public virtual void Start()
     {
         General.ClearConsole();
 
         while (ActiveFieldIndex < Fields.Count)
         {
             var field = Fields[ActiveFieldIndex];
-            field.IsActive = true;
 
+            if (field is SelectField || field is DateField || field is TimeField)
+            {
+                ActiveFieldIndex++;
+                continue;
+            }
+
+            field.IsActive = true;
             string input = ReadInput(field);
 
             if (input == null)
@@ -28,7 +34,7 @@ public abstract class FormScreen : IScreen
             if (!isValid)
             {
                 ShowErrorBox(errorMessage);
-                continue;
+                continue; // retry this field
             }
 
             ActiveFieldIndex++;
@@ -39,14 +45,14 @@ public abstract class FormScreen : IScreen
 
     string ReadInput(FormField field)
     {
-        string input = "";
+        string input = field.Value ?? "";
         ConsoleKeyInfo key;
-        int cursorTop = Console.CursorTop;
+        int cursorTop;
 
         while (true)
         {
             General.ClearConsole();
-            Console.WriteLine($"==== {ScreenName} ====\n");
+            Console.WriteLine($"==== {ScreenName.ToUpper()} ====\n");
 
             foreach (var f in Fields)
             {
@@ -57,13 +63,15 @@ public abstract class FormScreen : IScreen
             Console.Write($"\n> {field.Label}: ");
             int left = Console.CursorLeft;
             int top = Console.CursorTop;
-            Console.WriteLine(); // reserve space for error
+            cursorTop = top;
+
+            Console.WriteLine(); // reserve error space
 
             while (true)
             {
-                Console.SetCursorPosition(left, top);
+                Console.SetCursorPosition(left, cursorTop);
                 Console.Write(new string(' ', Console.WindowWidth - left));
-                Console.SetCursorPosition(left, top);
+                Console.SetCursorPosition(left, cursorTop);
                 Console.Write(field.MaskInput ? UserLogic.Mask(input) : input);
 
                 Console.CursorVisible = true;
@@ -72,7 +80,7 @@ public abstract class FormScreen : IScreen
 
                 if (key.Key == ConsoleKey.Escape)
                 {
-                    MenuLogic.NavigateToPrevious();
+                    // MenuLogic.NavigateToPrevious();
                     return null;
                 }
                 else if (key.Key == ConsoleKey.Backspace && input.Length > 0)
@@ -93,13 +101,14 @@ public abstract class FormScreen : IScreen
 
     void ShowField(string label, string value, bool isActive, bool? isValid)
     {
-        var prefix = isActive ? "> " : "  ";
+        string prefix = isActive ? "> " : "  ";
 
         Console.ForegroundColor = isValid == true ? ConsoleColor.Green :
                                   isValid == false ? ConsoleColor.Red :
                                   ConsoleColor.White;
 
-        if (isActive) Console.BackgroundColor = ConsoleColor.DarkGray;
+        if (isActive)
+            Console.BackgroundColor = ConsoleColor.DarkGray;
 
         Console.WriteLine($"{prefix}{label}: {value}");
         Console.ResetColor();
@@ -114,6 +123,7 @@ public abstract class FormScreen : IScreen
         Console.WriteLine($"  │  {error}  │");
         Console.WriteLine("  ╰" + new string('─', width) + "╯");
         Console.ResetColor();
-        Console.ReadKey();
+        Console.WriteLine("Press any key to retry...");
+        Console.ReadKey(true);
     }
 }

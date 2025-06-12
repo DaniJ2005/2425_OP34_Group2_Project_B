@@ -141,8 +141,7 @@ public static class SeatConsoleUI
         {
             
         }
-        Console.Clear();
-        Console.WriteLine("Returned to previous screen.");
+        General.ClearConsole();
     }
 
     private static (int Row, int Col)? NavigateSeatPosition(int movieHallId, int rows, int cols)
@@ -153,7 +152,7 @@ public static class SeatConsoleUI
         ConsoleKey key;
         do
         {
-            Console.Clear();
+            General.ClearConsole();
             Console.WriteLine($"Movie Hall ID: {movieHallId}");
             Console.WriteLine("Use arrow keys to choose seat position. [Enter] to confirm, [Esc] to cancel.\n");
 

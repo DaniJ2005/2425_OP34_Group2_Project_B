@@ -2,6 +2,7 @@ public class SeatScreen : IScreen
 {
     public string ScreenName { get; set; }
     private string error = "";
+    private List<SeatPrice> _seatPrices;
     public SeatScreen() => ScreenName = "Seat Selection";
 
     public void Start()
@@ -9,6 +10,8 @@ public class SeatScreen : IScreen
         error = "";
         ReservationLogic.ClearSeats();
         MovieSession moviesession = ReservationLogic.GetSelectedSession();
+
+        _seatPrices = SeatLogic.GetSeatPrices();
 
         SeatLogic.LoadSeats(moviesession);
 
@@ -22,6 +25,8 @@ public class SeatScreen : IScreen
         do
         {
             General.ClearConsole();  
+            General.PrintColoredBoxedTitle($"{ScreenName}", ConsoleColor.White);
+            Console.WriteLine();
             Console.WriteLine($"Please Select your seats. (Max {SeatLogic.SeatSelectionLimit})\n");
             Console.WriteLine("[←][↑][→][↓] to navigate\n[SPACE] to select a seat,\n[ENTER] to confirm your selection.\n");
 
@@ -34,6 +39,9 @@ public class SeatScreen : IScreen
 
             // Display movie hall
             DisplaySeats();
+
+            // Display legend
+            DisplayLegend();
 
             key = Console.ReadKey(true).Key;
 
@@ -107,6 +115,23 @@ public class SeatScreen : IScreen
             }
             Console.WriteLine();
         }
+    }
+
+    private void DisplayLegend()
+    {
+        Console.WriteLine("\nLegend:");
+        foreach (var seatPrice in _seatPrices)
+        {
+            // Print the colored square
+            General.PrintColoredString("□", seatPrice.Color);
+            Console.WriteLine($" - {seatPrice.Type} (${seatPrice.Price:0.00})");
+        }
+
+        // Also print the fixed icons (for booked and cursor)
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.Write("▧");
+        Console.ResetColor();
+        Console.WriteLine(" - Booked");
     }
 
     public void icons()

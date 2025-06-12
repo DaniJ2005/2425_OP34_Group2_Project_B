@@ -3,7 +3,7 @@ public class MovieScreen : IScreen
     public string ScreenName { get; set; }
     private List<Movie> _movies = new();
 
-    public MovieScreen() => ScreenName = "Movies";
+    public MovieScreen() => ScreenName = "Select a Movie";
     public void Start()
     {
         ReservationLogic.ClearMovie();
@@ -26,8 +26,8 @@ public class MovieScreen : IScreen
         do
         {
             General.ClearConsole();
-            Console.WriteLine("Select a Movie");
-            Console.WriteLine("Use ^ v to navigate, <- -> to change page, [Enter] to select and [Escape] to cancel:\n");
+            General.PrintColoredBoxedTitle($"{ScreenName}", ConsoleColor.White);
+            Console.WriteLine("Use [↑][↓] to navigate, [←][→] to change page, [Enter] to select and [Escape] to cancel:\n");
 
             movieTable.Print("Movie Title", "Gerne", "Age", "Duration");
 

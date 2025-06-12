@@ -10,8 +10,13 @@
 
     public static bool IsAuthenticated()
     {
-        return SessionDataLogic.IsAuthenticated();
+        if (!SessionDataLogic.IsAuthenticated())
+            return false;
+
+        return CurrentUser != null;
     }
+
+    public static bool IsAdmin() => CurrentUser != null && CurrentUser.RoleId != 0;
 
     public static User CheckEmail(string email)
     {
@@ -25,7 +30,7 @@
     public static User Login(string email, string password, bool passwordIsEncrypted = false)
     {
         var user = UserAccess.GetByEmail(email);
-        
+
         if (user != null)
         {
             if (passwordIsEncrypted)
@@ -127,4 +132,13 @@
             }
         }
     }
+
+    public static string GetRole()
+    {
+        if (CurrentUser?.RoleId == null)
+            return "";
+
+        var role = RoleAccess.GetRoleById(CurrentUser.RoleId);
+        return role?.Name ?? "Unknown";
+    }    
 }
