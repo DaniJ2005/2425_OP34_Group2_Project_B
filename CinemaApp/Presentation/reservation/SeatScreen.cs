@@ -25,6 +25,8 @@ public class SeatScreen : IScreen
         do
         {
             General.ClearConsole();  
+            General.PrintColoredBoxedTitle($"{ScreenName}", ConsoleColor.White);
+            Console.WriteLine();
             Console.WriteLine($"Please Select your seats. (Max {SeatLogic.SeatSelectionLimit})\n");
             Console.WriteLine("[←][↑][→][↓] to navigate\n[SPACE] to select a seat,\n[ENTER] to confirm your selection.\n");
 

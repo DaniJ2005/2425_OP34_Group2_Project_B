@@ -28,7 +28,7 @@ public static class MovieAccess
                 (title, description, genre, duration, language, min_age)
                 VALUES 
                 (@Title, @Description, @Genre, @Duration, @Language, @MinAgeDb);
-                SELECT LAST_INSERT_ID()";
+                SELECT last_insert_rowid();";
 
             // Extract the numeric value from MinAge (remove the "+" sign)
             int minAgeValue = int.Parse(movie.MinAge.Replace("+", ""));            
@@ -39,7 +39,7 @@ public static class MovieAccess
                 movie.Genre, 
                 movie.Duration, 
                 movie.Language,
-                MinAgeValue = minAgeValue
+                movie.MinAgeDb
             });
             
             movie.Id = id;
@@ -60,16 +60,17 @@ public static class MovieAccess
                 WHERE id = @Id";
 
             // Extract the numeric value from MinAge (remove the "+" sign)
-            int minAgeValue = int.Parse(movie.MinAge.Replace("+", ""));
+            // int minAgeValue = int.Parse(movie.MinAge.Replace("+", ""));
             
-            connection.Execute(sql, new { 
-                movie.Title, 
-                movie.Description, 
-                movie.Genre, 
-                movie.Duration, 
+            connection.Execute(sql, new
+            {
+                movie.Title,
+                movie.Description,
+                movie.Genre,
+                movie.Duration,
                 movie.Language,
-                movie.MinAge,
-                MinAgeValue = minAgeValue
+                movie.MinAgeDb,
+                movie.Id
             });
         }
     }

@@ -19,7 +19,9 @@ public class DeleteScreen<T>
         do
         {
             General.ClearConsole();
-            Console.WriteLine("Select item to delete:\n");
+            General.PrintColoredBoxedTitle($"Delete", ConsoleColor.Yellow);
+            Console.WriteLine("Use [↑][↓] to navigate, [←][→] to change page, [Enter] to select and [Escape] to cancel:\n");
+            
             table.Print();
 
             key = Console.ReadKey(true).Key;
@@ -31,7 +33,7 @@ public class DeleteScreen<T>
                 case ConsoleKey.RightArrow: table.NextPage(); break;
                 case ConsoleKey.Enter:
                     T selected = table.GetSelected();
-                    Console.Write("Are you sure you want to delete this item? (y/n): ");
+                    Console.Write("Are you sure you want to delete this item? (y): ");
                     if (Console.ReadLine()?.ToLower() == "y")
                     {
                         bool success = _deleteItem(selected);

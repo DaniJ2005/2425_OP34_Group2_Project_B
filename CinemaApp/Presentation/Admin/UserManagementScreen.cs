@@ -11,9 +11,7 @@ public class UserManagementScreen : IScreen
         do
         {
             General.ClearConsole();
-            Console.WriteLine("╔════════════════════════════╗");
-            Console.WriteLine("║       USER MANAGEMENT      ║");
-            Console.WriteLine("╚════════════════════════════╝");
+            General.PrintColoredBoxedTitle($"{ScreenName}", ConsoleColor.Yellow);
             Console.WriteLine("[↑][↓] to navigate, [ENTER] to select, [ESC] to go back\n");
 
             for (int i = 0; i < options.Length; i++)
@@ -78,7 +76,7 @@ public class UserManagementScreen : IScreen
             {
                 Email = fields[0].Value,
                 UserName = fields[1].Value,
-                Password = fields[2].Value,
+                Password = CryptoHelper.Hash(fields[2].Value),
                 RoleId = int.Parse(fields[3].Value)
             },
             UserAdminLogic.AddUser
@@ -98,7 +96,7 @@ public class UserManagementScreen : IScreen
         }
 
         var table = new Table<User>(maxColWidth: 40, pageSize: 10);
-        table.SetColumns("Id", "Email", "UserName", "Password", "RoleId");
+        table.SetColumns("Id", "Email", "UserName", "RoleId");
         table.AddRows(users);
 
         ConsoleKey key;
@@ -106,7 +104,7 @@ public class UserManagementScreen : IScreen
         {
             General.ClearConsole();
             Console.WriteLine("Select user to update:\n");
-            table.Print("Id", "Email", "UserName", "Password", "RoleId");
+            table.Print("Id", "Email", "UserName", "RoleId");
             Console.WriteLine("\n[↑][↓] Navigate  [←][→] Page  [ENTER] Edit  [ESC] Cancel");
 
             key = Console.ReadKey(true).Key;
@@ -120,11 +118,9 @@ public class UserManagementScreen : IScreen
                         { Value = selected.Email, OriginalValue = selected.Email },
                     new FormField("UserName", false, v => (UserLogic.ValidateUserName(v), UserLogic.ValidateUserName(v) ? "" : "Invalid username"))
                         { Value = selected.UserName, OriginalValue = selected.UserName },
-                    new FormField("Password", true, v => (UserLogic.ValidatePassword(v), UserLogic.ValidatePassword(v) ? "" : "Invalid password"))
-                        { Value = selected.Password, OriginalValue = selected.Password },
                     new FormField("RoleId", false, v => {
-                        var valid = new[] { "1", "2", "3" }.Contains(v);
-                        return (valid, valid ? "" : "RoleId must be 1 (Admin), 2 (User), or 3 (Guest)");
+                        var valid = new[] { "0", "1" }.Contains(v);
+                        return (valid, valid ? "" : "RoleId must be 0 (guest), 1 (Admin)");
                     })
                         { Value = selected.RoleId.ToString(), OriginalValue = selected.RoleId.ToString() }
                 };
@@ -137,7 +133,6 @@ public class UserManagementScreen : IScreen
                         Id = selected.Id,
                         Email = fields[0].Value,
                         UserName = fields[1].Value,
-                        Password = fields[2].Value,
                         RoleId = int.Parse(fields[3].Value)
                     },
                     UserAdminLogic.UpdateUser

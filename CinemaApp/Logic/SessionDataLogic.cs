@@ -51,8 +51,6 @@ public static class SessionDataLogic
 
         if (UserLogic.CurrentUser != null)
             LoggerLogic.Instance.Log($"Auto-login successful | Email: {user.Email}");
-
-
     }
 
     private static bool IsSet(string flagName) => SessionDataAccess.Exists(flagName);

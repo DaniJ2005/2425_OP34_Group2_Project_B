@@ -6,7 +6,7 @@ public static class MovieTable
         using (var connection = Db.CreateConnection())
         {
             string sql = @"
-                CREATE TABLE movie (
+                CREATE TABLE IF NOT EXISTS movie (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     title TEXT NOT NULL,
                     description TEXT,

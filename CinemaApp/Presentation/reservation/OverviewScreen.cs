@@ -6,7 +6,7 @@ public class OverviewScreen : IScreen
     private string[] _buttons;
     private List<KeyValuePair<Food, int>> _selectedFoods = [];
     private User _currentUser;
-    public OverviewScreen() => ScreenName = "Confirm Reservation";
+    public OverviewScreen() => ScreenName = "Reservation Overview";
 
     public void Start()
     {
@@ -39,7 +39,8 @@ public class OverviewScreen : IScreen
             string confirmationSummary = ReservationLogic.GetConfirmationSummary();
 
             General.ClearConsole();
-            Console.WriteLine("Reservation:\n");
+            General.PrintColoredBoxedTitle($"{ScreenName}", ConsoleColor.White);
+            Console.WriteLine();
 
             if (_currentUser != null)
             {
