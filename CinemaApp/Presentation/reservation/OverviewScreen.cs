@@ -39,6 +39,7 @@ public class OverviewScreen : IScreen
             string confirmationSummary = ReservationLogic.GetConfirmationSummary();
 
             General.ClearConsole();
+            Console.WriteLine("Use [↑][↓][←][→] to navigate, [Enter] to select and [Escape] to return to previous page:\n");
             General.PrintColoredBoxedTitle($"{ScreenName}", ConsoleColor.White);
             Console.WriteLine();
 

@@ -45,12 +45,15 @@ public class MovieSessionScreen : IScreen
             General.PrintColoredBoxedTitle($"{ScreenName}", ConsoleColor.White);
             Console.WriteLine();
             DisplayMovieInfo();
+            Console.WriteLine("Use [↑][↓][←][→] to navigate, [Enter] to select and [Escape] to return to previous page:\n");
             DisplayDateOptions(_uniqueDates, selectedDateIndex, isSelectingDate);
 
             var selectedDate = _uniqueDates[selectedDateIndex];
             var availableTimes = GetSessionsByDate(selectedDate);
 
-            DisplayAvailableTimes(availableTimes, isSelectingDate ? -1 : selectedTimeIndex);
+            DisplayAvailableTimes(availableTimes, isSelectingDate ? -1 : selectedTimeIndex, selectedDate);
+
+            
 
             key = Console.ReadKey(true).Key;
 
@@ -104,7 +107,7 @@ public class MovieSessionScreen : IScreen
         Console.WriteLine($"Genre: {_movie.Genre} | Language: {_movie.Language}");
         Console.WriteLine($"Duration: {_movie.Duration} | Minimum age: {_movie.MinAge}");
         Console.WriteLine("");
-        Console.WriteLine("---------------------------------------------------------------\n");
+        Console.WriteLine("---------------------------------------------------------------\n\n");
     }
 
     public static void WriteWrapped(string text, int maxWidth = 80)
@@ -153,9 +156,11 @@ public class MovieSessionScreen : IScreen
     }
 
 
-    public void DisplayAvailableTimes(List<MovieSession> sessions, int highlightedIndex)
+    public void DisplayAvailableTimes(List<MovieSession> sessions, int highlightedIndex, string selectedDate)
     {
         Console.WriteLine();
+
+        string selectedTime = "";
 
         for (int i = 0; i < sessions.Count; i++)
         {
@@ -163,6 +168,7 @@ public class MovieSessionScreen : IScreen
             {
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.WriteLine($"> {sessions[i].StartTime}");
+                selectedTime = sessions[i].StartTime;
                 Console.ResetColor();
             }
             else
@@ -170,6 +176,8 @@ public class MovieSessionScreen : IScreen
                 Console.WriteLine($"  {sessions[i].StartTime}");
             }
         }
+
+        Console.WriteLine($"\nCurrently selected: {selectedDate} - {selectedTime}");
     }
 
     private List<MovieSession> GetSessionsByDate(string date)
