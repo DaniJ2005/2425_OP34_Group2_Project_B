@@ -23,12 +23,14 @@ public static class MovieSessionAccess
         {
             string sql = @"
                 SELECT
-                id AS Id,
-                movie_hall_id AS MovieHallId,
-                movie_id AS MovieId,
+                movie_session.id AS Id,
+                movie_hall.name AS MovieHallName,
+                movie.title AS MovieTitle,
                 start_time AS StartTime,
                 date AS Date
-                FROM movie_session";
+                FROM movie_session
+                INNER JOIN movie ON movie_session.id == movie.id
+                INNER JOIN movie_hall ON movie_session.id == movie_hall.id";
             return connection.Query<MovieSession>(sql).ToList();
         }
     }

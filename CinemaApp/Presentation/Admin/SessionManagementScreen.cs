@@ -117,7 +117,7 @@ public class SessionManagementScreen : IScreen
         }
 
         var table = new Table<MovieSession>(maxColWidth: 40, pageSize: 10);
-        table.SetColumns("Id", "MovieHallId", "MovieId", "StartTime", "Date");
+        table.SetColumns("Id", "MovieHallName", "MovieTitle", "StartTime", "Date");
         table.AddRows(sessions);
 
         var movieHalls = MovieAdminLogic.GetAllMovieHalls();
@@ -131,7 +131,7 @@ public class SessionManagementScreen : IScreen
         {
             General.ClearConsole();
             Console.WriteLine("Select session to update:\n");
-            table.Print("Id", "MovieHallId", "MovieId", "StartTime", "Date");
+            table.Print("Id", "MovieHall", "Movie", "StartTime", "Date");
             Console.WriteLine("\n[↑][↓] Navigate  [←][→] Page  [ENTER] Edit  [ESC] Cancel");
 
             key = Console.ReadKey(true).Key;
@@ -214,7 +214,7 @@ public class SessionManagementScreen : IScreen
     {
         var readScreen = new ReadScreen<MovieSession>(
             MovieAdminLogic.GetAllMovieSessions,
-            new[] { "Id", "MovieHallId", "MovieId", "StartTime", "Date" });
+            new[] { "Id", "MovieHallName", "MovieTitle", "StartTime", "Date" });
 
         readScreen.Start();
     }
