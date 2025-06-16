@@ -11,7 +11,7 @@ Dapper.DefaultTypeMap.MatchNamesWithUnderscores = false;
 LoggerLogic.LoggingEnabled = false;
 
 //Dev only
-// Db.DeleteTables();
+Db.DeleteTables();
 
 // Initialize db tables to ensure they exist
 Db.InitTables();
