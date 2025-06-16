@@ -34,7 +34,8 @@ public static class MovieHallTable
                 var MovieHalls = new[]
                 {
                     new { Name = "Hall01" },
-                    new { Name = "Hall02" }
+                    new { Name = "Hall02" },
+                    new { Name = "Hall03" }
                 };
 
                 connection.Execute(sql, MovieHalls);
