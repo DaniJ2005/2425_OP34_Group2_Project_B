@@ -58,6 +58,11 @@ public class SelectField : FormField
                     Console.ResetColor();
                 }
 
+                if (_options[_keys[i]] == OriginalValue)
+                {
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                }
+
                 Console.WriteLine($"  {_options[_keys[i]]}");
                 Console.ResetColor();
             }
