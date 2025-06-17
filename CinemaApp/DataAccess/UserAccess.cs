@@ -2,11 +2,11 @@ using Dapper;
 
 public static class UserAccess
 {
-    public static void Write(User user)
+    public static void Write(User user) // only for guest so role_id = null
     {
         using (var connection = Db.CreateConnection())
         {
-            string sql = "INSERT INTO user (email, password, username) VALUES (@Email, @Password, @UserName)";
+            string sql = "INSERT INTO user (username, email, password) VALUES (@UserName, @Email, @Password)";
             connection.Execute(sql, user);
         }
     }
@@ -15,7 +15,7 @@ public static class UserAccess
     {
         using (var connection = Db.CreateConnection())
         {
-            string sql = "UPDATE user SET email = @Email, password = @Password, username = @UserName WHERE id = @Id";
+            string sql = "UPDATE user SET role_id = @RoleId, username = @UserName, email = @Email, password = @Password WHERE id = @Id";
             connection.Execute(sql, user);
         }
     }
@@ -33,7 +33,14 @@ public static class UserAccess
     {
         using (var connection = Db.CreateConnection())
         {
-            string sql = "SELECT * FROM user";
+            string sql = @"
+            SELECT 
+                id AS Id,
+                role_id AS RoleId,
+                username AS UserName,
+                email AS Email,
+                password AS Password
+            FROM user";
             return connection.Query<User>(sql).ToList();
         }
     }
@@ -42,7 +49,15 @@ public static class UserAccess
     {
         using (var connection = Db.CreateConnection())
         {
-            string sql = "SELECT * FROM user WHERE email = @Email";
+            string sql = @"
+            SELECT 
+                id AS Id,
+                role_id AS RoleId,
+                username AS UserName,
+                email AS Email,
+                password AS Password
+            FROM user
+            WHERE email = @Email";
             return connection.QueryFirstOrDefault<User>(sql, new { Email = email });
         }
     }

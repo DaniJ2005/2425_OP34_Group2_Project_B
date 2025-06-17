@@ -23,6 +23,7 @@ public class ViewAllReservationsScreen : IScreen
         do
         {
             General.ClearConsole();
+            Console.WriteLine("Use [↑][↓] to navigate, [←][→] To change page, [Enter] to select and [Escape] to return to previous page:\n");
 
             Console.WriteLine("Your Reservations:\n");
 

@@ -5,7 +5,7 @@ public class MovieSessionScreen : IScreen
     public List<string> _uniqueDates { get; private set; }
 
     public string ScreenName { get; set; }
-    public MovieSessionScreen() => ScreenName = "MovieSession";
+    public MovieSessionScreen() => ScreenName = "Select a movie session";
 
     public void Start()
     {
@@ -23,6 +23,9 @@ public class MovieSessionScreen : IScreen
 
         if (_movieSessions.Count == 0)
         {
+            General.ClearConsole();
+            General.PrintColoredBoxedTitle($"{ScreenName}", ConsoleColor.White);
+            Console.WriteLine();
             DisplayMovieInfo();
             Console.WriteLine("No movie sessions available.\n");
             Console.WriteLine("Press any key to return...");
@@ -39,13 +42,18 @@ public class MovieSessionScreen : IScreen
         {
             General.ClearConsole();  
 
+            General.PrintColoredBoxedTitle($"{ScreenName}", ConsoleColor.White);
+            Console.WriteLine();
             DisplayMovieInfo();
+            Console.WriteLine("Use [↑][↓][←][→] to navigate, [Enter] to select and [Escape] to return to previous page:\n");
             DisplayDateOptions(_uniqueDates, selectedDateIndex, isSelectingDate);
 
             var selectedDate = _uniqueDates[selectedDateIndex];
             var availableTimes = GetSessionsByDate(selectedDate);
 
-            DisplayAvailableTimes(availableTimes, isSelectingDate ? -1 : selectedTimeIndex);
+            DisplayAvailableTimes(availableTimes, isSelectingDate ? -1 : selectedTimeIndex, selectedDate);
+
+            
 
             key = Console.ReadKey(true).Key;
 
@@ -94,12 +102,38 @@ public class MovieSessionScreen : IScreen
         Console.WriteLine(_movie.Title);
         Console.WriteLine("");
         Console.WriteLine("Description:");
-        Console.WriteLine(_movie.Description);
+        WriteWrapped(_movie.Description);
         Console.WriteLine("");
         Console.WriteLine($"Genre: {_movie.Genre} | Language: {_movie.Language}");
         Console.WriteLine($"Duration: {_movie.Duration} | Minimum age: {_movie.MinAge}");
         Console.WriteLine("");
-        Console.WriteLine("---------------------------------------------------------------\n");
+        Console.WriteLine("---------------------------------------------------------------\n\n");
+    }
+
+    public static void WriteWrapped(string text, int maxWidth = 80)
+    {
+        var words = text.Split(' ');
+        int currentLineLength = 0;
+
+        foreach (var word in words)
+        {
+            if (currentLineLength + word.Length + 1 > maxWidth)
+            {
+                Console.WriteLine();
+                currentLineLength = 0;
+            }
+
+            if (currentLineLength > 0)
+            {
+                Console.Write(" ");
+                currentLineLength++;
+            }
+
+            Console.Write(word);
+            currentLineLength += word.Length;
+        }
+
+        Console.WriteLine(); // Final newline
     }
 
     private void DisplayDateOptions(List<string> dates, int selectedIndex, bool isSelectingDate)
@@ -122,9 +156,11 @@ public class MovieSessionScreen : IScreen
     }
 
 
-    public void DisplayAvailableTimes(List<MovieSession> sessions, int highlightedIndex)
+    public void DisplayAvailableTimes(List<MovieSession> sessions, int highlightedIndex, string selectedDate)
     {
         Console.WriteLine();
+
+        string selectedTime = "";
 
         for (int i = 0; i < sessions.Count; i++)
         {
@@ -132,6 +168,7 @@ public class MovieSessionScreen : IScreen
             {
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.WriteLine($"> {sessions[i].StartTime}");
+                selectedTime = sessions[i].StartTime;
                 Console.ResetColor();
             }
             else
@@ -139,6 +176,8 @@ public class MovieSessionScreen : IScreen
                 Console.WriteLine($"  {sessions[i].StartTime}");
             }
         }
+
+        Console.WriteLine($"\nCurrently selected: {selectedDate} - {selectedTime}");
     }
 
     private List<MovieSession> GetSessionsByDate(string date)

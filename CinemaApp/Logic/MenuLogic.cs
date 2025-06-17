@@ -1,6 +1,6 @@
 public static class MenuLogic
 {
-    static Stack<IScreen> screenStack = new Stack<IScreen>();
+    public static Stack<IScreen> screenStack = new Stack<IScreen>();
 
     public static void NavigateTo(IScreen screen, bool clearStack = false)
     {
@@ -8,7 +8,6 @@ public static class MenuLogic
             screenStack.Clear();
         
         screenStack.Push(screen);
-        Console.Clear();
         screen.Start();
     }
 
@@ -17,13 +16,12 @@ public static class MenuLogic
         if (screenStack.Count > 1)
         {
             screenStack.Pop();
-            Console.Clear();
             IScreen previous = screenStack.Peek();
             previous.Start();
             return;
         }
         
-        NavigateTo(new ExitScreen());
+        NavigateTo(new ExitLogoutScreen(false));
     }
 
     public static void RestartScreen()

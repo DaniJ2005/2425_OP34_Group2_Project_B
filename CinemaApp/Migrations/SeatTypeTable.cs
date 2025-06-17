@@ -6,7 +6,7 @@ public static class SeatTypeTable
         using (var connection = Db.CreateConnection())
         {
             string sql = @"
-                CREATE TABLE seat_type (
+                CREATE TABLE IF NOT EXISTS seat_type (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     type TEXT,
                     color TEXT

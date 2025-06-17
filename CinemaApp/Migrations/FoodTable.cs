@@ -6,7 +6,7 @@ public static class FoodTable
         using (var connection = Db.CreateConnection())
         {
             string sql = @"
-                CREATE TABLE food (
+                CREATE TABLE IF NOT EXISTS food (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     name TEXT NOT NULL,
                     price REAL NOT NULL,

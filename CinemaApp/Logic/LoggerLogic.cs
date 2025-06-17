@@ -1,9 +1,13 @@
 public class LoggerLogic //singleton
 {
     private static readonly Lazy<LoggerLogic> instance = new Lazy<LoggerLogic>(() => new LoggerLogic());
+    public static bool LoggingEnabled = true;
 
     private LoggerLogic()
     {
+        if (!LoggingEnabled)
+            return;
+
         LoggerAccess.CreateDirectory();
 
         LogInternal($"--- Logger started at {DateTime.Now:yyyy-MM-dd HH:mm:ss} ---");
@@ -13,6 +17,9 @@ public class LoggerLogic //singleton
 
     public void Log(string message)
     {
+        if (!LoggingEnabled)
+            return;
+            
         string timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
         string logEntry = $"{timestamp} | {message}";
         LogInternal(logEntry);

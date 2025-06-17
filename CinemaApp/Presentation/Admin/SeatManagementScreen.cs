@@ -10,10 +10,8 @@ public class SeatManagementScreen : IScreen
 
         do
         {
-            Console.Clear();
-            Console.WriteLine("╔══════════════════════════════╗");
-            Console.WriteLine("║       SEAT MANAGEMENT        ║");
-            Console.WriteLine("╚══════════════════════════════╝");
+            General.ClearConsole();
+            General.PrintColoredBoxedTitle($"{ScreenName}", ConsoleColor.Yellow);
             Console.WriteLine("[↑][↓] to navigate, [ENTER] to select, [ESC] to go back\n");
 
             for (int i = 0; i < options.Length; i++)
@@ -40,7 +38,7 @@ public class SeatManagementScreen : IScreen
                 selectedIndex++;
             else if (key == ConsoleKey.Enter)
             {
-                Console.Clear();
+                General.ClearConsole();
                 switch (selectedIndex)
                 {
                     case 0:

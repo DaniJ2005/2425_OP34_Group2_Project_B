@@ -3,7 +3,6 @@ static class SeatLogic
     public static Seat[,] SeatGrid;
     public static HashSet<int> BookedSeatIds = new();
     public static HashSet<int> SelectedSeatIds = new();
-
     public static int X = 0;
     public static int Y = 0;
 
@@ -119,6 +118,11 @@ static class SeatLogic
                 return;
             }
         }
+    }
+
+    public static List<SeatPrice> GetSeatPrices()
+    {
+        return SeatPriceAccess.GetSeatTypesAndPrices();
     }
 
     private static bool IsValidSeat(int row, int col)

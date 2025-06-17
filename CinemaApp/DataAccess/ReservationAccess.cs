@@ -106,4 +106,20 @@ public static class ReservationAccess
         }
     }
 
+    public static void CancelReservation(Reservation reservation)
+    {
+        using (var connection = Db.CreateConnection())
+        {
+            string sql = @"
+                UPDATE reservation
+                SET status = @Status
+                WHERE id = @Id;
+            ";
+
+            reservation.Status = "Cancelled";
+
+            connection.Execute(sql, new { reservation.Status, reservation.Id });
+        }
+    }
+
 }
