@@ -209,7 +209,6 @@ public class UpdateScreen<T> : FormScreen
                                                                      WrapText(f.OriginalValue ?? "", WrapWidth).Count));
             int cursorLeft = 2 + maxLabelLength + 2 + cursorPos;
             cursorLeft = Math.Min(cursorLeft, Console.WindowWidth - 1);
-            Console.CursorVisible = !isInRevertMode;
             Console.SetCursorPosition(cursorLeft, cursorTop);
 
             keyInfo = Console.ReadKey(true);

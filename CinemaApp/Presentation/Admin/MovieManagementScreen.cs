@@ -163,7 +163,8 @@ public class MovieManagementScreen : IScreen
     {
         var deleteScreen = new DeleteScreen<Movie>(
             MovieAdminLogic.GetAllMovies,
-            m => MovieAdminLogic.DeleteMovie(m.Id));
+            m => MovieAdminLogic.DeleteMovie(m.Id),
+            new string[] { "Id", "Title", "Description", "Genre", "Duration", "MinAge", "Language" });
 
         deleteScreen.Start();
     }
