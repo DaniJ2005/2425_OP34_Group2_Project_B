@@ -1,4 +1,4 @@
-static class ReservationLogic
+public static class ReservationLogic
 {
     private static Reservation _selectedReservation;
     private static Movie _selectedMovie;
