@@ -8,7 +8,7 @@ Console.CursorVisible = false;
 Dapper.DefaultTypeMap.MatchNamesWithUnderscores = false;
 
 // Global logging toggle
-LoggerLogic.LoggingEnabled = true;
+LoggerLogic.LoggingEnabled = false;
 
 //Dev only
 Db.DeleteTables();
