@@ -13,16 +13,13 @@ public class ReservationLogicTest
         {
             Id = 1,
             Title = "Test Movie",
-            // Duration = 120
             Duration = "02:00"
         };
 
         validSession = new MovieSession
         {
             Id = 1,
-            // Date = new DateTime(2025, 6, 17),
             Date = "2025-06-17",
-            // StartTime = new TimeSpan(20, 0, 0),
             StartTime = "20:00",
             MovieId = 1,
             MovieHallId = 3
@@ -35,12 +32,12 @@ public class ReservationLogicTest
 
         sampleFoodItems = new Dictionary<Food, int>
         {
-            [new Food { Id = 10, Name = "Nachos" }] = 1
+            [new Food { Name = "Nachos" }] = 1
         };
     }
 
     [TestMethod]
-    public void GetConfirmationSummary_WhenMovieOrSessionNotSet_ReturnsFallback()
+    public void GetConfirmationSummary_WhenMovieNotSet_ReturnsFallback()
     {
         // Arrange: Only movie is missing
         ReservationLogic.ClearSelection();
