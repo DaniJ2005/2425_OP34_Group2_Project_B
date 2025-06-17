@@ -109,9 +109,9 @@
 
     public static bool ValidateEmail(string email) => email.Contains("@") && email.Contains(".");
 
-    public static bool ValidatePassword(string password) => password.Length >= 8;
+    public static bool ValidatePassword(string password) => password.Trim().Length >= 8;
 
-    public static bool ValidateUserName(string userName) => userName.Length >= 3;
+    public static bool ValidateUserName(string userName) => userName.Trim().Length >= 3;
 
     public static string Mask(string input) => new string('*', input.Length);
 
