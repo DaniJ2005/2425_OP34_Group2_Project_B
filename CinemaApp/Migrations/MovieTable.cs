@@ -40,8 +40,8 @@ public static class MovieTable
 
                 var Movies = new[]
                 {
-                    new { Title = "A Minecraft Movie", Description = minecraftMovieDesc, Genre = "Actie/Avontuur/Familiefilm", Duration = "1h 41m", Language = "EN", MinAge = 9},
-                    new { Title = "Dune: Part Two", Description = "Paul Atreides unites with the Fremen.", Genre = "Sci-Fi/Actie", Duration = "2h 46m", Language = "EN", MinAge = 12},
+                    new { Title = "A Minecraft Movie", Description = minecraftMovieDesc, Genre = "Actie/Avontuur/Familiefilm", Duration = "02:00", Language = "EN", MinAge = 9},
+                    new { Title = "Dune: Part Two", Description = "Paul Atreides unites with the Fremen.", Genre = "Sci-Fi/Actie", Duration = "01:30", Language = "EN", MinAge = 12},
                     
                 };
 

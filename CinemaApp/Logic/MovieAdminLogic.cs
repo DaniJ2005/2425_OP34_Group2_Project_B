@@ -19,7 +19,7 @@ public static class MovieAdminLogic
             return false;
         }
     }
-    
+
     public static bool UpdateMovie(Movie movie)
     {
         try
@@ -34,7 +34,7 @@ public static class MovieAdminLogic
             return false;
         }
     }
-    
+
     public static bool DeleteMovie(int id)
     {
         try
@@ -49,14 +49,14 @@ public static class MovieAdminLogic
             return false;
         }
     }
-    
+
     // Methods for movie sessions
     public static List<MovieSession> GetAllMovieSessions() => MovieSessionAccess.GetAll();
-    
+
     public static List<MovieSession> GetMovieSessionsByMovieId(int movieId) => MovieSessionAccess.GetAllByMovieId(movieId);
-    
+
     public static MovieSession GetMovieSessionById(int id) => MovieSessionAccess.GetById(id);
-    
+
     public static bool AddMovieSession(MovieSession session)
     {
         try
@@ -74,7 +74,7 @@ public static class MovieAdminLogic
             return false;
         }
     }
-    
+
     public static bool UpdateMovieSession(MovieSession session)
     {
         try
@@ -89,7 +89,7 @@ public static class MovieAdminLogic
             return false;
         }
     }
-    
+
     public static bool DeleteMovieSession(int id)
     {
         try
@@ -103,5 +103,10 @@ public static class MovieAdminLogic
             LoggerLogic.Instance.Log($"Error deleting movie session: {ex.Message}");
             return false;
         }
+    }
+
+    public static List<MovieSession> GetAllSessionsByMovieHallId(int movieHallId, string date)
+    {
+        return MovieSessionAccess.GetAllByMovieHallId(movieHallId, date);
     }
 }

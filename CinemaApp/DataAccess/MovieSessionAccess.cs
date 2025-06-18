@@ -16,7 +16,7 @@ public static class MovieSessionAccess
             return connection.Query<MovieSession>(sql, new { MovieId = movieId }).ToList();
         }
     }
-    
+
     public static List<MovieSession> GetAll()
     {
         using (var connection = Db.CreateConnection())
@@ -35,7 +35,7 @@ public static class MovieSessionAccess
             return connection.Query<MovieSession>(sql).ToList();
         }
     }
-    
+
     public static MovieSession GetById(int id)
     {
         using (var connection = Db.CreateConnection())
@@ -52,7 +52,7 @@ public static class MovieSessionAccess
             return connection.QueryFirstOrDefault<MovieSession>(sql, new { Id = id });
         }
     }
-    
+
     public static void AddMovieSession(MovieSession session)
     {
         using (var connection = Db.CreateConnection())
@@ -62,18 +62,19 @@ public static class MovieSessionAccess
                 VALUES 
                 (@MovieHallId, @MovieId, @StartTime, @Date);
                 SELECT last_insert_rowid();";
-            
-            int id = connection.ExecuteScalar<int>(sql, new { 
-                session.MovieHallId, 
-                session.MovieId, 
-                session.StartTime, 
+
+            int id = connection.ExecuteScalar<int>(sql, new
+            {
+                session.MovieHallId,
+                session.MovieId,
+                session.StartTime,
                 session.Date
             });
-            
+
             session.Id = id;
         }
     }
-    
+
     public static void UpdateMovieSession(MovieSession session)
     {
         using (var connection = Db.CreateConnection())
@@ -84,17 +85,18 @@ public static class MovieSessionAccess
                     start_time = @StartTime,
                     date = @Date
                 WHERE id = @Id";
-            
-            connection.Execute(sql, new { 
-                session.MovieHallId, 
-                session.MovieId, 
-                session.StartTime, 
+
+            connection.Execute(sql, new
+            {
+                session.MovieHallId,
+                session.MovieId,
+                session.StartTime,
                 session.Date,
                 session.Id
             });
         }
     }
-    
+
     public static void DeleteMovieSession(int id)
     {
         try
@@ -132,6 +134,22 @@ public static class MovieSessionAccess
         {
             LoggerLogic.Instance.Log($"Unexpected error deleting movie session ID {id}: {ex.Message}");
             throw;  // or handle error gracefully here, depending on your design
+        }
+    }
+
+    public static List<MovieSession> GetAllByMovieHallId(int movieHallId, string date)
+    {
+        using (var connection = Db.CreateConnection())
+        {
+            string sql = @"
+                SELECT 
+                start_time AS StartTime, 
+                date AS Date,
+                movie.duration as MovieDuration
+                FROM movie_session
+                INNER JOIN movie ON movie_session.movie_id == movie.id
+                WHERE movie_hall_id == @MovieHallId AND date == @Date";
+            return connection.Query<MovieSession>(sql, new { MovieHallId = movieHallId, Date = date }).ToList();
         }
     }
 }

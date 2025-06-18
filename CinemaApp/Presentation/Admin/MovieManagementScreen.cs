@@ -67,7 +67,7 @@ public class MovieManagementScreen : IScreen
             new("Title", false, v => (!string.IsNullOrWhiteSpace(v), "Title required")),
             new("Description"),
             new("Genre"),
-            new("Duration"),
+            new("Duration", false, ValidateDuration),
             new("Language"),
             new("Min Age", false, v => (int.TryParse(v, out _), "Must be a number"))
         };
@@ -87,6 +87,17 @@ public class MovieManagementScreen : IScreen
             MovieAdminLogic.AddMovie);
 
         createScreen.Start();
+    }
+    
+    private (bool isValid, string errorMessage) ValidateDuration(string input)
+    {
+        if (!TimeSpan.TryParseExact(input, @"hh\:mm", null, out TimeSpan duration))
+            return (false, "Duration must be in HH:mm format");
+
+        if (duration > TimeSpan.FromHours(4))
+            return (false, "Duration cannot exceed 4 hours");
+
+        return (true, "");
     }
 
     private void ShowUpdateMovie()
@@ -118,17 +129,15 @@ public class MovieManagementScreen : IScreen
 
                 var fields = new List<FormField>
                 {
-                    new("Title", false, v => (!string.IsNullOrWhiteSpace(v), "Title required")) 
+                    new("Title", false, v => (!string.IsNullOrWhiteSpace(v), "Title required"))
                         { Value = selected.Title, OriginalValue = selected.Title },
-                    new("Description") 
+                    new("Description")
                         { Value = selected.Description, OriginalValue = selected.Description },
-                    new("Genre") 
+                    new("Genre")
                         { Value = selected.Genre, OriginalValue = selected.Genre },
-                    new("Duration") 
-                        { Value = selected.Duration, OriginalValue = selected.Duration },
-                    new("Language") 
+                    new("Language")
                         { Value = selected.Language, OriginalValue = selected.Language },
-                    new("Min Age", false, v => (int.TryParse(v, out _), "Must be a valid number (without +)")) 
+                    new("Min Age", false, v => (int.TryParse(v, out _), "Must be a valid number (without +)"))
                         { Value = selected.MinAgeDb.ToString(), OriginalValue = selected.MinAgeDb.ToString() }
                 };
 
@@ -141,9 +150,9 @@ public class MovieManagementScreen : IScreen
                         Title = fields[0].Value,
                         Description = fields[1].Value,
                         Genre = fields[2].Value,
-                        Duration = fields[3].Value,
-                        Language = fields[4].Value,
-                        MinAgeDb = int.Parse(fields[5].Value.Replace("+", ""))
+                        Duration = selected.Duration,
+                        Language = fields[3].Value,
+                        MinAgeDb = int.Parse(fields[4].Value.Replace("+", ""))
                     },
                     MovieAdminLogic.UpdateMovie);
 

@@ -39,9 +39,9 @@ public static class MovieSessionTable
                 var MovieSessions = new[]
                 {
                     // Movie 1
-                    new { MovieHallId = 1, MovieId = 1, StartTime = "16:20", Date = "21-06-25" },
-                    new { MovieHallId = 2, MovieId = 1, StartTime = "20:00", Date = "21-06-25" },
-                    new { MovieHallId = 3, MovieId = 1, StartTime = "21:00", Date = "21-06-25" },
+                    new { MovieHallId = 1, MovieId = 1, StartTime = "16:30", Date = "2025-06-21" },
+                    new { MovieHallId = 2, MovieId = 1, StartTime = "20:00", Date = "2025-06-21" },
+                    new { MovieHallId = 3, MovieId = 1, StartTime = "21:00", Date = "2025-06-21" },
                 };
 
                 connection.Execute(sql, MovieSessions);

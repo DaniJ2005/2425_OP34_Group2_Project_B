@@ -19,7 +19,7 @@ public class SelectField : FormField
         }
     }
 
-    public void RenderAndSelect(int left = 0, int top = 0)
+    public void RenderAndSelect()
     {
         ConsoleKey key;
 
