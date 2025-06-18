@@ -6,7 +6,7 @@ public class SessionManagementScreen : IScreen
     {
         int selectedIndex = 0;
         ConsoleKey key;
-        string[] options = { "Add Session", "Update Session", "Delete Session", "View Session" };
+        string[] options = { "Add Session", "Delete Session", "View Session" };
 
         do
         {
@@ -41,13 +41,10 @@ public class SessionManagementScreen : IScreen
                     case 0: // Add Session
                         ShowAddSession();
                         break;
-                    case 1: // Update Session
-                        ShowUpdateSession();
-                        break;
-                    case 2: // Delete Session
+                    case 1: // Delete Session
                         ShowDeleteSession();
                         break;
-                    case 3: // View Session
+                    case 2: // View Session
                         ShowViewSession();
                         break;
                 }
@@ -203,9 +200,8 @@ public class SessionManagementScreen : IScreen
 
     private void ShowDeleteSession()
     {
-        var deleteScreen = new DeleteScreen<MovieSession>(
-            MovieAdminLogic.GetAllMovieSessions,
-            m => MovieAdminLogic.DeleteMovieSession(m.Id));
+        var deleteScreen = new DeleteScreen<MovieSession>(MovieAdminLogic.GetAllMovieSessions, m => MovieAdminLogic.DeleteMovieSession(m.Id),
+            new[] { "Id", "MovieHallName", "MovieTitle", "StartTime", "Date" });
 
         deleteScreen.Start();
     }
