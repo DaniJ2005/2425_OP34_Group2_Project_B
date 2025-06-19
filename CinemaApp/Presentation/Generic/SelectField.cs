@@ -19,7 +19,7 @@ public class SelectField : FormField
         }
     }
 
-    public void RenderAndSelect(int left = 0, int top = 0)
+    public void RenderAndSelect()
     {
         ConsoleKey key;
 
@@ -56,6 +56,11 @@ public class SelectField : FormField
                 else
                 {
                     Console.ResetColor();
+                }
+
+                if (_options[_keys[i]] == OriginalValue)
+                {
+                    Console.ForegroundColor = ConsoleColor.Cyan;
                 }
 
                 Console.WriteLine($"  {_options[_keys[i]]}");

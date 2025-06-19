@@ -9,10 +9,9 @@ public class DateField : FormField
     private int _page = 0;
     private const int PageSize = 8; // max 7 days (1 week)
 
-    public DateField(string label, int movieHallId, string startTime, List<MovieSession> existingSessions) : base(label)
+    public DateField(string label, int movieHallId, List<MovieSession> existingSessions) : base(label)
     {
         _movieHallId = movieHallId;
-        _startTime = startTime;
         _existingSessions = existingSessions;
 
         // Prepare available dates: from today up to 7 days ahead, excluding duplicates
@@ -23,15 +22,8 @@ public class DateField : FormField
         {
             DateTime date = today.AddDays(i);
 
-            bool duplicateExists = _existingSessions.Any(s =>
-                s.MovieHallId == _movieHallId &&
-                s.Date == date.ToString("yyyy-MM-dd") &&
-                s.StartTime == _startTime);
-
-            if (!duplicateExists)
-            {
-                _availableDates.Add(date);
-            }
+            _availableDates.Add(date);
+            
         }
 
         if (_availableDates.Count > 0)
@@ -48,7 +40,7 @@ public class DateField : FormField
         }
     }
 
-    public void RenderAndSelect(int left = 0, int top = 0)
+    public void RenderAndSelect()
     {
         if (_availableDates.Count == 0)
         {

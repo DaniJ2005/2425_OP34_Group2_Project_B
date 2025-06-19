@@ -1,52 +1,40 @@
+using System.Globalization;
+
 public class TimeField : FormField
 {
-    // Typical Dutch cinema start times (24h format)
-    private readonly List<TimeSpan> _availableTimes = new()
-    {
-        new TimeSpan(6, 0, 0),   // 06:00
-        new TimeSpan(6, 30, 0),  // 06:30
-        new TimeSpan(7, 0, 0),   // 07:00
-        new TimeSpan(7, 30, 0),  // 07:30
-        new TimeSpan(8, 0, 0),   // 08:00
-        new TimeSpan(8, 30, 0),  // 08:30
-        new TimeSpan(9, 0, 0),   // 09:00
-        new TimeSpan(9, 30, 0),  // 09:30
-        new TimeSpan(10, 0, 0),  // 10:00
-        new TimeSpan(10, 30, 0), // 10:30
-        new TimeSpan(11, 0, 0),  // 11:00
-        new TimeSpan(11, 30, 0), // 11:30
-        new TimeSpan(12, 0, 0),  // 12:00
-        new TimeSpan(12, 30, 0), // 12:30
-        new TimeSpan(13, 0, 0),  // 13:00
-        new TimeSpan(13, 30, 0), // 13:30
-        new TimeSpan(14, 0, 0),  // 14:00
-        new TimeSpan(14, 30, 0), // 14:30
-        new TimeSpan(15, 0, 0),  // 15:00
-        new TimeSpan(15, 30, 0), // 15:30
-        new TimeSpan(16, 0, 0),  // 16:00
-        new TimeSpan(16, 30, 0), // 16:30
-        new TimeSpan(17, 0, 0),  // 17:00
-        new TimeSpan(17, 30, 0), // 17:30
-        new TimeSpan(18, 0, 0),  // 18:00
-        new TimeSpan(18, 30, 0), // 18:30
-        new TimeSpan(19, 0, 0),  // 19:00
-        new TimeSpan(19, 30, 0), // 19:30
-        new TimeSpan(20, 0, 0),  // 20:00
-        new TimeSpan(20, 30, 0), // 20:30
-        new TimeSpan(21, 0, 0),  // 21:00
-        new TimeSpan(21, 30, 0), // 21:30
-        new TimeSpan(22, 0, 0),  // 22:00
-        new TimeSpan(22, 30, 0), // 22:30
-        new TimeSpan(23, 0, 0),  // 23:00
-        new TimeSpan(23, 30, 0)  // 23:30
-    };
-
+    private readonly List<TimeSpan> _availableTimes = new();
     private int _selectedIndex = 0;
     private int _page = 0;
-    private const int PageSize = 6; // fits all times on one page, but support pages anyway
+    private const int PageSize = 12;
 
-    public TimeField(string label) : base(label)
+    public TimeField(string label, List<MovieSession> existingTimes, TimeSpan movieDuration) : base(label)
     {
+        // Build list of blocked ranges from existing sessions
+        var existingRanges = existingTimes
+            .Select(s => (Start: s.StartDateTime, End: s.EndDateTime))
+            .ToList();
+
+        // Time range current date: from 12:00 to 23:00
+        DateTime baseDate = existingTimes.FirstOrDefault()?.StartDateTime.Date ?? DateTime.Today;
+        TimeSpan firstSlot = new TimeSpan(12, 0, 0);
+        TimeSpan lastSlot = new TimeSpan(23, 0, 0);
+
+        for (TimeSpan ts = firstSlot; ts <= lastSlot; ts = ts.Add(TimeSpan.FromMinutes(10)))
+        {
+            DateTime candidateStart = baseDate + ts;
+            DateTime candidateEnd = candidateStart + movieDuration;
+
+            // Check for any overlap with existing sessions
+            bool overlaps = existingRanges.Any(r =>
+                candidateStart < r.End && candidateEnd > r.Start
+            );
+
+            if (!overlaps)
+            {
+                _availableTimes.Add(ts);
+            }
+        }
+
         if (_availableTimes.Count > 0)
         {
             Value = FormatTime(_availableTimes[0]);
@@ -66,7 +54,7 @@ public class TimeField : FormField
         return time.ToString(@"hh\:mm");
     }
 
-    public void RenderAndSelect(int left = 0, int top = 0)
+    public void RenderAndSelect()
     {
         if (_availableTimes.Count == 0)
         {

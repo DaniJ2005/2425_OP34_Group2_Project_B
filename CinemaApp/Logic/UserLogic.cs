@@ -101,7 +101,7 @@
         UserAccess.Write(newUser);
         LoggerLogic.Instance.Log($"User registered | Email: {email} | UserName: {userName}");
 
-        CurrentUser = newUser;
+        CurrentUser = UserAccess.GetByEmail(email);
         SessionDataLogic.MarkAuthenticated(newUser);
 
         return newUser;
