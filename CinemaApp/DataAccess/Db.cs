@@ -23,42 +23,57 @@ public static class Db
     {
         RoleTable.InitTable();
         UserTable.InitTable();
-        MovieHallTable.InitTable();
-        MovieTable.InitTable();
-        MovieSessionTable.InitTable();
-        ReservationTable.InitTable();
+
         SeatTypeTable.InitTable();
+        MovieHallTable.InitTable();
         SeatTable.InitTable();
         SeatPriceTable.InitTable();
+
+        MovieTable.InitTable();
+        MovieSessionTable.InitTable();
+
+        ReservationTable.InitTable();
         TicketTable.InitTable();
+
         FoodTable.InitTable();
         ReservationFoodTable.InitTable();
     }
 
     public static void PopulateTables()
     {
-        RoleTable.PopulateTable();
-        SeatTypeTable.PopulateTable();
-        SeatPriceTable.PopulateTable();
-        MovieHallTable.PopulateTable();
-        SeatTable.PopulateTable();
-        MovieTable.PopulateTable();
-        MovieSessionTable.PopulateTable();
+        RoleTable.PopulateTable();         // needed for User
+        UserTable.PopulateTable();
+
+        SeatTypeTable.PopulateTable();     // needed for Seat & SeatPrice
+        MovieHallTable.PopulateTable();    // needed for Seat & MovieSession
+
+        SeatTable.PopulateTable();         // needs SeatType and MovieHall
+        SeatPriceTable.PopulateTable();    // needs SeatType
+
+        MovieTable.PopulateTable();        // needed for MovieSession
+        MovieSessionTable.PopulateTable(); // needs Movie and MovieHall
+
+        //TicketTable.PopulateTable();       // needs Reservation, Seat, SeatPrice
+        FoodTable.PopulateTable();
     }
 
     public static void DeleteTables()
     {
-        RoleTable.DeleteTable();
-        UserTable.DeleteTable();
+        // Delete child tables first
+        ReservationFoodTable.DeleteTable();
+        TicketTable.DeleteTable();
+        ReservationTable.DeleteTable();
+        // UserTable.DeleteTable();     // vanaf nu deze niet meer deleten?
+        
         SeatPriceTable.DeleteTable();
         SeatTable.DeleteTable();
         SeatTypeTable.DeleteTable();
+
         MovieSessionTable.DeleteTable();
-        MovieHallTable.DeleteTable();
         MovieTable.DeleteTable();
-        ReservationTable.DeleteTable();
-        TicketTable.DeleteTable();
+        MovieHallTable.DeleteTable();
+        
         FoodTable.DeleteTable();
-        ReservationFoodTable.DeleteTable();
+        // RoleTable.DeleteTable();  //when commenting userTable, also comment this
     }
 }

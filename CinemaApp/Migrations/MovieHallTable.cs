@@ -6,7 +6,7 @@ public static class MovieHallTable
         using (var connection = Db.CreateConnection())
         {
             string sql = @"
-                CREATE TABLE movie_hall (
+                CREATE TABLE IF NOT EXISTS movie_hall (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     name TEXT NOT NULL
                 );
@@ -34,7 +34,8 @@ public static class MovieHallTable
                 var MovieHalls = new[]
                 {
                     new { Name = "Hall01" },
-                    new { Name = "Hall02" }
+                    new { Name = "Hall02" },
+                    new { Name = "Hall03" }
                 };
 
                 connection.Execute(sql, MovieHalls);

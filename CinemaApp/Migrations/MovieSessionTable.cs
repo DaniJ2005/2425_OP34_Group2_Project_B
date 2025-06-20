@@ -6,7 +6,7 @@ public static class MovieSessionTable
         using (var connection = Db.CreateConnection())
         {
             string sql = @"
-                CREATE TABLE movie_session (
+                CREATE TABLE IF NOT EXISTS movie_session (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     movie_hall_id INTEGER,
                     movie_id INTEGER,
@@ -38,7 +38,10 @@ public static class MovieSessionTable
 
                 var MovieSessions = new[]
                 {
-                    new { MovieHallId = 1, MovieId = 1, StartTime = "16:20", Date = "14/04/25" },
+                    // Movie 1
+                    new { MovieHallId = 1, MovieId = 1, StartTime = "16:30", Date = "2025-06-21" },
+                    new { MovieHallId = 2, MovieId = 1, StartTime = "20:00", Date = "2025-06-21" },
+                    new { MovieHallId = 3, MovieId = 1, StartTime = "21:00", Date = "2025-06-21" },
                 };
 
                 connection.Execute(sql, MovieSessions);

@@ -1,28 +1,76 @@
-static class ReservationLogic
+public static class ReservationLogic
 {
-    private static MovieModel _selectedMovie;
-    private static MovieSessionModel _selectedSession;
-    private static SeatModel _selectedSeat;
+    private static Reservation _selectedReservation;
+    private static Movie _selectedMovie;
+    private static MovieSession _selectedSession;
+    private static Dictionary<Seat, SeatPrice> _selectedSeats = [];
+    private static Dictionary<Food, int> _selectedFoodItems = [];
 
-    public static void SetSelectedMovie(MovieModel movie)
+    public static void SetSelectedReservation(Reservation reservation)
     {
-        LoggerLogic.Instance.Log($"Movie selected | ID: {movie.Id} | Title: {movie.Title}");
+        _selectedReservation = reservation;
+    }
+
+    public static void SetSelectedMovie(Movie movie)
+    {
         _selectedMovie = movie;
     }
-    public static void SetSelectedSession(MovieSessionModel session)
+    public static void SetSelectedSession(MovieSession session)
     {
-        LoggerLogic.Instance.Log($"Session selected | ID: {session.Id} | MovieHallID: {session.MovieHallId} | Date: {session.Date}");
-         _selectedSession = session;
+        _selectedSession = session;
     }
-    public static void SetSelectedSeat(SeatModel seat)
+    public static void SetSelectedSeats(Dictionary<Seat, SeatPrice> seats)
     {
-        LoggerLogic.Instance.Log($"Movie Seat | ID: {seat.Id} | Type: {seat.SeatTypeId}");
-         _selectedSeat = seat;
+        _selectedSeats = new Dictionary<Seat, SeatPrice>(seats);
     }
 
-    public static MovieModel GetSelectedMovie() => _selectedMovie;
-    public static MovieSessionModel GetSelectedSession() => _selectedSession;
-    public static SeatModel GetSelectedSeat() => _selectedSeat;
+    public static void SetSelectedFoodItems(Dictionary<Food, int> foodItems)
+    {
+        _selectedFoodItems = new Dictionary<Food, int>(foodItems);
+
+        foreach (var kvp in foodItems)
+        {
+            LoggerLogic.Instance.Log($"Food item added: {kvp.Key.Id} - {kvp.Key.Name} x{kvp.Value}");
+        }
+
+    }
+    public static Reservation GetSelectedReservation() => _selectedReservation;
+    public static Movie GetSelectedMovie() => _selectedMovie;
+    public static MovieSession GetSelectedSession() => _selectedSession;
+    public static Dictionary<Seat, SeatPrice> GetSelectedSeats() => _selectedSeats;
+    public static Dictionary<Food, int> GetSelectedFoodItems() => _selectedFoodItems;
+
+    public static void CreateReservation(string email, double totalPrice)
+    {
+        ReservationAccess.CreateReservation(_selectedSession, _selectedSeats, _selectedFoodItems, email, UserLogic.CurrentUser, totalPrice);
+        ClearSelection();
+    }
+
+    public static void CancelReservation(Reservation reservation)
+    {
+        ReservationAccess.CancelReservation(reservation);
+    }
+
+    public static List<Reservation> GetAllReservationsForCurrentUser()
+    {
+        User currentUser = UserLogic.CurrentUser;
+        if (currentUser != null)
+        {
+            return ReservationAccess.GetReservationsByUserId(currentUser.Id);
+        }
+        return new List<Reservation>();
+    }
+
+    public static List<Ticket> GetTicketsByReservationId(int reservationId)
+    {
+        return TicketAccess.GetTicketsByReservationId(reservationId);
+    }
+
+    public static List<ReservationFood> GetFoodReservations(int reservationId)
+    {
+        return ReservationFoodAccess.GetFoodReservations(reservationId);
+    }
+
 
     public static string GetConfirmationSummary()
     {
@@ -31,15 +79,11 @@ static class ReservationLogic
 
         string summary = "";
 
-        if (UserLogic.CurrentUser != null && !string.IsNullOrEmpty(UserLogic.CurrentUser.UserName))
-            summary += $"User: {UserLogic.CurrentUser.UserName}\n";
-
         summary +=
-            $"  - Movie: {GetSelectedMovie().Title}   ({GetSelectedMovie().Duration})\n" ;//+
-            // $"  - Date: {GetSelectedSession().Date}\n" +
-            // $"  - Time: {GetSelectedSession().StartTime}\n" +
-            // $"  - Hall: {GetSelectedSession().MovieHallId}\n" +
-            // $"  - Seat: Row {GetSelectedSeat().Row}, Seat {GetSelectedSeat().Number} ({GetSelectedSeat().SeatTypeId})\n";
+            $"  - Movie: {GetSelectedMovie().Title}   ({GetSelectedMovie().Duration})\n" +
+            $"  - Date: {GetSelectedSession().Date}\n" +
+            $"  - Time: {GetSelectedSession().StartTime}\n" +
+            $"  - Hall: {GetSelectedSession().MovieHallId}\n";
 
         return summary;
     }
@@ -48,7 +92,32 @@ static class ReservationLogic
     {
         _selectedMovie = null;
         _selectedSession = null;
-        _selectedSeat = null;
-        LoggerLogic.Instance.Log($"Reservation canceld | Summery:\n{GetConfirmationSummary()}");
+        _selectedSeats.Clear();
+        _selectedFoodItems.Clear();
+    }
+
+    public static void ClearMovie()
+    {
+        _selectedMovie = null;
+    }
+
+    public static void ClearSession()
+    {
+        _selectedSession = null;
+    }
+
+    public static void ClearSeats()
+    {
+        _selectedSeats.Clear();
+    }
+
+    public static void ClearFood()
+    {
+        _selectedFoodItems.Clear();
+    }
+
+    public static void ClearSelectedReservation()
+    {
+        _selectedReservation = null;
     }
 }

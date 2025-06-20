@@ -6,7 +6,7 @@ public static class TicketTable
         using (var connection = Db.CreateConnection())
         {
             string sql = @"
-                CREATE TABLE ticket (
+                CREATE TABLE IF NOT EXISTS ticket (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     seat_id INTEGER,
                     reservation_id INTEGER,
@@ -18,6 +18,33 @@ public static class TicketTable
             ";
 
             connection.Execute(sql);
+        }
+    }
+
+    public static void PopulateTable()
+    {
+        using (var connection = Db.CreateConnection())
+        {
+            // Check if the table is empty
+            string checkSql = "SELECT COUNT(*) FROM ticket;";
+            int count = connection.ExecuteScalar<int>(checkSql);
+
+            if (count == 0) // Only insert if no records exist
+            {
+                string sql = @"
+                    INSERT INTO ticket (reservation_id, seat_price_id, seat_id) 
+                    VALUES (@ReservationId, @SeatPriceId, @SeatId)
+                ";
+
+                var SeatPrices = new[]
+                {
+                    new {ReservationId = 1, SeatPriceId = 1, SeatId = 7},
+                    new {ReservationId = 1, SeatPriceId = 1, SeatId = 8},
+                    new {ReservationId = 1, SeatPriceId = 1, SeatId = 10},
+                };
+
+                connection.Execute(sql, SeatPrices);
+            }
         }
     }
 

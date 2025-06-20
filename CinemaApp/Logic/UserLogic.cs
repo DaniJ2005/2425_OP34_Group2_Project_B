@@ -1,89 +1,144 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text.Json;
-
-
-//This class is not static so later on we can use inheritance and interfaces
-public class UserLogic
+﻿public static class UserLogic
 {
+    public static User? CurrentUser { get; set; }
+    public static bool CanManageFoodMenu { get; private set; }
+    public static bool CanManageAccounts { get; private set; }
+    public static bool CanManageGuestAccounts { get; private set; }
+    public static bool CanManageMovieSessions { get; private set; }
+    public static bool CanManageMovieHall { get; private set; }
+    public static bool CanManageReservations { get; private set; }
 
-    //Static properties are shared across all instances of the class
-    //This can be used to get the current logged in user from anywhere in the program
-    //private set, so this can only be set by the class itself
-    public static UserModel? CurrentUser { get; private set; }
-
-    public UserLogic()
+    public static bool IsAuthenticated()
     {
-        // Could do something here
+        if (!SessionDataLogic.IsAuthenticated())
+            return false;
 
+        return CurrentUser != null;
     }
 
-    public UserModel CheckLogin(string email, string password)
+    public static bool IsAdmin() => CurrentUser != null && CurrentUser.RoleId != 0;
+
+    public static User CheckEmail(string email)
     {
+        var user = UserAccess.GetByEmail(email);
+        LoggerLogic.Instance.Log(user != null
+            ? $"Login form | Correct email entered | {email}"
+            : $"Login form | Incorrect email entered | {email}");
+        return user!;
+    }
 
-        UserModel user = UserAccess.GetByEmail(email);
-        if (user != null && user.Password == password)
+    public static User Login(string email, string password, bool passwordIsEncrypted = false)
+    {
+        var user = UserAccess.GetByEmail(email);
+
+        if (user != null)
         {
-            CurrentUser = user;
-            LoggerLogic.Instance.Log($"User logged in | ID: {CurrentUser.Id} | Email: {CurrentUser.Email} | Role: {CurrentUser.RoleId}");
+            if (passwordIsEncrypted)
+                if (CryptoHelper.VerifyEncrypted(password, user.Password))
+                    return LoginUser(user);
 
-            return user;
+            if (CryptoHelper.Verify(password, user.Password))
+                return LoginUser(user);
         }
+
         LoggerLogic.Instance.Log($"User login failed | Email: {email}");
-        return null;
+        return null!;
     }
-    
-    public UserModel RegisterUser(string email, string password, string userName)
-    {
-        if (IsValidEmail(email) && IsValidPassword(password) && !string.IsNullOrWhiteSpace(userName))
-        {
-            UserModel user = new UserModel
-            {
-                Email = email,
-                Password = password,
-                UserName = userName,
-            };
-            UserAccess.Write(user);
-            LoggerLogic.Instance.Log($"User registerd | ID: {email} | UserName: {userName}");
 
-            return user;
+    private static User LoginUser(User user)
+    {
+        CurrentUser = user;
+        LoggerLogic.Instance.Log($"User logged in | ID: {user.Id} | Email: {user.Email} | Role: {user.RoleId}");
+        SetPermissions();
+        SessionDataLogic.MarkAuthenticated(CurrentUser);
+        return user;
+    }
+
+    public static void Logout()
+    {
+        if (CurrentUser != null)
+        {
+            LoggerLogic.Instance.Log($"User logged out | ID: {CurrentUser.Id} | Email: {CurrentUser.Email}");
+            CurrentUser = null;
+            SessionDataLogic.Logout();
+        }
+    }
+
+    public static User RegisterUser(string email, string password, string userName)
+    {
+        if (!ValidateEmail(email))
+        {
+            LoggerLogic.Instance.Log($"Registration failed | Invalid email: {email}");
+            return null!;
         }
 
-        Console.WriteLine("Could not register user because:");
+        if (!ValidatePassword(password))
+        {
+            LoggerLogic.Instance.Log($"Registration failed | Password too short");
+            return null!;
+        }
 
-        string message = "";
+        if (!ValidateUserName(userName))
+        {
+            LoggerLogic.Instance.Log($"Registration failed | Invalid user name: {userName}");
+            return null!;
+        }
 
-        if (!IsValidEmail(email))
-            message += "- The email address is invalid.\n";
+        var existingUser = UserAccess.GetByEmail(email);
+        if (existingUser != null)
+        {
+            LoggerLogic.Instance.Log($"Registration failed | Email already in use: {email}");
+            return null!;
+        }
 
-        if (!IsValidPassword(password))
-            message += "- The password must be at least 8 characters long.\n";
+        var newUser = new User
+        {
+            Email = email,
+            Password = password,
+            UserName = userName
+        };
 
-        if (string.IsNullOrWhiteSpace(userName))
-            message += "- The full name cannot be empty.\n";
+        UserAccess.Write(newUser);
+        LoggerLogic.Instance.Log($"User registered | Email: {email} | UserName: {userName}");
 
-        if (string.IsNullOrWhiteSpace(message))
-            message = "- Unknown error.";
+        CurrentUser = UserAccess.GetByEmail(email);
+        SessionDataLogic.MarkAuthenticated(newUser);
 
-        LoggerLogic.Instance.Log("Registration failure | reasons:\n" + message.TrimEnd());
-        Console.WriteLine(message);
-
-
-        return null;
+        return newUser;
     }
 
-    public static bool IsValidEmail(string email)
+    public static bool ValidateEmail(string email) => email.Contains("@") && email.Contains(".");
+
+    public static bool ValidatePassword(string password) => password.Trim().Length >= 8;
+
+    public static bool ValidateUserName(string userName) => userName.Trim().Length >= 3;
+
+    public static string Mask(string input) => new string('*', input.Length);
+
+    private static void SetPermissions()
     {
-        return email.Contains("@") && email.Contains(".");
+        if (CurrentUser?.RoleId != null)
+        {
+            var role = RoleAccess.GetRoleById(CurrentUser.RoleId);
+
+            if (role != null) //not a normal user
+            {
+                CanManageFoodMenu = role.ManageFoodMenu;
+                CanManageAccounts = role.ManageAccounts;
+                CanManageGuestAccounts = role.ManageGuestAccounts;
+                CanManageMovieSessions = role.ManageMovieSessions;
+                CanManageMovieHall = role.ManageMovieHall;
+                CanManageReservations = role.ManageReservations;
+            }
+        }
     }
 
-    private bool IsValidPassword(string password)
+    public static string GetRole()
     {
-        return password.Length >= 8;
-    }
+        if (CurrentUser?.RoleId == null)
+            return "";
+
+        var role = RoleAccess.GetRoleById(CurrentUser.RoleId);
+        return role?.Name ?? "Unknown";
+    }    
 }
-
-
-
-

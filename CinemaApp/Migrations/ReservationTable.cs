@@ -10,6 +10,8 @@ public static class ReservationTable
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     user_id INTEGER,
                     movie_session_id INTEGER,
+                    email TEXT,
+                    total_price REAL,
                     status TEXT NOT NULL,
                     created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
                     FOREIGN KEY (user_id) REFERENCES user(id),

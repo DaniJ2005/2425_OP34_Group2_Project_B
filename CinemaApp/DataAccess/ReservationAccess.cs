@@ -1,8 +1,9 @@
+using System.Net.Quic;
 using Dapper;
 
 public static class ReservationAccess
 {
-    public static void CreateReservation()
+    public static void CreateReservation(MovieSession movieSession, Dictionary<Seat, SeatPrice> seats, Dictionary<Food, int> foodItems, string email, User currentUser, double totalPrice)
     {
         using (var connection = Db.CreateConnection())
         {
@@ -12,51 +13,113 @@ public static class ReservationAccess
             {
                 try
                 {
-                    string insertReservationSql = @"
-                        INSERT INTO reservation (user_id, movie_session_id, status, created_at)
-                        VALUES (@UserId, @MovieSessionId, @Status, @CreatedAt)
-                    ";
+                    // Insert reservation & retrieve auto generated Id
+                    string reservationQuery = @"
+                        INSERT INTO reservation (user_id, movie_session_id, email, total_price, status) 
+                        VALUES (@UserId, @MovieSessionId, @Email, @TotalPrice, @Status); 
+                        SELECT last_insert_rowid();";
 
-                    var reservation = new
+                    var parameters = new
                     {
-                        UserId = UserLogic.CurrentUser.Id,
-                        MovieSessionId = 1, // Static test data
-                        Status = "Confirmed",
-                        CreatedAt = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss")
+                        UserId = currentUser?.Id,  // Will be null if currentUser is null
+                        MovieSessionId = movieSession.Id,
+                        Email = email,
+                        TotalPrice = totalPrice,
+                        Status = "Confirmed"
                     };
 
-                    connection.Execute(insertReservationSql, reservation, transaction);
+                    long reservationId = connection.ExecuteScalar<long>(
+                        reservationQuery,
+                        parameters,
+                        transaction
+                    );
 
+                    // Insert tickets
+                    string ticketQuery = "INSERT INTO ticket (reservation_id, seat_id, seat_price_id) VALUES (@ReservationId, @SeatId, @SeatPriceId)";
 
-                    // Retrieve current reservation id
-                    long reservationId = connection.QuerySingle<long>("SELECT last_insert_rowid();", transaction: transaction);
-
-                    string insertTicketSql = @"
-                        INSERT INTO ticket (seat_id, reservation_id, seat_price_id) 
-                        VALUES (@SeatId, @ReservationId, @SeatPriceId);
-                    ";
-
-                    var tickets = new List<object>
+                    foreach (var seat in seats)
                     {
-                        new { SeatId = 1, ReservationId = reservationId, SeatPriceId = 1},
-                        new { SeatId = 2, ReservationId = reservationId, SeatPriceId = 1},
-                        new { SeatId = 3, ReservationId = reservationId, SeatPriceId = 1},
-                        new { SeatId = 4, ReservationId = reservationId, SeatPriceId = 1}
-                    };
+                        connection.Execute(
+                            ticketQuery,
+                            new
+                            {
+                                ReservationId = reservationId,
+                                SeatPriceId = seat.Value.Id,
+                                SeatId = seat.Key.Id
+                            },
+                            transaction
+                        );
+                    }
 
-                    connection.Execute(insertTicketSql, tickets, transaction);
+                    // Insert Food items
+                    string foodQuery = "INSERT INTO reservation_food (reservation_id, food_id, quantity) VALUES (@ReservationId, @FoodId, @Quantity)";
 
-                    // Commit transaction
+                    foreach (var foodItem in foodItems)
+                    {
+                        connection.Execute(
+                            foodQuery,
+                            new
+                            {
+                                ReservationId = reservationId,
+                                FoodId = foodItem.Key.Id,
+                                Quantity = foodItem.Value
+                            },
+                            transaction
+                        );
+                    }
+
                     transaction.Commit();
-                    Console.WriteLine("Reservation and tickets inserted successfully!");
-
                 }
                 catch (Exception ex)
                 {
                     transaction.Rollback();
-                    Console.WriteLine($"Transaction failed: {ex.Message}");
+                    throw;
                 }
             }
         }
     }
+
+    public static List<Reservation> GetReservationsByUserId(int userId)
+    {
+        using (var connection = Db.CreateConnection())
+        {
+            string sql = @"
+                SELECT 
+                    reservation.id AS Id,
+                    status AS Status,
+                    total_price AS TotalPrice,
+                    created_at AS CreatedAt,
+                    movie_session.date AS Date,
+                    movie_session.start_time AS StartTime,
+                    movie.title AS MovieTitle,
+                    movie_hall.name AS MovieHall
+                FROM reservation
+                INNER JOIN movie_session 
+                    ON reservation.movie_session_id = movie_session.id
+                INNER JOIN movie 
+                    ON movie_session.movie_id = movie.id
+                INNER JOIN movie_hall
+                    ON movie_session.movie_hall_id = movie_hall.id
+                WHERE user_id = @UserId;
+            ";
+            return connection.Query<Reservation>(sql, new { UserId = userId }).ToList();
+        }
+    }
+
+    public static void CancelReservation(Reservation reservation)
+    {
+        using (var connection = Db.CreateConnection())
+        {
+            string sql = @"
+                UPDATE reservation
+                SET status = @Status
+                WHERE id = @Id;
+            ";
+
+            reservation.Status = "Cancelled";
+
+            connection.Execute(sql, new { reservation.Status, reservation.Id });
+        }
+    }
+
 }
